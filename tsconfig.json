@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "pretty": true,
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "./node_modules/@types/mocha/index.d.ts",
+    "./node_modules/@types/node/index.d.ts",
+    "./node_modules/@types/body-parser/index.d.ts",
+    "./node_modules/@types/bson/index.d.ts",
+    "./node_modules/@types/chai/index.d.ts",
+    "./node_modules/@types/chai-as-promised/index.d.ts",
+    "./node_modules/@types/chai-http/index.d.ts",
+    "./node_modules/@types/express-session/index.d.ts",
+    "./node_modules/@types/express/index.d.ts",
+    "./node_modules/@types/mongoose/index.d.ts"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "compileOnSave": false
+}

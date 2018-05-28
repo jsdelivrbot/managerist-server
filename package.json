@@ -1,0 +1,68 @@
+{
+  "name": "managerist-server",
+  "version": "1.0.0",
+  "description": "nodejs srv 4 some game",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.2",
+    "cookie-parser": "^1.4.3",
+    "crc32": "^0.2.2",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "feature-name-generator": "git+https://github.com/lebeker/feature-name-generator.git",
+    "mongoose": "^4.13.14",
+    "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
+    "passport-github2": "^0.1.11",
+    "passport-linkedin": "^1.0.0",
+    "redis": "^2.8.0",
+    "reflect-metadata": "^0.1.8"
+  },
+  "devDependencies": {
+    "@types/body-parser": "latest",
+    "@types/chai": "latest",
+    "@types/chai-as-promised": "latest",
+    "@types/chai-http": "latest",
+    "@types/compression": "latest",
+    "@types/cookie-parser": "latest",
+    "@types/express": "latest",
+    "@types/express-session": "latest",
+    "@types/mocha": "latest",
+    "@types/mongodb": "latest",
+    "@types/mongoose": "latest",
+    "@types/mongoose-promise": "^4.5",
+    "@types/mpromise": "^0.5.29",
+    "@types/node": "latest",
+    "@types/passport": "latest",
+    "@types/redis": "latest",
+    "@types/yargs": "latest",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.0.0",
+    "gulp": "^4",
+    "mocha": "^5.2.0",
+    "npm-watch": "^0.3.0",
+    "onchange": "^4.0.0",
+    "ts-node": "^6.0.5",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch:ts": "onchange 'src/**/*.ts' -- tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lebeker/managerist-server.git"
+  },
+  "author": "lebeker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lebeker/managerist-server/issues"
+  },
+  "homepage": "https://github.com/lebeker/managerist-server#readme"
+}

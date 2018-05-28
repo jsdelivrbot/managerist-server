@@ -1,0 +1,8 @@
+*.js
+*.key
+*.key.pub
+src/config.ts
+
+.idea/
+dist/
+node_modules/
