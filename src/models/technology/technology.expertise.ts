@@ -28,12 +28,12 @@ export class TechnologyExpertise extends TechnologyExpertiseCommon {
         level:ExpertiseLevel = ExpertiseLevel.Middle,
         volume: number|ExpertiseLevel = 0
     ) {
-        super(0);
-        if (typeof branch == 'object' && !(branch instanceof KnowledgeBranch) && !(branch instanceof Technology || branch.parent)) {
-            let anybranch:any = (<any>branch);
-            super(anybranch.branch, anybranch.technology, isNaN(+anybranch.level) ? ExpertiseLevel[anybranch.level] : anybranch.level, anybranch.volume);
-        } else
-            super(branch, technology, level, volume);
+        super(
+            (<any>branch).branch || branch,
+            (<any>branch).technology || technology,
+            (<any>branch).level || level,
+            (<any>branch).volume || volume
+        );
     }
 
     /**

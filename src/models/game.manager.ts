@@ -88,6 +88,7 @@ export class GameManager {
         return Promise.resolve([]);
 // FIXME
 // TODO
+/*
         console.log("PROGRESS PROJECTS OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString());
         let ev:Event[] = [];
         return (new Project(company.ga))
@@ -111,6 +112,7 @@ export class GameManager {
                 )
             )
             .then((_eev:Event[][]) => ev = ev.concat(..._eev));
+*/            
     }
 
     /**

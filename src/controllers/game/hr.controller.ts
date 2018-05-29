@@ -90,17 +90,12 @@ export class GameHrController extends BaseGameController {
                     return c.save();
                 })
 */                .then(() =>
-
                     (new RecruitmentPriorityActionType(this.ga)).do({
                         date: g.common.simulationDate,
                         company: c._id,
                         roles: req.body.roles || null
                     })
                 )
-                .catch(e => {
-                    console.log(e.message);
-                    res.status(500);
-                })
         );
     }
 

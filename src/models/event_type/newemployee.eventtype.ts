@@ -67,7 +67,7 @@ export class NewEmployeeEventType extends BaseEventType {
         if (!this._company._id)
             return (new Company(this.ga))
                 .findById(this._company)
-                .then((c) => {
+                .then((c:Company) => {
                     console.log('cAR ~ ', c.ga);
                     this._company = c;
                     return this._company;

@@ -6,6 +6,9 @@ import {EventType} from "../event.type";
 import {isNumber} from "util";
 
 export /* abstract */ class BaseEventType {
+    //common
+    name: string;
+
     protected _ga:GameActivity;
     protected _game:Game;
     protected _type:EventType;

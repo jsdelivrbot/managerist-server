@@ -46,7 +46,7 @@ export class HrAgencyActionType extends BaseActionType {
             .then(() => this._company.hrDepartment.randomRole())
             .then((r:Role) => {
                 this._role = r;
-                return new (EmployeeFactory(this.ga)).generate(this._role, lvl);
+                return new EmployeeFactory(this.ga).generate(this._role, lvl);
             })
             .then(() => {
                 this._company.funds = this._company.funds - this._company.hrDepartment.agencyPrice;

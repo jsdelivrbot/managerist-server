@@ -104,7 +104,7 @@ console.log('FEATURE DESIGN FINAL: ' + this.todo);
         let res:any = {};
         for (let bp of Object.getOwnPropertyNames(this)) {
             if (['list'].includes(bp))
-                ;
+                continue;
             else if ('feature' == bp)
                 res[bp] = this.feature._id || this.feature;
             else if ('technologies' == bp)

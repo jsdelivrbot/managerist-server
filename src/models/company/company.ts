@@ -52,7 +52,7 @@ export class Company extends GameBased {
             hrd = this.departments.find((d:any) => d.department.toString() == hr._id.toString());
         if (!(hrd instanceof HrCompanyDepartment))
             hrd = new HrCompanyDepartment(hrd);
-        return hrd;
+        return <HrCompanyDepartment>hrd;
     }
 
     get financeDepartment():FinanceCompanyDepartment {
@@ -61,7 +61,7 @@ export class Company extends GameBased {
             depD = this.departments.find((d:any) => ''+d.department == '' + dep._id);
         if (!(depD instanceof FinanceCompanyDepartment))
             depD = new FinanceCompanyDepartment(depD);
-        return depD;
+        return <FinanceCompanyDepartment>depD;
     }
 
     get marketingDepartment():MarketingCompanyDepartment {
@@ -70,7 +70,7 @@ export class Company extends GameBased {
             depD = this.departments.find((d:any) => ''+d.department == '' + dep._id);
         if (!(depD instanceof MarketingCompanyDepartment))
             depD = new MarketingCompanyDepartment(depD);
-        return depD;
+        return <MarketingCompanyDepartment>depD;
     }
 
     get productionDepartment():ProductionCompanyDepartment {
@@ -79,7 +79,7 @@ export class Company extends GameBased {
             depD = this.departments.find((d:any) => ''+d.department == '' + dep._id);
         if (!(depD instanceof ProductionCompanyDepartment))
             depD = new ProductionCompanyDepartment(depD);
-        return depD;
+        return <ProductionCompanyDepartment>depD;
     }
 
     /**

@@ -17,7 +17,7 @@ export abstract class DepartmentAlerts {
 
     constructor(protected _company:Company) {
         //noinspection TypeScriptUnresolvedVariable
-        this._department = Department.getKnown(this.constructor._departmentName);
+        this._department = Department.getKnown((<any>this.constructor)._departmentName);
         this._errorTypes = (new AlertType).search({
             department: this._department._id,
             level: 'error'

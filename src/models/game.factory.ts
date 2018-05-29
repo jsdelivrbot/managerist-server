@@ -79,7 +79,6 @@ export class GameFactory {
                 users: [userId],
                 name: setup.companyName
             }));
-        console.log('GGGGGGGGGGGGAMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMEEEEEEEEEEEEE', this._game.common);
         return this._game
             .save()
             .then(() => {

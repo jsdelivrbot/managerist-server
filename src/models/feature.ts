@@ -22,7 +22,7 @@ export class Feature extends GameBased {
     }
 
     /**
-     * defaultComplexity
+     * defaultVolume
      *
      * @returns {number}
      */
@@ -64,7 +64,7 @@ export class Feature extends GameBased {
                         (new Feature(product.ga, {
                             branch: Technology.getKnownBranch(KnownBranch.Programming),
                             inventor: product.company,
-                            complexity: Feature.defaultComplexity,
+                            complexity: Feature.defaultVolume,
                             name: U.featureName()
                         })).save()
                     ))

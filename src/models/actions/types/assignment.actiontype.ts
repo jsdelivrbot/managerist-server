@@ -89,7 +89,7 @@ export class AssignmentActionType extends BaseActionType {
                 return this._project = data.project;
             })
             .then(() => {
-                let dep = Department.getById(this._employee.role.department._id || this._employee.role.department);
+                let dep = <Department>Department.getById(this._employee.role.department._id || this._employee.role.department);
                 return this._employee.assign(
                     this._date.getTime(),
                     dep,

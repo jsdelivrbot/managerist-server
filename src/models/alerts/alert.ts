@@ -11,7 +11,7 @@ export class Alert extends GameBased {
     type:AlertType;
 
     private static _dbOperations:EventEmitter = new EventEmitter();
-    public static onUpdates(cb:Function) {
+    public static onUpdates(cb:(...args: any[]) => void) {
         Alert._dbOperations.on('save', cb);
     }
 

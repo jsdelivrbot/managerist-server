@@ -12,6 +12,7 @@ export class Product extends GameBased {
     net: number;
     bugRate: number;
     tdRate: number;
+    stage: ProductStage;
 
     features: FeatureImplementation[];
 

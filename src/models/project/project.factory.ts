@@ -33,7 +33,6 @@ export class ProjectFactory {
                 break;
             case 'Maintenance':
                 throw new Error('Extend-Support type projects not implemented yet.');
-                break;
             case 'Closed':
                 throw new Error('Product already closed.');
             default:
