@@ -1,3 +1,5 @@
+import { U } from "..";
+
 /**
  * @deprecated  ~ no sence - hsould be technology, and thats it
  * Basic (Root) Technologies
@@ -39,6 +41,55 @@ export class TechnologyUsage {
             technology: this.technology._id || this.technology,
             volume: this.volume
         };
+    }
+
+    /**
+     * mergeFullGroups
+     * 
+     * merge TechnologyUsages that are full groups
+     * @param tu1 
+     * @param tu2 
+     * @param tu1Value 
+     * @param tu2Volume 
+     */
+    public static mergeFullGroups(tu1:TechnologyUsage[], tu2:TechnologyUsage[], tu1Value:number = 0.5, tu2Value:number = 0.5):TechnologyUsage[]{
+        let tu:TechnologyUsage[];
+        if (!tu1.length) return tu2;
+        if (!tu2.length) return tu1;
+        if (!TechnologyUsage.isFullGroup(tu1)) throw new Error('First param is not a full group');
+        if (!TechnologyUsage.isFullGroup(tu2)) throw new Error('Second param is not a full group');
+
+        tu = tu1.map(t => {
+            t.volume = t.volume * tu1Value;
+            return t;
+        });
+        for(let tt of tu2) {
+            let prev = tu.find(t => t.technology == tt.technology);
+            if (!prev) {
+                tt.volume *= tu2Value;
+                tu.push(tt);
+            } else {
+                tu = tu.map(t => {
+                    if (t.technology == tt.technology)
+                        t.volume = t.volume + tt.volume * tu2Value;
+                    return t;
+                });
+            }
+        }
+
+        return tu;
+    }
+
+    /**
+     *  Check if is full group
+     * @param tu 
+     */
+    public static isFullGroup(tu:TechnologyUsage[])
+    {
+        let vlms = tu.map(t => t.volume),
+            gr = U.sum(vlms);
+        // 0.01 ~ precision for floating point
+        return Math.abs(gr - 1) < 0.01;
     }
 }
 
@@ -96,7 +147,7 @@ export class TechnologyExpertise {
      */
     invalidateLevel(): TechnologyExpertise {
         if (!this.technology._id) return null;
-        let prc = this.volume / this.technology.volume;
+        let prc = this.volume;
 
         this.level = ExpertiseLevel.Intern;
 
@@ -121,7 +172,7 @@ export class TechnologyExpertise {
      * @returns TechnologyExpertise
      */
     invalidateVolume(lvl:ExpertiseLevel = null): TechnologyExpertise {
-        lvl = lvl || this.level;
+        lvl = U.en(ExpertiseLevel, lvl || this.level);
 
         if (ExpertiseLevel.Expert == lvl)
             this.volume = 1 - 0.05*Math.random();

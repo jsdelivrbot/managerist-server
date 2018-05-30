@@ -28,7 +28,7 @@ export abstract class GameBased extends  ActiveRecord {
      */
     findAll(cond?:any): Promise<ActiveRecord[]> {
         return super.findAll(cond)
-            .then((ar:ActiveRecord[]) => ar.map(a => a.constructor(this.ga, a)));
+            .then((ar:ActiveRecord[]) => ar.map(a => (new (<any>a.constructor)(this.ga, a))));
     }
 
     /**
@@ -39,7 +39,9 @@ export abstract class GameBased extends  ActiveRecord {
      */
     find(cond:any = {}, populate: boolean = true): Promise<ActiveRecord|null> {
         return super.find(cond, populate)
-            .then((ar:ActiveRecord|null) => ar && ar.constructor(this.ga, ar));
+            .then((ar:ActiveRecord|null) => {
+                return ar && (new (<any>ar.constructor)(this.ga, ar));
+            });
     }
 
     /**

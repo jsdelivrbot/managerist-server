@@ -39,9 +39,14 @@ export class HireActionType extends BaseActionType {
     do(data:any): Promise<Action> {
         if (!data.employee)
             throw new Error('No Employee Hirement.');
+        if (!data.company)
+            throw new Error('No Company Hirement.');
         this._date = new Date(data.date || this._date);
 
-        return (new Company(this.ga)).findById(data.company)
+        let pCompany = data.company._id
+            ? Promise.resolve(data.company)
+            : (new Company(this.ga)).findById(data.company);
+        return pCompany
             .then((cmp:any) => this._company = cmp)
             .then(() => {
                 if (data.employee && data.employee.role && data.employee.role._id)
@@ -82,6 +87,10 @@ export class HireActionType extends BaseActionType {
                         } else
                             return hirement;
                     })
+            })
+            .catch(e => {
+                console.log(e.message);
+                throw new Error(e);
             });
     }
 }

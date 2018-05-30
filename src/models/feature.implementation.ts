@@ -43,20 +43,22 @@ export class FeatureImplementation extends FeatureImplementationCommon {
             .then((techs:Technology[]) => {
                 let techsU:TechnologyUsage[] = [],
                     volume0 = this.feature.volume || Feature.defaultVolume,
-                    mul = 1;
+                    mul = 1,
+                    // The less expertise level there more chances to (over/under)estimation
+                    rnd2 = (v) => 1 + Math.random()*v - Math.random()*v;
 console.log('FEATURE DESIGN 0: ' + volume0+ ' techs=' + techs.length);
                 techsU.push(new TechnologyUsage(techs[0]._id, techs[1] ? 0.7 : 1));
 
                 // (2 - relevantExp[0].volume)  == too weak!!! should be 1-6
 
-                mul = techs[0].complexity * (2 - relevantExp[0].volume);
+                mul = techs[0].complexity * rnd2(relevantExp[0].volume);
                 volume0 = techs[1]
                     ? volume0 * 0.3 + 0.7*(volume0 * mul)
                     : volume0 * mul;
 console.log('FEATURE DESIGN 1: ' + volume0 + ' ~ ' + techs[0].name);
                 if (techs[1]) {
                     techsU.push(new TechnologyUsage(techs[1]._id, relevantExp[2] ? 0.25 : 0.3));
-                    mul = techs[1].complexity * (2 - relevantExp[1].volume);
+                    mul = techs[1].complexity * rnd2(relevantExp[1].volume);
                     volume0 = techs[2]
                         ? volume0 * 0.7 + 0.3*(volume0 * mul)
                         : volume0 * 0.75 + 0.25*(volume0 * mul);
@@ -65,7 +67,7 @@ console.log('FEATURE DESIGN 2: ' + volume0 + ' ~ ' + techs[1].name);
 
                 if (techs[2]) {
                     techsU.push(new TechnologyUsage(techs[2]._id, 0.05));
-                    mul = techs[1].complexity * (2 - relevantExp[1].volume);
+                    mul = techs[1].complexity * rnd2(relevantExp[1].volume);
                     volume0 = volume0 * 0.95 + 0.05*(volume0 * mul);
 console.log('FEATURE DESIGN 3: ' + volume0 + ' ~ ' + techs[2].name);
                 }

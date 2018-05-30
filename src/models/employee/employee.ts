@@ -144,12 +144,15 @@ console.log('EFFF for ' + product._id + '/' + project._id + '\n');
                 let effs = prjs.map((prj:Project) => {
                     console.log("Calculate efficiency of " + (<any>this).name + ' on ' + prj.name, prj.product);
                     console.log(this.expertise);
-                    console.log('emp eff ~ ', prj.technologies);
-
-                    let eff: number = 100;
-                    for (let s of (prj && prj.common.skills) || [])
-                        if (this.skills.indexOf(s) == -1)
-                            eff /= 2;
+                    
+                    let prjTechsUsages:TechnologyUsage[] = prj.technologies,
+                        eff: number = 0;
+                    for (let tu of prjTechsUsages) {
+                        let tuId = (tu.technology._id || tu.technology).toString(),
+                            exp = this.expertise.find(ex => (ex.technology._id || ex.technology).toString()  == tuId);
+                        if (exp)
+                            eff += exp.volume * tu.volume;
+                    }
                     return eff;
                 });
                 console.log('Effs = ', effs);

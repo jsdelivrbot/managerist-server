@@ -42,7 +42,8 @@ export class U {
     static en = (_enum:any, val:any):number => Number.isNaN(+val) ? _enum[val] : _enum[_enum[val]];
     static enl = (_enum:any):number[] => Object.getOwnPropertyNames(_enum).map((v:string) => _enum[v]).filter((v:any) => !Number.isNaN(+v));
 
-    static sum = (_arr:number[]):number => _arr.length ? _arr.slice(0).reduce((a:number, b:number) => a+b, 0)/(_arr.length) : 0;
+    static sum = (_arr:number[]):number => _arr.length ? _arr.slice(0).reduce((a:number, b:number) => a+b, 0) : 0;
+    static avg = (_arr:number[]):number => _arr.length ? U.sum(_arr)/_arr.length : 0;
     static big3 = (_arr:number[]):number[] => _arr.slice(0).sort((a,b) => b - a).slice(0, 3);
     static big3o = (_arr:any[], prop:string):any[] => _arr.slice(0).sort((a,b) => b[prop]- a[prop]).slice(0, 3)
 }

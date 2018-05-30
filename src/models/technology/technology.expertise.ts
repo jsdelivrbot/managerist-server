@@ -8,9 +8,9 @@ import {U} from "../../common/u";
  */
 export class TechnologyExpertise extends TechnologyExpertiseCommon {
     public branch: KnowledgeBranch|any;
-    public technology: Technology|any = null;
-    public volume: any = 0;
-    public level:ExpertiseLevel = ExpertiseLevel.Middle;
+    public technology: Technology|any;
+    public volume: any;
+    public level:ExpertiseLevel;
     /**
      * constructor
      *
@@ -32,7 +32,7 @@ export class TechnologyExpertise extends TechnologyExpertiseCommon {
             (<any>branch).branch || branch,
             (<any>branch).technology || technology,
             (<any>branch).level || level,
-            (<any>branch).volume || volume
+            ((<any>branch).level && (<any>branch).volume) || volume
         );
     }
 

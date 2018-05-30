@@ -11,6 +11,7 @@ import {Position} from "../position";
 import {Department} from "../department";
 import {Employee} from "../employee";
 import {U} from "../../common/u";
+import { TechnologyUsage } from '../technology';
 
 /**
  * p0x0 Class Project
@@ -57,15 +58,7 @@ export class Project extends GameBased {
     }
 
     get technologies(){
-        console.log('\n\nPRJ TECH getter\n\n');
-        let tts = this.features.map(f => f.technologies);
-        console.log('prj10', tts);
-        console.log('prj11',[].concat(...tts));
-        console.log('prj12',new Set([].concat(...tts)));
-        console.log('prj13',...new Set([].concat(...tts)));
-        console.log('prj14',[...new Set([].concat(...tts))]);
-        // this.features.map(f => f.technologies.map(t => t._id || t));
-        return [...new Set([].concat(...tts))];
+        return this.features.reduce((tu, f) => TechnologyUsage.mergeFullGroups(f.technologies, tu), []);
     }
 
     /**
@@ -73,7 +66,7 @@ export class Project extends GameBased {
      * @param emp
      * @returns {number}
      */
-    estimate(emp:Employee) {
+    estimate(emp:Employee):Promise<any> {
         return Promise.all(
                 this.features.map((f:FeatureImplementation) =>
                     (new FeatureImplementation(f)).designUpgrade(emp))
