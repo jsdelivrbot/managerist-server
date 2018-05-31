@@ -1,0 +1,16 @@
+{"_id":{"$oid":"5acbb310fd87ca785bd6a729"},"name":"Employee Seekleave","description":"","action":false,"alert":"warning","department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a72a"},"name":"Employee Improve","description":"","action":false,"alert":"success","department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a72b"},"name":"Employee Degrade","description":"","action":false,"alert":"warning","department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a72c"},"name":"Project Update","description":"","action":false,"alert":"info","department":{"$oid":"5a95105fd85933659c3e78cb"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a72d"},"name":"Project End","description":"","action":false,"alert":"success","department":{"$oid":"5a95105fd85933659c3e78cb"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a72e"},"name":"Project Cancelled","description":"","action":false,"alert":"error","department":{"$oid":"5a95105fd85933659c3e78cb"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a72f"},"name":"Overestimation","description":"","action":false,"alert":"info","department":{"$oid":"5a95105fd85933659c3e78cb"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a730"},"name":"Underestimation","description":"","action":false,"alert":"warning","department":{"$oid":"5a95105fd85933659c3e78cb"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a731"},"name":"New Project","description":"","action":false,"alert":"info","department":{"$oid":"5a95105fd85933659c3e78cb"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a732"},"name":"New Product","description":"","action":false,"alert":"info","department":{"$oid":"5a951020d85933659c3e78ca"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a733"},"name":"Popularity Growth","description":"","action":false,"alert":"info","department":{"$oid":"5a951020d85933659c3e78ca"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a734"},"name":"Popularity Drop","description":"","action":false,"alert":"warning","department":{"$oid":"5a951020d85933659c3e78ca"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a735"},"name":"Product Improve","description":"","action":false,"alert":"success","department":{"$oid":"5a951020d85933659c3e78ca"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a736"},"name":"Product Degrade","description":"","action":false,"alert":"error","department":{"$oid":"5a951020d85933659c3e78ca"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a737"},"name":"New Employee","description":"","action":false,"department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a738"},"name":"Accounting Error","description":"","action":false,"alert":"error","department":{"$oid":"5a950fe0d85933659c3e78c9"},"__v":0}

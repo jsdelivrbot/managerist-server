@@ -9,6 +9,7 @@ import {EventEmitter} from "events"
 export class Alert extends GameBased {
     // common
     type:AlertType;
+    details:any;
 
     private static _dbOperations:EventEmitter = new EventEmitter();
     public static onUpdates(cb:(...args: any[]) => void) {
@@ -19,6 +20,7 @@ export class Alert extends GameBased {
     protected _schema:any = {
         type: SchemaTypes.ObjectId,
         department: SchemaTypes.ObjectId,
+        details: SchemaTypes.Mixed,
         company: SchemaTypes.ObjectId,
         date: SchemaTypes.Date
     };

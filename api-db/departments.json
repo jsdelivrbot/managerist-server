@@ -1,0 +1,4 @@
+{"_id":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"Finance","branch":{"$oid":"5a31aee1c7e51cb19327d542"},"head":["CFO","Chief Accountant","Accountant"]}
+{"_id":{"$oid":"5a951020d85933659c3e78ca"},"name":"Marketing","branch":{"$oid":"5a31aed4c7e51cb19327d541"},"head":["CMO","Sale"]}
+{"_id":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Production","branch":{"$oid":"5a31aebfc7e51cb19327d540"},"head":["CEO","Product Owner","Manager","Team Lead","Developer"]}
+{"_id":{"$oid":"5a951092d85933659c3e78cc"},"name":"HR","head":["COO","HR"]}

@@ -50,6 +50,8 @@ describe('App test', () => {
 
     require('./game/scenario/hire.developer');
     require('./game/scenario/estimate.project');
+    require('./game/scenario/burnout');
+    require('./game/scenario/upgrade.product');
 
     //require('./game/game.delete');
 

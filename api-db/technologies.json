@@ -1,0 +1,25 @@
+{"_id":{"$oid":"5a31aca3c7e51cb19327d53f"},"name":"Electronics", "complexity":1.2,"volume":5000, "salary": 1000}
+{"_id":{"$oid":"5a327829d66010c4dc39740a"},"parent":{"$oid":"5a31aca3c7e51cb19327d53f"},"name":"Circuts","complexity":1.7,"volume":3000, "salary": 1200}
+{"_id":{"$oid":"5a327829d66010c4dc39740b"},"parent":{"$oid":"5a31aca3c7e51cb19327d53f"},"name":"High frequencies transimitting","complexity":1.2,"volume": 5000, "salary": 2000}
+{"_id":{"$oid":"5a327829d66010c4dc39740c"},"parent":{"$oid":"5a31aca3c7e51cb19327d53f"},"name":"Digital Circuting","complexity":1.1,"volume":13000, "salary": 1100}
+{"_id":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"Programming", "complexity":1.5,"volume":25000, "salary": 1500}
+{"_id":{"$oid":"5a3276a0d66010c4dc396405"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"Asm","complexity":2.1,"volume":1000, "salary": 1050}
+{"_id":{"$oid":"5a3276f6d66010c4dc396406"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"C","complexity":1.2,"volume":3000, "salary": 1500}
+{"_id":{"$oid":"5a32772dd66010c4dc396407"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"C++","complexity":1.8,"volume":6000, "salary": 1800}
+{"_id":{"$oid":"5a3277a8d66010c4dc396408"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"PHP","complexity":0.8,"volume":5000, "salary": 1500}
+{"_id":{"$oid":"5a3277fad66010c4dc396409"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"Java","complexity":1.2,"volume":7000, "salary": 1800}
+{"_id":{"$oid":"5a327816d66010c4dc39640a"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":".Net","complexity":1.3,"volume":6000, "salary": 1780}
+{"_id":{"$oid":"5a327829d66010c4dc39640b"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"JavaScript","complexity":1.1,"volume":8000, "salary": 1700}
+{"_id":{"$oid":"5a327829d66010c4dc39640c"},"parent":{"$oid":"5a31aebfc7e51cb19327d540"},"name":"Python","complexity":0.8,"volume":6000, "salary": 1300}
+{"_id":{"$oid":"5a31aed4c7e51cb19327d541"},"name":"Marketing", "complexity":0.8,"volume":25000, "salary": 500}
+{"_id":{"$oid":"5a327829d66010c4dc397403"},"parent":{"$oid":"5a31aee1c7e51cb19327d541"},"name":"Croudfunding","complexity":1.2,"volume":3000, "salary": 200}
+{"_id":{"$oid":"5a327829d66010c4dc397404"},"parent":{"$oid":"5a31aee1c7e51cb19327d541"},"name":"PR","complexity":1.0,"volume":13000, "salary": 1000}
+{"_id":{"$oid":"5a327829d66010c4dc397405"},"parent":{"$oid":"5a31aee1c7e51cb19327d541"},"name":"SMS","complexity":0.6,"volume":28000, "salary": 600}
+{"_id":{"$oid":"5a327829d66010c4dc397406"},"parent":{"$oid":"5a31aee1c7e51cb19327d541"},"name":"Selling","complexity":0.4,"volume":28000, "salary": 300}
+{"_id":{"$oid":"5a327829d66010c4dc397407"},"parent":{"$oid":"5a31aee1c7e51cb19327d541"},"name":"Basic Economics Theory","complexity":1.2,"volume":5000, "salary": 1000}
+{"_id":{"$oid":"5a31aee1c7e51cb19327d542"},"name":"Finance", "complexity":1.1,"volume":15000, "salary": 1000}
+{"_id":{"$oid":"5a327829d66010c4dc397400"},"parent":{"$oid":"5a31aee1c7e51cb19327d542"},"name":"Accounting","complexity":1.1,"volume":8000, "salary": 800}
+{"_id":{"$oid":"5a327829d66010c4dc397401"},"parent":{"$oid":"5a31aee1c7e51cb19327d542"},"name":"Crediting","complexity":0.8,"volume":3000, "salary": 600}
+{"_id":{"$oid":"5a31af53c7e51cb19327d543"},"name":"Organizing", "complexity":1,"volume":16000, "salary": 5000}
+{"_id":{"$oid":"5a327829d66010c4dc397408"},"parent":{"$oid":"5a31aee1c7e51cb19327d543"},"name":"Theory of Management","complexity":1.0,"volume":5000, "salary": 1000}
+{"_id":{"$oid":"5a327829d66010c4dc397409"},"parent":{"$oid":"5a31aee1c7e51cb19327d543"},"name":"Practice of Management","complexity":0.7,"volume":16000, "salary": 2000}

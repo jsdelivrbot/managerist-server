@@ -100,7 +100,7 @@ export abstract class DepartmentAlerts {
      * @param alertType
      * @returns {Promise<Alert>}
      */
-    throwKnown(alertType:AlertType|any): Promise<Alert>
+    throwKnown(alertType:AlertType|any, data:any = null): Promise<Alert>
     {
         let game:Game,
             adata:any = {
@@ -119,6 +119,8 @@ export abstract class DepartmentAlerts {
                     department: this._department._id,
                     date: game.simulationDate,
                 });
+                if (data)
+                    a.populate(data);
                 return a.save();
             });
     }

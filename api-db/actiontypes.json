@@ -1,0 +1,7 @@
+{"_id":{"$oid":"5acbb310fd87ca785bd6a739"},"name":"Assignment","description":"","action":true,"alert":false,"department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a73a"},"name":"Resignment","description":"","action":true,"alert":false,"department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a73b"},"name":"Dismissal","description":"","action":true,"alert":false,"department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5acbb310fd87ca785bd6a73c"},"name":"Hire","description":"","action":true,"alert":false,"department":{"$oid":"5a951092d85933659c3e78cc"},"__v":0}
+{"_id":{"$oid":"5affe3557d89c9f701577cf0"},"name":"RecruitmentPriority","description":"","department":{"$oid":"5a951092d85933659c3e78cc"}}
+{"_id":{"$oid":"5affe3557d89c9f701577cf1"},"name":"HrAgency","description":"","department":{"$oid":"5a951092d85933659c3e78cc"}}
+{"_id":{"$oid":"5b032e18f48996decc5b3328"},"name" : "Estimate","description" : "","department" : {"$oid":"5a95105fd85933659c3e78cb"}}

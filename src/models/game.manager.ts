@@ -1,13 +1,18 @@
 import {Game, GameActivity} from "./game";
 import {Project, ProjectStatus} from "./project";
+import {Position} from "./position"
 import {Event} from "./event";
 import {ProjectUpdateEventType} from "./event_type/production/project.update.eventtype";
 import {Company, CompanyFinancials} from "./company";
 import {EventGenerator} from "./event.generator";
 import {FinanceStats} from "./company/departments/finance/stats";
+import {ProductionStats} from "./company/departments/production/stats";
+import {U} from "../common/u"
+import { Alert, AlertType } from "./alerts";
 
 export class GameManager {
     private _finStats: {[key:string]:FinanceStats} = {};
+    private _prodStats: {[key:string]:ProductionStats} = {};
     private _initialized:boolean = false;
     get ready() {
         return this._initialized;
@@ -24,9 +29,13 @@ export class GameManager {
         return (new Company(new GameActivity(this._game.creator._id || this._game.creator, this._game._id))).findAll()
             .then((cs:Company[]) => Promise.all(
                 cs.map((c:Company) => {
-                    console.log('FINSTATS ~  ', c.ga);
+                    console.log('FINSTATS, PRODSTATS ~  ', c.ga);
                     this._finStats[c._id.toString()] = new FinanceStats(c);
-                    return this._finStats[c._id].init();
+                    this._prodStats[c._id.toString()] = new ProductionStats(c);
+                    return Promise.all([
+                        this._finStats[c._id].init(),
+                        this._prodStats[c._id].init()
+                    ]);
                 })
             ))
             .then(() => this._initialized = true);
@@ -84,35 +93,43 @@ export class GameManager {
      * @param toDate
      * @returns {Promise<Event[]>}
      */
-    progressProjects(company:Company, fromDate:Date, toDate:Date):Promise<Event[]> {
-        return Promise.resolve([]);
-// FIXME
-// TODO
-/*
-        console.log("PROGRESS PROJECTS OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString());
-        let ev:Event[] = [];
+    progressProjects(company:Company, fromDate:Date, toDate:Date):Promise<any> {
+        let secondsPassed:number = (toDate.getTime() - fromDate.getTime())/1000,
+            prjEndAt = <AlertType>AlertType.getByName('ProjectEnd'),
+            prod:ProductionStats = this._prodStats[company._id];
+        if (!prod || !prod.isIninialized)
+            throw new Error('No ProductionStats warmed-up for cid:' + company._id);
+
+        console.log("PROGRESS PROJECTS OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString() + ' ~ ' + secondsPassed);
         return (new Project(company.ga))
             .findAll({company: company._id, status: ProjectStatus[ProjectStatus.Active]})
             .then((projects:any[]) => {
                 console.log(projects.length + ' projects\n');
                 return Promise.all(
-                    projects.map(p =>
-                        (new ProjectUpdateEventType(company.ga)).createEvent({
-                            project: p,
-                            startDate: fromDate,
-                            endDate: toDate,
-                        })
+                    projects.filter(p => !!p.todo).map(p =>
+                        (new Position(p.ga)).findAll({project: p._id})
+                            .then((poss:Position[]) => {
+                                let burned = U.sum(poss.map(pos => pos.efficiency * secondsPassed)),
+                                    completed = p.completed + burned;
+                                return p.populate({
+                                    completed: Math.min(p.todo, completed),
+                                    status: p.todo < completed ? ProjectStatus.Closed : ProjectStatus.Active
+                                })
+                                .save()
+                                .then((p) => {
+                                    console.log('Burned '+burned+' prj:' + (p.name | p._id) + ' ' + p.completed + ' out of ' + p.todo);
+                                    if (U.en(ProjectStatus, p.status) == ProjectStatus.Closed)
+                                        return prod.alertsStorage.throwKnown(prjEndAt, {
+                                            details:{
+                                                project:p._id
+                                            }
+                                        });
+                                    return true;
+                                });
+                            })
                     )
                 )
-            })
-            .then((_ev:Event[]) => ev = ev.concat(_ev))
-            .then((_ev:Event[]) =>
-                Promise.all(
-                    _ev.map((_e:Event) => _e.process())
-                )
-            )
-            .then((_eev:Event[][]) => ev = ev.concat(..._eev));
-*/            
+            });
     }
 
     /**

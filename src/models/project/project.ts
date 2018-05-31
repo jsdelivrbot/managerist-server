@@ -74,7 +74,8 @@ export class Project extends GameBased {
             .then((fi:FeatureImplementation[]) =>
                 this.populate({
                     features: fi.map(f => f.list || f),
-                    todo: U.sum(fi.map(f => f.todo))
+                    todo: U.sum(fi.map(f => f.todo)),
+                    status: ProjectStatus.Active
                 })
                 .save()
             )

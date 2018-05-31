@@ -7,6 +7,7 @@ export class Alert {
     public _id: any;
     public date: number = 0;  // timestamp
     public description: string = '';
+    public details: any;
     public resolved: boolean = false;
     public ignored: boolean = false;
 
