@@ -5,7 +5,8 @@ import {Alert} from "../../../models/alerts/alert";
 import {EventType} from "../../../models/event.type";
 import {Event} from "../../../models/event";
 import {TestGame} from "../utils/test.game"
-import { Project } from "../../../models";
+import { Project, ProjectStatus, ProductStage } from "../../../models";
+import { U } from "../../../common/u";
 
 describe('Game, first steps (actions) test', () => {
     let team:any[],
@@ -20,7 +21,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/project/list')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -61,15 +62,23 @@ describe('Game, first steps (actions) test', () => {
     // Who knows. x days 's pretty long time, but 60s is ennormous amount of time...
         .timeout(30000);
 
-    xit('Check Project/Product states after the proejct completition', (done:Function) => {
-        //TODO
+    it('Check Project/Product states after the project completition', (done:Function) => {
+        (new Project(Storage.get('ga'))).withRelations(['product']).findById(project._id)
+            .then((p:Project) => {
+                U.en(ProjectStatus, p.status).should.eq(ProjectStatus.Closed);
+                p.should.have.property('product');
+                p.product.should.have.property('stage');
+                U.en(ProductStage, p.product.stage).should.eq(ProductStage.Alpha);
+            })
+            .then(() => done())
+            .catch(e => done(new Error(e)))
     });
 
     xit('Check Marketings for Product after it\'s launch.', (done:Function) => {
         //TODO
     });
 
-    xit('Check Marketings for Product after it\'s launch.', (done:Function) => {
+    xit('Check Finance for Product after it\'s launch.', (done:Function) => {
         //TODO
     });
 });

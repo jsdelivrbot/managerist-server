@@ -7,6 +7,7 @@ import {EventType} from "./models/event.type";
 import {Role} from "./models/role";
 import {AlertType} from "./models/alerts/alert.type";
 import {ActionType} from "./models/actions/action.type";
+import { Log, LogLevel } from "./core/utils/log";
 
 export class Managerist extends Mean {
     private static _activeGames: GameActivity[] = [];
@@ -40,7 +41,7 @@ export class Managerist extends Mean {
                 : Managerist._activeGames
                     .find((dublicate:GameActivity) => dublicate.gameId = a.gameId && dublicate.time >= t);
             if (!d) {
-                console.log('Drop DB connection')
+                Log.log('Drop DB connection', LogLevel.Warning)
                 Managerist.db.removeConnection(Managerist.getGameConnection(a.gameId));
             }
 
@@ -82,7 +83,7 @@ export class Managerist extends Mean {
         return (new Game()).findAll(cond)
             .then((gl:any) => gamesList = gl.map((g:any) => g._id))
             .then(() => (new Game()).delete(cond))
-            .then(() => console.log('Games dropped in `main` DB'))
+            .then(() => Log.log('Games dropped in `main` DB', LogLevel.Warning))
             .then(() =>
                 Promise.all(
                     gamesList.map((g) =>

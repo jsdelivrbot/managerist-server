@@ -16,7 +16,6 @@ export class RecruitmentPriorityActionType extends BaseActionType {
     protected _roles:Role[];
 
     get actionDetails():any  {
-console.log('ADATE 3: ('+this.constructor.name+') =' + this._date);
         return {
             date: this._date || this.ga.time,
             company: this._company._id,
@@ -36,9 +35,7 @@ console.log('ADATE 3: ('+this.constructor.name+') =' + this._date);
     do(data:any): Promise<Action> {
         if (!data.company)
             return Promise.reject('Can\'t perform "RecruitmentPriority" Action: Company is not set.');
-console.log('ADATE: ('+this.constructor.name+') =' + data.date);
         this._date = new Date(data.date || this._date);
-console.log('ADATE 2: ('+this.constructor.name+') =' + this._date);
         this._company = data.company;
 
         this._roles = data.roles || [];

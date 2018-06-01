@@ -2,6 +2,7 @@ import * as express from 'express';
 import {Model} from "mongoose";
 import {Mean} from "../core/mean";
 import {UserIdentity} from "../models/user.identity";
+import { Log, LogLevel } from './utils/log';
 
 export abstract class BaseController {
     baseModel: Model<any>;
@@ -34,23 +35,23 @@ export abstract class BaseController {
      */
     constructor(app: any, routes?: {route:string, method:string, handler:string}[]) {
         this._app = app;
-        //console.log('\u001B[32m constructor? ' + ((this.constructor ? this.constructor.name : 0) || '<unknown>')  + '\u001B[0m');
+        Log.log('Controller registered: ' + ((this.constructor ? this.constructor.name : 0) || '<unknown>'), LogLevel.Debug, {color:'green'});
         this.baseRoute = this.constructor.name.replace('Controller', '').replace(/([A-Z])/g, "/$1").toLowerCase();
-/*
-        console.log('\u001B[33m base: '
+
+        Log.log('\taction: '
             + this.constructor.name + '->'
             + this.constructor.name.replace('Controller', '') + '->'
             + this.constructor.name.replace('Controller', '').replace(/([A-Z])/g, "/$1") + '->'
-        + '\u001B[0m');
-        console.log('\u001B[36m constructor ' + this.baseRoute  + '\u001B[0m');
-*/
+            + '\u001B[36m constructor ' + this.baseRoute  + '\u001B[0m',
+        LogLevel.Debug, {color:'yellow'});
+
         /**
          * Apply passed routes
          *
          */
         if (routes && routes.length) {
             for (let r of routes) {
-//                console.log('\u001B[35m Apply:' + r.route + '\u001B[0m');
+                Log.log('\t\tapply:' + r.route, LogLevel.Debug, {color:'cyan'});
                 app[r.method](this.baseRoute + r.route, this._prepareAction(r.handler))
             }
         }
@@ -62,7 +63,7 @@ export abstract class BaseController {
 
     private _prepareAction(a:string):any {
         return (req: any, res: any, next: any) => {
-            console.log("REQUESTED: " +  req.url);
+            Log.log("REQUESTED: " +  req.url, LogLevel.Debug, {color:'blue'});
             try {
                 if (!this.requestCheck(req))
                     return res.status(this._errStatusCode || 403).json('Request forbidden.');
@@ -73,8 +74,8 @@ export abstract class BaseController {
 
                 return handler;
             } catch(e){
-                console.log('Critical error, please contact administration.' + e.message);
-                res.status(500).json({error: 'Critical error, please contact administration.' + e.message});
+                Log.log('Critical error RES(500).' + e.message, LogLevel.Error);
+                res.status(500).json({error: 'Critical error, please contact administration.'});
             }
         }
     }

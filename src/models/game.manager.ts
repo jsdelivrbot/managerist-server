@@ -9,6 +9,7 @@ import {FinanceStats} from "./company/departments/finance/stats";
 import {ProductionStats} from "./company/departments/production/stats";
 import {U} from "../common/u"
 import { Alert, AlertType } from "./alerts";
+import { Log, LogLevel } from "../core/utils/log";
 
 export class GameManager {
     private _finStats: {[key:string]:FinanceStats} = {};
@@ -25,11 +26,12 @@ export class GameManager {
      * @private
      */
     protected _init(): Promise<boolean> {
-        console.log("GAME MANAGER INIT ~ GAAA:", this._game.creator._id || this._game.creator, this._game._id);
-        return (new Company(new GameActivity(this._game.creator._id || this._game.creator, this._game._id))).findAll()
+        let ga:GameActivity = new GameActivity(this._game.creator._id || this._game.creator, this._game._id);
+        Log.log("GAME MANAGER INIT ~ GA:{g:" + ga.gameId + ', u:' + ga.userId +'}', LogLevel.Debug);
+        return new Company(ga).findAll()
             .then((cs:Company[]) => Promise.all(
                 cs.map((c:Company) => {
-                    console.log('FINSTATS, PRODSTATS ~  ', c.ga);
+                    Log.log('FINSTATS, PRODSTATS ~  CID:' + c._id, LogLevel.Debug);
                     this._finStats[c._id.toString()] = new FinanceStats(c);
                     this._prodStats[c._id.toString()] = new ProductionStats(c);
                     return Promise.all([
@@ -49,13 +51,10 @@ export class GameManager {
      * @returns {any}
      */
     async play(ga:GameActivity, periodSeconds:number = 0):Promise<Event[]> {
-        console.log('Try to play....');
         let cw = (done:Function) => {
-            console.log(' Is this ready? = ' + this.ready);
             return this.ready ? done() : setTimeout(() => cw(done), 100);
         };
         await new Promise(cw);
-        console.log('READY TO PLAY!!!! ....');
         let ev:Event[] = [],
             simulationDate:Date = new Date(this._game.simulationDate);
         if (ga.gameId != this._game._id)
@@ -64,7 +63,7 @@ export class GameManager {
         periodSeconds = periodSeconds || this._game.options.speed * 3600;
         simulationDate = new Date(simulationDate.getTime() + periodSeconds*1000);
 
-        console.log("GAME START:\t" + this._game.startDate.toISOString() +'\t\tGAME SIMULATION:\t'+ this._game.simulationDate.toISOString() + ' -> ' + simulationDate.toISOString());
+        Log.log("GAME START:\t" + this._game.startDate.toISOString() +'\t\tGAME SIMULATION:\t'+ this._game.simulationDate.toISOString() + ' -> ' + simulationDate.toISOString(), LogLevel.Debug);
         return (new EventGenerator(this._game)).generateAll(simulationDate)
             .then((_eev:Event[]) => ev = ev.concat(_eev))
             .then(() => (new Company(ga)).findAll())
@@ -82,7 +81,6 @@ export class GameManager {
                 .save()
             )
             .then(() => ev)
-            //.catch((e:Error) => console.log('Oops', e));
     }
 
     /**
@@ -100,11 +98,10 @@ export class GameManager {
         if (!prod || !prod.isIninialized)
             throw new Error('No ProductionStats warmed-up for cid:' + company._id);
 
-        console.log("PROGRESS PROJECTS OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString() + ' ~ ' + secondsPassed);
         return (new Project(company.ga))
             .findAll({company: company._id, status: ProjectStatus[ProjectStatus.Active]})
             .then((projects:any[]) => {
-                console.log(projects.length + ' projects\n');
+                Log.log("PROGRESS PROJECTS (" + projects.length + ") OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString() + ' ~ ' + secondsPassed, LogLevel.Debug);
                 return Promise.all(
                     projects.filter(p => !!p.todo).map(p =>
                         (new Position(p.ga)).findAll({project: p._id})
@@ -117,7 +114,7 @@ export class GameManager {
                                 })
                                 .save()
                                 .then((p) => {
-                                    console.log('Burned '+burned+' prj:' + (p.name | p._id) + ' ' + p.completed + ' out of ' + p.todo);
+                                    Log.log('Burned '+burned+' prj:' + (p.name | p._id) + ' ' + p.completed + ' out of ' + p.todo, LogLevel.Debug);
                                     if (U.en(ProjectStatus, p.status) == ProjectStatus.Closed)
                                         return prod.alertsStorage.throwKnown(prjEndAt, {
                                             details:{

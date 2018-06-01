@@ -18,7 +18,6 @@ export class CompanyController extends  CrudGameController {
      * @param next
      */
     actionFinancials = (req: any, res: any, next: any) => {
-        console.log('\u001B[35m GET Company Financials action ID=' + req.params.id + '\u001B[0m');
         return Promise.resolve(
             req.params.id
                 ? Promise.resolve(req.params.id)
@@ -44,8 +43,7 @@ export class CompanyController extends  CrudGameController {
     actionPost = (req: any, res: any, next: any):Promise<any> => {
         return this.isAdmin
             .then((a:boolean) => {
-                    if (!a) return Promise.reject('Allowed only for ADMIN');
-                    // @ts-ignore TS2340
+                    if (!a) throw new Error('Allowed only for ADMIN');
                     return super.actionPost(req, res, next);
                 }
             );
@@ -64,8 +62,7 @@ export class CompanyController extends  CrudGameController {
     actionDelete = (req: any, res: any, next: any) => {
         return this.isAdmin
             .then((a:boolean) => {
-                    if (!a) return Promise.reject('Allowed only for ADMIN')
-                    // @ts-ignore TS2340
+                    if (!a) throw new Error('Allowed only for ADMIN')
                     return super.actionDelete(req, res, next);
                 }
             );

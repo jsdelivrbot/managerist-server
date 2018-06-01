@@ -87,10 +87,6 @@ export class HireActionType extends BaseActionType {
                         } else
                             return hirement;
                     })
-            })
-            .catch(e => {
-                console.log(e.message);
-                throw new Error(e);
             });
     }
 }

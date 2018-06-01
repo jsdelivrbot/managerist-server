@@ -9,7 +9,7 @@ import {Employee} from "../../../models/employee";
 import {AlertType} from "../../../models/alerts/alert.type";
 import {Alert} from "../../../models/alerts/alert";
 
-describe('Game, first steps (actions) test', () => {
+describe('Hire Developer (in a normal way) test', () => {
     let normallyDays = 10,
         bearableDays = 15,
         processedDays = 0,
@@ -24,7 +24,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/hr/role/list')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -41,21 +41,15 @@ describe('Game, first steps (actions) test', () => {
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .send({roles: [role._id]})
             .end((err:any, res:any) => {
-                if (err) {
-                    console.log(res.statusCode + ": ", res.body, err.message);
-                    done(new Error(err));
-                }
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 (new Company(Storage.get('ga'))).find({
                     user: Storage.get('userId')
                 })
                     .then((c:Company) => {
-                        console.log('AT DEPS:', c.departments);
                         let hrd = c.hrDepartment;
-                        console.log('HR DEP:', hrd.common);
                         c.hrDepartment.priority.should.be.a('array');
-                        console.log(c.hrDepartment.priority);
                         c.hrDepartment.priority[0].should.eq(role._id.toString());
                         done()
                     })
@@ -97,7 +91,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/hr/hireable')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -121,10 +115,9 @@ describe('Game, first steps (actions) test', () => {
                 _id: employeeId
             })
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
-                console.log(res.body);
                 done();
             });
     });
@@ -135,7 +128,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/hr/hireable')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -154,7 +147,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/team')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -171,7 +164,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/alerts')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');

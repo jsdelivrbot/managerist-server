@@ -39,7 +39,7 @@ describe('Game create test', () => {
             .set('Authorization', 'Bearer ' + Storage.get('userToken'))
             .send(setupData)
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.have.property('token');
@@ -67,8 +67,7 @@ describe('Game create test', () => {
             .get('/game/list')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err)
-                    console.log(res.statusCode + ": ", res.body);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.have.length(1);

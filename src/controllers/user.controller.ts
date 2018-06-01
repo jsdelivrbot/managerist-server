@@ -1,5 +1,6 @@
 import {User} from '../models/user';
 import {BaseGameController} from "./base.game.controller";
+import { LogLevel, Log } from '../core/utils/log';
 
 export class UserController extends BaseGameController {
 
@@ -25,13 +26,9 @@ export class UserController extends BaseGameController {
             return res.status(401).json({error: 'Not logged in'});
 
         (new User).findById(this.currentUser)
-            .then((u:User) => {
-                console.log('res current',u);
-                console.log('res Common',u.common);
-                res.json(u.common);
-            })
+            .then((u:User) => res.json(u.common))
             .catch((err:any) => {
-                console.error('faied to fetch');
+                Log.log('User not found: '+ this.currentUser, LogLevel.Error);
                 res.statusCode = 404;
             });
     }

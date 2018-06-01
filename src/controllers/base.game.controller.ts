@@ -4,6 +4,7 @@ import {UserIdentity} from "../models/user.identity";
 import {Managerist} from "../app";
 import {User, Company} from "../models";
 import {Action} from "../models/actions/action";
+import { Log, LogLevel } from "../core/utils/log";
 
 
 
@@ -131,7 +132,7 @@ export abstract class BaseGameController extends  BaseController {
                 res.json({success:true});
             })
             .catch((err:any) => {
-                console.log('Internal Server e500:' + err.message, err.message || err);
+                Log.log('Internal Server e500:' + err.message, LogLevel.Error);
                 res.status(500).send(err);
             });
     }

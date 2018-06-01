@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Log, LogLevel } from '../utils/log';
 
 export class Db {
     private _config: any = {};
@@ -30,9 +31,9 @@ export class Db {
             this._connections[conn.name] = mongoose.createConnection('mongodb://' + conn.host + '/' + conn.db, {})
             if (conn.default || !this._defaultConnection)
                 this._defaultConnection = conn.name;
-            console.log('Connected to the: mongodb://' + conn.host + '/' + conn.db);
+            Log.log('Connected to the: mongodb://' + conn.host + '/' + conn.db, LogLevel.Debug);
         } catch(err) {
-            console.log(err.message);
+            Log.log(err.message, LogLevel.Error);
             return false;
         }
         return true;

@@ -5,6 +5,7 @@ import {U} from "../../common/u";
 import {FeatureImplementation} from "../feature.implementation";
 import {ProjectFactory} from "../project/project.factory";
 import {Game} from "../game";
+import { Log, LogLevel } from "../../core/utils/log";
 
 export class ProductFactory {
     constructor(private _company:Company) {
@@ -20,7 +21,7 @@ export class ProductFactory {
     public generate(data:any = {}):Promise<Product> {
         data.name = data.name || U.randomName();
         data.company = this._company;
-        console.log('Generate new Product for: ' + this._company.name);
+        Log.log('Generate new Product for: ' + this._company.name, LogLevel.Debug);
         return (new Product(this._company.ga, data))
             .save()
             .then((p:Product) => {
@@ -38,7 +39,6 @@ export class ProductFactory {
                     })
             })
             .then((product:Product) => {
-                console.log('Product successfully saved.');
                 return (new Game).findById(this._company.ga.gameId)
                     .then((g: Game) => {
                         if (g.options.autoManageProjects)

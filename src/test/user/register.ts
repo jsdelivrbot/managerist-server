@@ -12,8 +12,8 @@ describe('User register', () => {
                 uuid: (new Date()).getTime() // should be only user in DB, so no matter
             })
             .end((err:any, res:any) => {
-                if (err)
-                    console.log(res.statusCode + ":", res.body);
+                if (err) return done(new Error(err));
+
                 res.should.have.status(200);
                 res.body.should.have.property('token');
                 let token = res.body.token;
@@ -32,19 +32,4 @@ describe('User register', () => {
         Storage.set('userId', payload._id);
         done();
     });
-    /*
-    it('Ensure that  User-Token stored for further tests', (done) => {
-        let maxDelay = 3000,
-            _waitIt = () => {
-                let ut = Storage.get('userToken');
-                //console.log(ut || 'still waiting... ' + maxDelay);
-                if (!ut && maxDelay > 0) {
-                    maxDelay-=500;
-                    setTimeout(_waitIt, 500);
-                } else done();
-
-            };
-        _waitIt();
-    });
-    */
 });

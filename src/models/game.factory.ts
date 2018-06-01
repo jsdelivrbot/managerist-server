@@ -82,7 +82,6 @@ export class GameFactory {
         return this._game
             .save()
             .then(() => {
-                console.log('GAME SAVED, now to COMPANY....');
                 return (new Company(new GameActivity(userId, this._game._id, t), {
                     user: userId,
                     name: setup.companyName,
@@ -94,16 +93,13 @@ export class GameFactory {
             })
             .then((c:Company) => this._company = c)
             .then((c:Company) => {
-                console.log('COMPANY SAVED, NOW TO PRODUCT....');
                 return (new ProductFactory(this._company)).generate()
                     .then((p:Product|any) => {
-                        console.log('Product ready, now to AUDIENCE for it');
                         return (new AudienceFactory(this._company)).generate(p);
                     })
                     .catch((e:Error) => Promise.reject('Product generator down: '+ e.toString()));
             })
             .then(() => {
-                console.log('Product/Audience pre[ared, now to Employees....');
                 let roleName = 'Accountant',
                     level = ExpertiseLevel.Senior,
                     bonus = (<any>GameStarterBonus)[setup.starterBonus];
@@ -126,12 +122,10 @@ export class GameFactory {
                             r.trait.n -= 2;
                         else if (level == ExpertiseLevel.Senior)
                             r.trait.n += 5;
-                        console.log("ROLE == " + r.name, r._id);
                         return r;
                     })
                     .then((r:Role) => (new EmployeeFactory(this._company.ga)).generate(r, level))
                     .then((e:Employee|any) => {
-                        console.log('Employee ready, now to hirement.');
                         if (!e) return e;
                         return (new HireActionType(e.ga)).do({
                             date: t,
@@ -142,6 +136,8 @@ export class GameFactory {
                     .catch((e:Error) => Promise.reject(e.toString()));
             })
             .then(() => this._game)
-            .catch((e:Error) => Promise.reject('Somwhere chain is broken: '+ e.toString()));
+            .catch((e:Error) => {
+                throw new Error('Somwhere chain is broken: '+ e.toString())
+            });
     }
 }

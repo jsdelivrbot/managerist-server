@@ -9,6 +9,7 @@ import * as services from '../controllers/index';
 import {Cache} from './db/redis';
 import {Db} from './db/mongo';
 import passport = require("passport");
+import { Log, LogLevel } from './utils/log';
 
 export class Mean {
     protected _MAX_HISTORY:number = 10;
@@ -112,16 +113,16 @@ export class Mean {
         return new Promise<http.Server>((resolve, reject) => {
             this._server = this._app.listen(port, () => {
                 this._port = (<any>this._server.address()).port;
-                console.log('App is listening on port:' + port);
+                Log.log('App is listening on port: ' + port, LogLevel.Debug);
             });
             this._server.on('connection', (socket: any) => {
                 // Add a newly connected socket
                 var socketId: any = this._nextSocketId++;
                 this._sockets[socketId] = socket;
-                console.log('socket', socketId, 'opened');
+                Log.log('socket ' +  socketId + ' opened', LogLevel.Debug);
                 // Remove the socket when it closes
                 socket.on('close', () => {
-                    console.log('socket', socketId, 'closed');
+                    Log.log('socket ' + socketId + ' closed', LogLevel.Debug);
                     delete this._sockets[socketId];
                 });
             });
@@ -158,7 +159,7 @@ export class Mean {
     stop(cb?:Function)
     {
         for (var socketId in this._sockets) {
-            console.log('socket', socketId, 'destroyed');
+            Log.log('socket ' +  socketId + ' destroyed.', LogLevel.Debug);
             this._sockets[socketId].destroy();
         }
         this._server.close(cb);

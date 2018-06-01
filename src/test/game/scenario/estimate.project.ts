@@ -14,7 +14,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/project/list')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -30,7 +30,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/team')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -48,7 +48,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/alerts')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');
@@ -71,7 +71,7 @@ describe('Game, first steps (actions) test', () => {
                         employee: team[0]._id
                     })
                     .end((err:any, res:any) => {
-                        if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                        if (err) return done(new Error(err));
 
                         res.should.have.status(200);
                         resolve(true);
@@ -90,7 +90,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/production/alerts')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');

@@ -45,23 +45,12 @@ export abstract class GameDepartmentsController extends BaseGameController {
             .then(() => <any>this._stats.alertsStorage.alerts())
             .then((alerts:Alert[]) => {
                 return res.json(alerts.map((a:any) => a.common));
-            })
-            .catch((err:any) => {
-                console.log(err);
-                return res.status(500).send(err.message);
             });
     }
 
     actionTeam = (req: any, res: any, next: any) => {
         return this._prepare()
             .then(() => this._stats.employees)
-            .then((employees:Employee[]) => {
-                console.log('EMPLOYEES FOUND: ' + employees.length);
-                res.json(employees.map((e:any) => e.common));
-            })
-            .catch((err:any) => {
-                console.log(err);
-                res.status(500).send(err.message);
-            });
+            .then((employees:Employee[]) => res.json(employees.map((e:any) => e.common)));
     }
 }

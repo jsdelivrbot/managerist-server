@@ -13,12 +13,12 @@ var cleanupDb = ():Promise<any> => {
     return Managerist.db.connections['main'].
             collection('users').drop()
             .then(() => {
-                console.log('Users dropped in `main` DB');
+                console.log('\x1B[33mUsers dropped in `main` DB\x1B[0m');
                 return (new Game()).findAll();
             })
             .then((gl:any) => gamesList = gl.map((g:any) => g._id))
             .then(() => Managerist.db.connections['main'].collection('games').drop())
-            .then(() => console.log('Games dropped in `main` DB'))
+            .then(() => console.log('\x1B[33mGames dropped in `main` DB\x1B[0m'))
             .then(() =>
                 Promise.all(
                     gamesList.map((g) =>
@@ -26,8 +26,8 @@ var cleanupDb = ():Promise<any> => {
                     )
                 )
             )
-            .then(() => console.log('DBs dropped:', gamesList))
-            .catch((e: Error) => console.log('Cleanup Failed:', e.message));
+            .then(() => console.log('\x1B[33mDBs dropped:', gamesList, "\x1B[0m"))
+            .catch((e: Error) => console.log('\x1B31mCleanup Failed:', e.message, "\x1B[0m"));
 };
 
 describe('App test', () => {
@@ -42,6 +42,7 @@ describe('App test', () => {
     require('./company/company.basics');
     // Check that Employee was created correctly
     require('./employee/employee.startup');
+
 // GAME LOGICS
     require('./game/departments/production');
 
@@ -49,6 +50,8 @@ describe('App test', () => {
 
 
     require('./game/scenario/hire.developer');
+    require('./game/scenario/fire.all');
+    require('./game/scenario/hragency');
     require('./game/scenario/estimate.project');
     require('./game/scenario/burnout');
     require('./game/scenario/upgrade.product');
@@ -59,7 +62,7 @@ describe('App test', () => {
         //Promise.resolve(true)
         cleanupDb()
             .then(() => {
-                Managerist.app.stop(() => console.log('Server is closed!'))
+                Managerist.app.stop(() => console.log('\x1B[33mServer is closed!\x1B[0m'))
             });
     });
 });

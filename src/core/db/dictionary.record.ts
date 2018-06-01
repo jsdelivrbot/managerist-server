@@ -1,4 +1,5 @@
 import {ActiveRecord, ActiveRecordError} from "./active.record";
+import { Log } from "../utils/log";
 
 /**
  * Class DictionaryRecord
@@ -26,7 +27,7 @@ export abstract class DictionaryRecord extends ActiveRecord {
         this._preloading = true;
         return (new (<any>this)).findAll()
             .then((res:any[]) => {
-                console.log(this.name + ' loaded ~ ' + res.length);
+                Log.log('Dictionary ' + this.name + ' loaded ~ ' + res.length);
                 this._loaded = res;
                 this._preloading = false;
                 this._preloaded = true;

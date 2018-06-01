@@ -3,6 +3,7 @@ import * as crypto from "crypto";
 import {ActiveRecord, SchemaTypes} from "../core/db/active.record";
 import {UserCommon} from "./user";
 import {Mean} from "../core/mean";
+import { Log } from "../core/utils/log";
 
 export enum TokenType {Auth, Game, Invite};
 export class Token extends ActiveRecord {
@@ -49,7 +50,7 @@ export class Token extends ActiveRecord {
 
             let signature = (new Buffer(signer.sign(privateKey))).toString('base64');
 
-console.log(TokenType[type] + '-Token was provided: u=' + payload._id + (payload.gameId ? (' g=' + payload.gameId) : ''));
+            Log.log(TokenType[type] + '-Token was provided: u=' + payload._id + (payload.gameId ? (' g=' + payload.gameId) : ''));
 
             return str + '.' + signature;
         }

@@ -57,7 +57,7 @@ export class RestoreProject {
             }},
 
         ].filter((a:any) => !!a);
-//console.log("WorkHistory", {type:{$in:["Assignment", "Resignment"]}, "details.project": SchemaTypes.ObjectId(id)}, JSON.stringify(aggregation));
+//L og.log("WorkHistory", {type:{$in:["Assignment", "Resignment"]}, "details.project": SchemaTypes.ObjectId(id)}, JSON.stringify(aggregation));
         return new Promise((resolve, reject) => {
             (new Event(new GameActivity(null, null))).model.aggregate(aggregation)
                 .exec((err: Error, data: any) => {
@@ -97,10 +97,10 @@ export class RestoreProject {
         }
         endDate = endDate || (new Game).simulationDate.getTime();
 
-        console.log('Burnout ' + (<any>this).name + ' from |' + (new Date(startDate)) + '| to |' + (new Date(endDate)));
+        L og.log('Burnout ' + (<any>this).name + ' from |' + (new Date(startDate)) + '| to |' + (new Date(endDate)));
         return this.workHistory()
             .then((emps:any[]) => {
-                console.log(emps);
+                L og.log(emps);
                 return emps;
             })
             .then((emps:any[]) =>
@@ -116,24 +116,24 @@ export class RestoreProject {
                         if (!empHist.ends.length) continue;
 
                         // Not started yet
-                        // console.log('\t ' + (new Date(empHist.starts[i].date)) + '| <-' + empHist.employee.name + ' skipped |' + (new Date(startDate)) + '\n');
+                        // L og.log('\t ' + (new Date(empHist.starts[i].date)) + '| <-' + empHist.employee.name + ' skipped |' + (new Date(startDate)) + '\n');
                         if (empHist.starts[i].date > startDate) continue;
 
                         // Already resigned
-                        // console.log('\t ' +i + '(' + empHist.starts.length +  ')' + (new Date(empHist.starts[i].date)) + '| <-' + empHist.employee.name + ' resigned |' + (new Date(empHist.ends[0].date))) + '\n';
+                        // L og.log('\t ' +i + '(' + empHist.starts.length +  ')' + (new Date(empHist.starts[i].date)) + '| <-' + empHist.employee.name + ' resigned |' + (new Date(empHist.ends[0].date))) + '\n';
                         if (empHist.ends[0].date < startDate) continue;
 
                         let e = empHist.ends[0].date < endDate ? empHist.ends[0].date : endDate,
                             dt = (e - startDate) * (empHist.starts[i].efficiency / 100);
                         t += dt;
-                        //console.log("\t~~worklog from |" + (new Date(startDate)) + '| to |' + (new Date(e)) + empHist.employee.name + ' worked:' + dt + '\n');
+                        //L og.log("\t~~worklog from |" + (new Date(startDate)) + '| to |' + (new Date(e)) + empHist.employee.name + ' worked:' + dt + '\n');
                     }
-                    //console.log("\t\t" + empHist.employee.name + ' Total worked:' + t + '(' + (t/3600000)+  ')'+'\n');
+                    //L og("\t\t" + empHist.employee.name + ' Total worked:' + t + '(' + (t/3600000)+  ')'+'\n');
                     return t / 3600000;
                 })
             ).then((hours:number[]) => {
                 let h = hours.reduce((a,b) => a+b, 0);
-//console.log('\tTOTAL SUMM: ' + h);
+//L og.log('\tTOTAL SUMM: ' + h);
                 let completedAt = false;
                 if ((<any>this).hours <= ((<any>this).hoursCompleted + h)) {
                     completedAt = ((<any>this).startDate || (new Game).startDate.getTime()) +

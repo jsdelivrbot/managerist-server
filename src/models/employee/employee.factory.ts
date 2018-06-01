@@ -39,10 +39,6 @@ export class EmployeeFactory {
                     role: role._id,
                     level: lvl
                 })).save()
-            })
-            .catch(e => {
-                console.log(e.message);
-                return null;
             });
     }
 }

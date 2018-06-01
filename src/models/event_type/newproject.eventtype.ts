@@ -11,7 +11,7 @@ import {U} from "../../common/u";
  * Class NewProjectEventType
  * @deprecated
  */
-export class NewProjectEventType extends BaseEventType implements CustomerEventType {
+export class NewProjectEventType extends BaseEventType {
     private static MAX_FREELANCE_REWARD = 10000;
     private static MIN_FREELANCE_REWARD = 100;
 
@@ -20,19 +20,19 @@ export class NewProjectEventType extends BaseEventType implements CustomerEventT
 
     protected _period:number = 2628000000; // 1month
     protected _probability:number = 0.1; // 10%
+    protected _company;
 
     get probability():Promise<number> {
         return this.companyAr
             .then(() => this.upgradeProbability)
             .then(() => this.startupProbability)
             .then(() => this.freelanceProbability)
-            .then(() => Math.min(1, this._upgradeProb + this._startupProb + this._freelanceProb))
-            .catch((e:any) => console.log("\t\t\t\t\t\t\nERROR IN PROB!!!\n",e));
+            .then(() => Math.min(1, this._upgradeProb + this._startupProb + this._freelanceProb));
     }
 
     get companyAr():any {
         if (!this._company)
-            return Promise.reject('Can\'t be determined without Company.');
+            throw new Error('Can\'t be determined without Company.');
 
         if (this._company.constructor.name != 'Company')
             return (new Company(this.ga))

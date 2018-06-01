@@ -16,7 +16,7 @@ export enum ProjectType {
 export enum ProjectStatus {Active, Paused, Cancelled, Closed};
 
 /**
- * Class Project
+ *  p0x0 Class Project
  *
  * representation of workload, to achieve something:
  * most common ~ Product Sprint with features upgrades or creating implementation

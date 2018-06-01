@@ -111,7 +111,6 @@ export class Technology extends DictionaryRecord {
      */
     public static getBranchForRole(role:Role)
     {
-console.log('Branch FOR ROLE ~ ' + role.name);
         let branch:KnowledgeBranch|any = null;
         switch ((<any>role).name) {
             case 'Sale':

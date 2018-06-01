@@ -2,6 +2,7 @@ import {BaseController} from "../core/base.controller";
 import {User} from "../models/user";
 import {UserIdentity} from "../models/user.identity";
 import {Token} from "../models/token";
+import { Log, LogLevel } from "../core/utils/log";
 
 export class AuthController extends  BaseController {
     constructor(app:any) {
@@ -59,7 +60,6 @@ export class AuthController extends  BaseController {
     }
 
     actionAuth = (req: any, res: any, next: any):any => {
-        console.log('someone try to auth....');
         if (req.session.currentUser) {
             return (new User).findById(req.session.currentUser)
                 .then((u:any) => {
@@ -70,9 +70,8 @@ export class AuthController extends  BaseController {
                     return this.actionAuth(req, res, next);
                 })
         }
-        console.log('someone not authed YET.... with=' + (req.params.provider || '<undefined>'));
+        Log.log('someone not authed YET.... with=' + (req.params.provider || '<undefined>'), LogLevel.Debug);
         let ui = (new UserIdentity(req.params.provider));
-        //noinspection JSAnnotator
         req.session.callbackUrl =
             (req.query.callback && decodeURIComponent(req.query.callback))
             || req.body.callback
@@ -80,10 +79,7 @@ export class AuthController extends  BaseController {
 
         ui.authenticate(req, res, (err:any, user:any) => {
             if (user) {
-                //noinspection JSAnnotator
                 req.session.currentUser = user._id;
-                console.log('SESSION UPDATED', req.session);
-                console.log('result:', user);
                 res.json(user);
             } else
                 res.status(401).json(err || 'Authentication failed');
@@ -102,7 +98,7 @@ export class AuthController extends  BaseController {
                     callbackUrl = callbackUrl
                         + (callbackUrl.indexOf('?') == -1 ? '?' : '&')
                         + 'jwt=' + encodeURIComponent(Token.createJwt(user.common))
-                    console.log("REDIRECT TO:" + callbackUrl);
+                    Log.log("REDIRECT TO:" + callbackUrl, LogLevel.Debug);
                     res.redirect(callbackUrl);
                 }
                 else
@@ -120,7 +116,6 @@ export class AuthController extends  BaseController {
     }
 
     actionWhoami = (req: any, res: any, next: any):any => {
-        console.log('SO WHO AM I?');
         if (req.session.currentUser)
             (new User).findById(req.session.currentUser)
                 .then((u:User) => res.json(u.common))
@@ -130,24 +125,19 @@ export class AuthController extends  BaseController {
     }
 
     actionJwt = (req: any, res: any, next: any) => {
-        console.log('JWT ??? !!!');
         (new UserIdentity('jwt'))
             .authenticate(req, res, (err:any, result:any) => {
                 if (result) {
-                    console.log(result._id);
                     (new User).findById(result._id)
                         .then((u:User) => {
-                            console.log('USER REcognized: ' + u._id);
-                            //noinspection JSAnnotator
+                            Log.log('USER REcognized: ' + u._id, LogLevel.Debug);
                             req.session.currentUser = u._id;
-                            console.log(req.session.currentUser, req.session);
                             res.json(u.common);
                         })
                         .catch((err) => res.status(401).json(err));
 
                 } else
                     res.status(401).json(err);
-
             });
     }
 }

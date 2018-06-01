@@ -3,6 +3,7 @@ import {Mean} from "../core/mean";
 import {UserType, User} from "./user";
 import {U} from "../common/u";
 import {Token} from "./token";
+import { Log, LogLevel } from "../core/utils/log";
 
 var GithubStrategy = require("passport-github2"),
     LinkedinStrategy = require("passport-linkedin"),
@@ -49,9 +50,8 @@ export class UserIdentity {
         this._config = Mean.config.auth.providers[this._providerName];
         if (!this._config)
             throw('Provider not setup yet, please try later.');
-console.log('Identify via ~ ' + this._providerName);
+        Log.log('Identify via ~ ' + this._providerName);
         if (this._config.passport) {
-            console.log('PASSPORT ~ ');
             passport.use(new this._provider(
                 this._config,
                 (accessToken:any, refreshToken:any, data:any, done:any) => {
@@ -71,7 +71,11 @@ console.log('Identify via ~ ' + this._providerName);
                             done(null, u);
                             return u;
                         })
-                        .catch((e) => console.log('Error in UserIdentity:', e));
+                        .catch((e) => {
+                            Log.log('Error in UserIdentity:', LogLevel.Error);
+                            Log.log(e, LogLevel.Error);
+                            throw new Error(e);
+                        });
                 }
             ));
 
@@ -88,7 +92,6 @@ console.log('Identify via ~ ' + this._providerName);
      * @returns {any}
      */
     public authenticate(req:any, res:any, callback: any = null) {
-        console.log(this._providerName);
         if ('jwt' == this._providerName) {
             let token:string = req.get('Authorization');
             token = token.substr('Bearer '.length);
@@ -101,7 +104,7 @@ console.log('Identify via ~ ' + this._providerName);
         }
 
         if ('plain' == this._providerName) {
-            console.log('PWD: ',req.query.password || req.body.password);
+            Log.log('Plain auth wirth PWD: **********');
             let password = req.query.password || req.body.password;
             if (!password)
                 return (callback || (()=> {}))(['Password not provided'], null)
@@ -116,15 +119,12 @@ console.log('Identify via ~ ' + this._providerName);
                 if (!this._config.allowPlainPassword)
                     return (callback || (()=> {}))(['Password posted without encryption'], null)
             }
-            console.log('SEARCH', {
-                username: req.query.username || req.body.username,
-                password: password,
-            });
+
             return (new User).find({
                 username: req.query.username || req.body.username,
                 password: password,
             }).then((u: any) => {
-                console.log(u ? u.common : 'not-found');
+                Log.log(u ? u.common : 'not-found', LogLevel.Warning);
                 return (callback || (()=> {}))(
                     u ? null : ['Authentication Failed'],
                     u
@@ -144,7 +144,6 @@ console.log('Identify via ~ ' + this._providerName);
 
                     break;
             }
-            console.log(this._config);
             return passport.authenticate(this._providerName, options, callback || (()=> {}))(req, res, () => {});
         }
 
@@ -159,7 +158,6 @@ console.log('Identify via ~ ' + this._providerName);
      */
     protected serializeUser(user:any, done:any)
     {
-        console.log('Serialize ~ ', user._id || '<unknown>');
         done(null, user._id);
     }
 
@@ -171,7 +169,6 @@ console.log('Identify via ~ ' + this._providerName);
      */
     protected deserializeUser(userId:any, done:any)
     {
-        console.log('DeSerialize ~ ', userId);
         (new User).findById(userId)
             .then((u:any) => done(null, u))
             .catch((err:any) => done(err, null))
@@ -213,9 +210,6 @@ console.log('Identify via ~ ' + this._providerName);
                 field = 'id';
                 break;
         }
-        console.log("PROVIDER SEARCH!!!!!", {
-            ['providers.' + this._providerName + '.' + field] : data[field]
-        }, data);
         return {
             ['providers.' + this._providerName + '.' + field] : data[field]
         }

@@ -4,6 +4,8 @@ import {GameActivity} from "../../models/game";
 import {Company} from "../../models/company";
 import {Employee} from "../../models/employee";
 import {Event} from "../../models/event";
+import { Action } from "../../models/actions/action";
+import { ActionType } from "../../models/actions/action.type";
 
 describe('Employee controller basic test', () => {
     it('Current Employees check', (done)=> {
@@ -21,20 +23,21 @@ describe('Employee controller basic test', () => {
             });
     });
     it('Current Employees hirement events check', (done)=> {
+        let hireAT = ActionType.getByName('Hire');
         Promise.all(
             Storage.get('Employees').map((_e) =>
-                (new Event(new GameActivity(Storage.get('userId'), Storage.get('gameId'))))
+                (new Action(new GameActivity(Storage.get('userId'), Storage.get('gameId'))))
                     .findAll({
-                        'type.name': 'Hire',
+                        'type': hireAT._id,
                         "details.employee" : _e._id
                     })
                     .then((_ev) => {
                         _ev.should.have.length(1);
                     })
-                    .catch((e:Error) => console.log('Oops:', e.message))
             )
         )
         .then(() => done())
+        .catch((e:Error) => done(new Error('Oops:' + e.message)));
     });
 
     xit('POST assign test', (done)=> {

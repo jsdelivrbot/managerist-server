@@ -1,6 +1,8 @@
+import { Utils } from "../core/utils/utils";
+
 var FeatureNameGenerator = require('feature-name-generator');
 
-export class U {
+export class U extends Utils {
     static format$(num: number):string {
         let sign: boolean = num < 0,
             val = Math.abs(num),
@@ -11,9 +13,6 @@ export class U {
         return (sign ? '-':'') + (b >= 1 ? b + 'B ' : '') + (m >= 1 ? m + 'M ' : '') + (k ? k + 'k ' : '') + '$';
     }
 
-    static randomColor = (base:number = 0):string =>
-        "rgb(" + ['','',''].map(() => base + Math.round(Math.random() * (255 - base))).join() + ')';
-
     static randomName():string {
         let n = String.fromCharCode(65 + Math.round(Math.random()*25));
         for(let i=0; i< 3+Math.random()*8; i++) {
@@ -21,29 +20,6 @@ export class U {
         }
         return U.capitaize(n);
     }
-
-    static capitaize = (s:string):string => s[0].toUpperCase() + s.slice(1);
-
     static personName = ():string => U.randomName() + ' ' + U.randomName();
-
     static featureName = ():string => FeatureNameGenerator.generate().spaced;
-
-    /**
-     * a
-     *
-     * return array of "cnt" filled with "-"
-     * @todo rename to strpad
-     * @param cnt
-     */
-    static a = (cnt:number):any[] => Array.from('-'.repeat(cnt));
-
-    static e = (_enum:any, val:any):string => Number.isNaN(+val) ? _enum[_enum[val]] : _enum[val];
-    static el = (_enum:any):string[] => Object.getOwnPropertyNames(_enum).filter((v:any) => Number.isNaN(+v));
-    static en = (_enum:any, val:any):number => Number.isNaN(+val) ? _enum[val] : _enum[_enum[val]];
-    static enl = (_enum:any):number[] => Object.getOwnPropertyNames(_enum).map((v:string) => _enum[v]).filter((v:any) => !Number.isNaN(+v));
-
-    static sum = (_arr:number[]):number => _arr.length ? _arr.slice(0).reduce((a:number, b:number) => a+b, 0) : 0;
-    static avg = (_arr:number[]):number => _arr.length ? U.sum(_arr)/_arr.length : 0;
-    static big3 = (_arr:number[]):number[] => _arr.slice(0).sort((a,b) => b - a).slice(0, 3);
-    static big3o = (_arr:any[], prop:string):any[] => _arr.slice(0).sort((a,b) => b[prop]- a[prop]).slice(0, 3)
 }

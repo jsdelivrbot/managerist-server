@@ -1,4 +1,5 @@
 import * as redis from 'redis';
+import { Log, LogLevel } from '../utils/log';
 
 /**
  * private static redis-client instance
@@ -13,11 +14,11 @@ export class Cache {
         if (!__redisClient) {
             __redisClient = redis.createClient();
             __redisClient.on('error', (err: Error) => {
-                console.log('\u001B[31m' + err.message + '\u001B[0m');
+                Log.log(err, LogLevel.Error);
                 __redisClient.quit();
             });
             __redisClient.on('ready', () => {
-                console.log("\u001B[33m" + 'REDIS READY' + "\u001B[0m");
+                Log.log('REDIS READY', LogLevel.Debug);
                 this.init();
             });
         }
@@ -34,9 +35,11 @@ export class Cache {
         return new Promise((resolve, reject) => {
             __redisClient.smembers(key,
                 (err: any, replies: any) => {
-                    console.log(`
-          Reply length: ${replies.length}. 
-          Reply: ${replies}.`);
+                    Log.log(`
+                        Reply length: ${replies.length}. 
+                        Reply: ${replies}.`,
+                        LogLevel.Debug
+                    );
                     resolve(replies);
                 });
 
@@ -44,12 +47,5 @@ export class Cache {
         });
     }
 
-    private init() {
-        this.putSet('scientist', [
-            'Eoodsger Dijkstra',
-            'Dooonald Knuth',
-            'Alan Turing',
-            'Grace Hopper'
-        ]);
-    }
+    private init() {}
 }

@@ -5,6 +5,7 @@ import {BaseGameController} from "../base.game.controller";
 import {GameManager} from "../../models/game.manager";
 import {Managerist} from "../../app";
 import {GameFactory, GameSetup} from "../../models/game.factory";
+import { Log, LogLevel } from "../../core/utils/log";
 
 
 
@@ -67,17 +68,11 @@ export class GameController extends  BaseGameController {
      * @param next
      */
     actionEvents = (req: any, res: any, next: any) => {
-        console.log("GET EVVVENTS: ", {
-            company: req.params.id,
-            viewed: 0
-        });
         (new Event(this.ga)).findAll({
             company: req.params.id,
             viewed: 0
         }).then((data:any[]) =>
             res.json(data.map(m => m.common))
-        ).catch((e:any) =>
-            res.status(500).json({error: 'Failed to fetch events'})
         );
     }
 
@@ -94,10 +89,7 @@ export class GameController extends  BaseGameController {
                 res.json(
                     games.map((g:Game) => g.common)
                 );
-            })
-            .catch((e:Error) =>
-                res.status(500).json('Failed to create:' + e.toString())
-            );
+            });
     }
 
     /**
@@ -115,10 +107,7 @@ export class GameController extends  BaseGameController {
                     game: game.common,
                     token: game.getToken(this.currentUser)
                 });
-            })
-            .catch((e: Error) =>
-                res.status(500).json('Failed to create:' + e.toString())
-            );
+            });
     }
 
     /**
@@ -133,7 +122,8 @@ export class GameController extends  BaseGameController {
         (new Game)
             .findById(req.params.id)
             .then((game: Game) => {
-                console.log({
+                Log.log({
+                    action: 'Load Game',
                     game: game.common,
                     token: game.getToken(this.currentUser)
                 });
@@ -141,10 +131,7 @@ export class GameController extends  BaseGameController {
                     game: game.common,
                     token: game.getToken(this.currentUser)
                 });
-            })
-            .catch((e: Error) =>
-                res.status(402).json('Failed to load:' + e.toString())
-            );
+            });
     }
 
     /**
@@ -160,7 +147,8 @@ export class GameController extends  BaseGameController {
 
         Managerist.eraseGames([id])
             .then(() => {
-                console.log({
+                Log.log({
+                    action: 'Delete Game',
                     game: id,
                     result: 'Deleted'
                 });
@@ -184,10 +172,7 @@ export class GameController extends  BaseGameController {
 
         (new Event(this.ga)).findById(req.body.id)
             .then((e:Event) => e.populate({'viewed': true}).save())
-            .then(() => res.json(this._actionResponse([])))
-            .catch((e:any) =>
-                res.status(500).json({error: 'Failed update event:' + req.params.id})
-            );
+            .then(() => res.json(this._actionResponse([])));
     };
 
     /**
@@ -213,8 +198,6 @@ export class GameController extends  BaseGameController {
             date: {$gt:date}
         }).then((data:any[]) =>
             res.json(data.map(m => m.common))
-        ).catch((e:any) =>
-            res.status(500).json({error: 'Failed to search history'})
         );
     };
 
@@ -246,7 +229,7 @@ export class GameController extends  BaseGameController {
         return this.game.then((arGame:Game) => {
             let game:GameCommon = arGame.common,
                 dt = game.options.speed * 3600; // 1h * game speed
-console.log("TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK ");
+            Log.log("Game ID: " + arGame._id + ' -- TICK Clicked.');
             return this._respondUpdatedEventsToDate(req, res, arGame, dt);
         });
     };
@@ -271,11 +254,10 @@ console.log("TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TICK TI
             },
             now = new Date();
 
-        console.log('trying to generate');
         (new GameManager(arGame)).play(this.ga, periodSeconds)
             .then((events:Event[]) => {
                 events = events.concat(eventsToAdd);
-console.log('MANAGER PLAYED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ' + periodSeconds + ' s');
+                Log.log("Game ID: " + arGame._id + ' -- MANAGER PLAYED ~ ' + periodSeconds + ' s');
                 return (new Company(this.ga)).getCurrent()
                     .then((c:any[]) => {
                         c = c.map((_c:any) => ''+_c._id);
@@ -285,10 +267,6 @@ console.log('MANAGER PLAYED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ' + pe
                                 .map((e:Event) => e.common);
                         res.json(data);
                     });
-            })
-            .catch((e:Error) => {
-                console.log('Something goes wrong in Game/tick', e);
-                res.status(500).json({error:'Something goes wrong in Game/tick'});
             });
     }
 

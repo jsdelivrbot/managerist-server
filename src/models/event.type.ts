@@ -28,8 +28,7 @@ export class EventType extends DictionaryRecord {
             $class = ((<any>EventTypeClasses)[name + 'EventType']);
         if (!$class)
             throw new Error('Unimplemented Event ~ ' + name);
-        else
-            console.log('YEAH! = ' + name);
+
         return <any>$class;
     }
 }

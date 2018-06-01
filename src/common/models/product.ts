@@ -5,7 +5,7 @@ import {FeatureImplementation} from "./feature";
 export enum ProductArea {HW, OS, Tool, Framework, Client};
 
 export enum ProductStage {
-    New, Design, Alpha, Beta, Active, Maintenance, Closed
+    Idea, Alpha, Beta, Active, Maintenance, Closed
     //Design, Develop, Alpha, Beta, Release, Deploy, Active
 };
 
@@ -21,7 +21,7 @@ export class Product {
     bugRate: number = 0;
     tdRate: number = 0;
     features: FeatureImplementation[] = [];
-    stage: ProductStage = ProductStage.New;
+    stage: ProductStage = ProductStage.Idea;
 
     // Refs
     company: Company = new Company();

@@ -2,6 +2,7 @@ import {Schema, Model, Types as MongoTypes} from "mongoose";
 import {isNumber} from "util";
 import {Mean} from "../mean";
 import {Mongable} from "./mongable";
+import { Log, LogLevel } from "../utils/log";
 
 export var SchemaTypes = Schema.Types;
 export {Types as MongoTypes} from "mongoose";
@@ -76,7 +77,8 @@ export abstract class ActiveRecord {
                     new Schema(Mongable.monga(new this._common, this._schema))
                 );
         } catch (e) {
-            console.log('Something wrong (Model)' + this.constructor.name + ' failed to create.', e);
+            Log.log('Something wrong (Model)' + this.constructor.name + ' failed to create.', LogLevel.Error);
+            Log.log(e, LogLevel.Error);
         }
         this._dbRef = conn;
         return this._model;
@@ -291,7 +293,7 @@ export abstract class ActiveRecord {
                 let dataToPost = this.attributes;
                 // MongoDB error ~ trying to update ID (readonly field)
                 if (dataToPost._id) delete(dataToPost._id);
-                //(this.constructor.name == 'Alert') && console.log('Update ' + this.constructor.name + " ID:", this._id, dataToPost);
+
                 return new Promise((resolve, reject) => {
                     this.model.update(this._prepareCond({_id: this._id}), dataToPost, (err, dbres) => {
                         return err ? reject(err) : resolve(true);
@@ -300,8 +302,8 @@ export abstract class ActiveRecord {
             })
             .then(() => this)
             .catch((e:Error) => {
-                console.log('\n\n\nAR ERROR~!',data, '\n\n', (new Error().stack).split('\n'), console.trace(), '\n\n\n');
-                return Promise.reject('AR ('+this.constructor.name+') Update failed: ' + e.toString())
+                Log.log('AR ('+this.constructor.name+') Update failed: ' + e.toString(), LogLevel.Error);
+                throw new Error('AR ('+this.constructor.name+') Update failed: ' + e.toString());
             });
     }
 

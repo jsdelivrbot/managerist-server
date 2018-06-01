@@ -13,7 +13,6 @@ export class TestGame {
             .post('/game/tick/')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-//                console.log(res.body);
                 if (ticksTodo--)
                     TestGame.makeATick(ticksTodo, done);
                 else
@@ -22,8 +21,6 @@ export class TestGame {
     };
 
     static checkEvent = (type:EventType, cb:(e:Event|null) => {}) => {
-        console.log('~~~ do we have ' + type.name + ' ?');
-
         return (new Event(Storage.get('ga')))
             .find({
                 type:type._id
@@ -32,8 +29,6 @@ export class TestGame {
     }
 
     static checkAlert = (type:AlertType, cb:(e:Alert|null) => {}) => {
-        console.log('~~~ do we have ' + type.name + ' ?');
-
         return (new Alert(Storage.get('ga')))
             .find({
                 type:type._id,

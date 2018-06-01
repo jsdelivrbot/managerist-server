@@ -37,7 +37,7 @@ describe('Game, first steps (actions) test', () => {
             .get('/game/hr/hireable')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
-                if (err) console.log(res.statusCode + ": ", res.body, err.message);
+                if (err) return done(new Error(err));
 
                 res.should.have.status(200);
                 res.body.should.be.a('array');

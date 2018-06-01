@@ -72,16 +72,9 @@ export class AccountingErrorEventType extends BaseEventType implements EmployeeE
      * @returns {Promise<number>}
      */
     get probability():Promise<number> {
-        console.log('ACCOUNTING ERROR PROBABILITY ?...');
         return this.finStats
-            .then(() => {
-                console.log('AE FinStats received...');
-                return this._finStats.efficiency
-            })
-            .then((e) => {
-                console.log('AE Fin EFFICIENCY = ' + e);
-                return this._probability * (1-e)
-            });
+            .then(() => this._finStats.efficiency)
+            .then((e) => this._probability * (1-e));
     };
 
     get eventData():any  {

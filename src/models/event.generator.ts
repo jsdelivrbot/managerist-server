@@ -4,6 +4,7 @@ import {Company} from "./company";
 import {BaseEventType, BaseEventTypeInterface} from "./event_type/base.eventtype";
 import {U} from "../common/u";
 import {EventType} from "./event.type";
+import { Log, LogLevel } from '../core/utils/log';
 
 export class EventGenerator {
     private _ga:GameActivity;
@@ -39,18 +40,16 @@ export class EventGenerator {
             .then((companies:any[]) => {
                 let promises = companies.reduce((acc, company) => {
                     for (let et of this._eventTypes) {
-                        console.log('CONSTRUCTOR??? : ', et.name || et);
                         let eT:BaseEventType;
                         try {
                             eT = new (<any>et).typeClass(this._ga, (<any>et));
                         } catch (e) {
-                            console.log('FAILED TO CHECK/CREATE EVENT:' + e.message);
+                            Log.log('FAILED TO CHECK/CREATE EVENT:' + e.message, LogLevel.Error);
                             continue;
                         }
-                        if (!eT.generic) {
-                            console.log('GENERATOR: ' + eT.name + ' not generic, try to generate', d.toUTCString());
+                        /** @todo  Now All Events should be non-generic! */
+                        if (!eT.generic)
                             acc.push(this.generate(eT, {company: company._id, date: d}));
-                        }
                     }
                     return acc;
                 }, []);
@@ -59,8 +58,9 @@ export class EventGenerator {
                     .then(ev => [].concat(...ev));
             })
             .catch((e:Error) => {
-                console.log('Events Generator failed', e);
-                return Promise.reject('Events Generator failed');
+                Log.log('Events Generator failed', LogLevel.Error);
+                Log.log(e, LogLevel.Error);
+                throw new Error('Events Generator failed');
             });
     }
 
@@ -89,26 +89,24 @@ export class EventGenerator {
                         ),
                     prevDate:Date = new Date(prevDateTimestamp);
 
-                console.log("CHECK FOR " + (<any>(et.constructor.name)).padEnd(25)+'\t'
+                Log.log("CHECK FOR " + (<any>(et.constructor.name)).padEnd(25)+'\t'
                     + 'period = '  + (<any>(Math.round(etPeriod/360)/10 +' h'+ (et.probabilistic ? ' (probably)':''))).padEnd(30)+'\t'
                     + 'passed ~' + Math.floor((dateTimestamp - prevDateTimestamp)/(24 * 360000))/10
                     + 'd (' + Math.floor((dateTimestamp - prevDateTimestamp)/(360000))/10 + ' h)'
                     + ' ~ ' + date.toISOString()
-                    + '\ttotal playing(simulated): ' + Math.floor((dateTimestamp - this._game.startDate.getTime())/360000)/10 + ' h');
-                if (prev)
-                    console.log('\t\t previous ' + prev.date.toISOString() + ' ' + prev._id);
+                    + '\ttotal playing(simulated): ' + Math.floor((dateTimestamp - this._game.startDate.getTime())/360000)/10 + ' h'
+                    + ((!!prev) && '\t\t previous ' + prev.date.toISOString() + ' ' + prev._id),
+                    LogLevel.Debug
+                );
 
                 prevDateTimestamp+=(etPeriod*1000);
                 while(prevDateTimestamp <= dateTimestamp) {
                     prevDate = new Date(prevDateTimestamp);
-                    console.log("TRY THROW " + et.constructor.name
-                        + ' \t period ~ ' + Math.round(etPeriod/360)/10 + ' h'
-                        + '\te-date ~ ' + prevDate.toISOString());
                     throwed.push(
                         et.throw
                             .then((success:boolean) => {
                                 if(success) {
-                                    console.log('HOOOORAY!!!! EVENT THROWED!!!!!!!                '  + et.constructor.name);
+                                    Log.log('EVENT THROWED: '  + et.constructor.name, LogLevel.Debug);
                                     return et.createEvent({
                                         date: prevDate,
                                         company: options.company,
@@ -124,10 +122,6 @@ export class EventGenerator {
                 }
                 return Promise.all(throwed);
             })
-            .then(() => ev)
-            .catch((e:Error) => {
-                console.log('GENNERRATOR >> WTF??? ' + e.message);
-                return Promise.reject(e);
-            });
+            .then(() => ev);
     }
 }

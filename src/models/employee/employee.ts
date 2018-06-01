@@ -87,9 +87,7 @@ export class Employee extends GameBased {
         return this.calculateEfficiency(department, project, product)
             .then((_e: number) => efficiency = _e)
             .then(() => {
-                console.log('AA: eff = ' + efficiency);
-
-                // TODO? in case if we'll have projects for all Departments
+                // @todo TODO? in case if we'll have projects for all Departments
                 if (department.name != 'Production') {
                     product = null;
                     project = null;
@@ -130,21 +128,15 @@ export class Employee extends GameBased {
         if (department.name !== 'Production')
             return Promise.resolve(0);
 
-console.log('Efff 44 DEP = ' + department.name);
-
         let projects:Promise<Project[]> = project
             ? Promise.resolve([project])
             : <Promise<Project[]>>((new Project(this.ga)).findAll({product: product._id}));
-console.log('EFFF for ' + product._id + '/' + project._id + '\n');
         return projects
             .then((prjs: Project[]) => {
                 if (!prjs.length)
                     return 0;
 
                 let effs = prjs.map((prj:Project) => {
-                    console.log("Calculate efficiency of " + (<any>this).name + ' on ' + prj.name, prj.product);
-                    console.log(this.expertise);
-                    
                     let prjTechsUsages:TechnologyUsage[] = prj.technologies,
                         eff: number = 0;
                     for (let tu of prjTechsUsages) {
@@ -155,7 +147,6 @@ console.log('EFFF for ' + product._id + '/' + project._id + '\n');
                     }
                     return eff;
                 });
-                console.log('Effs = ', effs);
                 return U.sum(effs) / effs.length;
             });
     }

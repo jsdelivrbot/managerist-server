@@ -28,7 +28,7 @@ export class MonthEndEventType{/* extends BaseEventType implements CustomerEvent
             .then((finData:any) => {
                 this._fundsChange = (finData.monthly || 0) - (finData.salaries || 0);
 // TODO logic
-                console.log("\n\nMONTH ENDED ~ COMPANY-REWARD +="+(this._fundsChange)+" (current "+arC.funds+")\n\n");
+                
                 return arC.update({
                     _id: e.company,
                     funds: (arC.funds || 0) - (finData.salaries || 0) + (finData.monthly || 0)

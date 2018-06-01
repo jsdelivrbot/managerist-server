@@ -35,7 +35,6 @@ export class NewEmployeeEventType extends BaseEventType {
             .then(() => this._hrStats.recruitmentEfficiency)
             .then((e) => {
                 let res:number = Math.max(this._probability, e);
-                console.log('NEW EMPLOYEE PROBABILITY = ' + res);
                 return res;
             });
     };
@@ -55,11 +54,9 @@ export class NewEmployeeEventType extends BaseEventType {
 
     get companyAr():any {
         if (!this._company) {
-            console.log('USER ??', this.ga);
             return (new Company(this.ga)).find({user:this.ga.userId})
                 .then((c:Company) => {
                     this._company = c;
-                    console.log('cAR ~ ' + c.name, c.ga, c.departments);
                     return this._company;
                 });
         }
@@ -68,7 +65,6 @@ export class NewEmployeeEventType extends BaseEventType {
             return (new Company(this.ga))
                 .findById(this._company)
                 .then((c:Company) => {
-                    console.log('cAR ~ ', c.ga);
                     this._company = c;
                     return this._company;
                 });
@@ -93,22 +89,17 @@ export class NewEmployeeEventType extends BaseEventType {
      * @returns {any}
      */
     public createEvent(data: any): Promise<Event | ActiveRecord> {
-        if (!data.company) {
-            return Promise.reject('Can\'t be determined without Company.');
-        }
-        else {
-            this._company = data.company;
-        }
+        if (!data.company)
+            throw new Error('Can\'t be determined without Company.');
+        this._company = data.company;
+
         let role:Role,
             lvl:ExpertiseLevel = TechnologyExpertise.randomLevel();
         return this.companyAr
             .then(() => this.hrStats)
             .then(() => this._getRole())
             .then((r:Role) => role = r)
-            .then(() => {
-                console.log('GENERATING EMPLOYEE: ', role.name, U.e(ExpertiseLevel, lvl));
-                return (new EmployeeFactory(this.ga)).generate(role, lvl)
-            })
+            .then(() => (new EmployeeFactory(this.ga)).generate(role, lvl))
             .then((emp:Employee) => this._employee = emp)
             .then(() => this._employee
                 .populate({
@@ -120,8 +111,7 @@ export class NewEmployeeEventType extends BaseEventType {
                 let ed = this.eventData,
                     d = data;
                 delete(d.game);
-                console.log(ed);
-                console.log(d);
+
                 return (new Event(this.ga))
                         .populate(data)
                         .populate(ed)

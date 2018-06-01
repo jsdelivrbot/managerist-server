@@ -59,14 +59,11 @@ export class AssignmentActionType extends BaseActionType {
                     .findById(this._employee._id || this._employee)
                     .then((e:Employee) => this._employee = e);
             })
-            .then(() => {
-                console.log('A: Employee foud. \n');
-                return (new Game).findById(this.ga.gameId);
-            })
+            .then(() => (new Game).findById(this.ga.gameId))
             .then((g:Game) => {
                 _game = g;
                 if (!g.options.autoAssign && !data.project && !data.product)
-                    return Promise.reject('Can\'t create "Assign" Event: Both Product & Project are not set.');
+                    throw new Error('Can\'t create "Assign" Event: Both Product & Project are not set.');
 
                 if (!data.product)
                     return (new Product(this.ga))

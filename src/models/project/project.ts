@@ -14,7 +14,7 @@ import {U} from "../../common/u";
 import { TechnologyUsage } from '../technology';
 
 /**
- * p0x0 Class Project
+ * Class Project
  */
 export class Project extends GameBased {
     // ~ common
@@ -23,7 +23,7 @@ export class Project extends GameBased {
     public company: Company|any;
     public department: Department|any;
     public audience: Audience|any; // for marketing-type
-    public product: Product|any;
+    public product: Product;
     public features: FeatureImplementation[]; // features working on
     public type: ProjectType;
     public status: ProjectStatus;
@@ -85,13 +85,12 @@ export class Project extends GameBased {
                         return Promise.all(
                             poss.map((pos:Position) => {
                                 let emp:Employee = <Employee>((new Employee(pos.ga)).populate(pos.employee));
-console.log('\n\n\nPRJD:',this.department, '\n\n\n');
+
                                 return emp.calculateEfficiency(
                                         <Department>(Department.getById(this.department._id || this.department)),
                                         this
                                     )
                                     .then((eff: number) => {
-                                        console.log('NEW EFFF == ' + eff);
                                         return Promise.all([
                                             pos.populate({efficiency: eff}).save(),
                                             emp.populate({efficiency: eff}).save()

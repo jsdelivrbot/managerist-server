@@ -6,8 +6,11 @@ import {Company} from "../../company";
 import {Employee} from "../../employee";
 import {Audience} from "../../audience";
 import {ActiveRecord} from "../../../core/db/active.record";
-import {Technology} from "../../../../common/models/technology";
 
+/**
+ * @deprecated
+ * @todo Move to ProjectReward Class
+ */
 export class ProjectEndEventType extends BaseEventType {
     protected _period: number = 0;
     protected _probability: number = 0;
@@ -64,7 +67,6 @@ export class ProjectEndEventType extends BaseEventType {
                     rewards.push(
                         (new Company(this.ga)).findById(p.company._id || p.company)
                             .then((c:Company) => {
-                                console.log("\n\nPROJECT ENDED ~ COMPANY-REWARD +="+(p.reward.company.funds || 0)+" (current "+c.funds+")\n\n");
                                 return c.populate({
                                     funds: c.funds + (p.reward.company.funds || 0),
                                     net: c.net + (p.reward.company.net || 0),

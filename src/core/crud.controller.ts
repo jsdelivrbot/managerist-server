@@ -1,6 +1,7 @@
 import {Model} from "mongoose";
 import {BaseController} from "./base.controller";
 import {ActiveRecord, ActiveRecordInterface} from "../core/db/active.record";
+import { Log } from "./utils/log";
 
 export abstract class CrudController extends BaseController {
     protected _activeRecordClass: ActiveRecordInterface;
@@ -37,7 +38,7 @@ export abstract class CrudController extends BaseController {
     }
 
     actionGet = (req: any, res: any, next: any) => {
-        console.log('\u001B[35m GET action\u001B[0m');
+        Log.log('\u001B[35m GET action\u001B[0m');
         let withParam = req.query.with || [];
         //req.query.with && delete(req.query.with);
 
@@ -73,8 +74,8 @@ export abstract class CrudController extends BaseController {
             ? (new this.activeRecordClass).findById(req.body._id)
             : Promise.resolve(new this.activeRecordClass)
         )).then((ar:ActiveRecord) => {
-            console.log("NEW AR:", ar.common);
-            console.log("BODY:", req.body);
+            Log.log("NEW AR:", ar.common);
+            Log.log("BODY:", req.body);
             ar.populate(req.body)
                 .save()
                 .then(() => res.json({success: true, id: ar._id}))
@@ -89,7 +90,7 @@ export abstract class CrudController extends BaseController {
 
         this.ar.delete(id)
             .then((ret:boolean) => {
-                console.log('\u001B[31mRecord - R.I.P.\u001B[0m');
+                Log.log('\u001B[31mRecord - R.I.P.\u001B[0m');
                 res.json({success: ret});
             })
             .catch((err:any) => {

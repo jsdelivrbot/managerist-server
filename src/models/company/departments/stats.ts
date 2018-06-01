@@ -126,10 +126,7 @@ export abstract class DepartmentStats {
                 return this.workload;
             })
             .then((_w) => workload = _w)
-            .then(() => {
-                console.log(this.constructor.name + ": capacity = " + capacity + " workload = " + workload);
-                return Math.min(1, workload ? capacity / workload : 0)
-            });
+            .then(() => Math.min(1, workload ? capacity / workload : 0));
     }
 
     /**
@@ -143,13 +140,6 @@ export abstract class DepartmentStats {
         return this.employees
             .then((emps:Employee[]) => {
                 let caps = emps.map((e) => {
-                    console.log(this.constructor.name + ' EMP CAP ~ lvl=' + e.level, {
-                        [ExpertiseLevel.Intern]: 0.1,
-                        [ExpertiseLevel.Junior]: 0.5,
-                        [ExpertiseLevel.Middle]: 0.8,
-                        [ExpertiseLevel.Senior]: 1.5,
-                        [ExpertiseLevel.Expert]: 2.5,
-                    });
                     return 22*6*((<any>{
                             [ExpertiseLevel.Intern]: 0.1,
                             [ExpertiseLevel.Junior]: 0.5,
@@ -158,7 +148,7 @@ export abstract class DepartmentStats {
                             [ExpertiseLevel.Expert]: 2.5,
                         })[U.en(ExpertiseLevel, e.level)]);
                 });
-                console.log(this.constructor.name + " CAPS = ", caps);
+
                 return U.sum(caps);
             });
     }

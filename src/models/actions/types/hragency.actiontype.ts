@@ -7,9 +7,27 @@ import {Company} from "../../company";
 import {ExpertiseLevel, TechnologyExpertise} from "../../technology";
 import {EmployeeFactory} from "../../employee/employee.factory";
 
+export enum HrAgencyPackage {Vip, Normal, Basic};
+
 export class HrAgencyActionType extends BaseActionType {
     protected _employee:Employee;
     protected _role:Role;
+
+    private static _basicPrice = 500;
+    static get basicPrice() { return HrAgencyActionType._basicPrice;}
+
+    static getPrice(pkg:HrAgencyPackage) {
+        let mul = 1;
+        switch(pkg) {
+            case HrAgencyPackage.Vip:
+                mul = 3;
+                break;
+            case HrAgencyPackage.Basic:
+                mul = 0.5;
+                break;
+        }
+        return mul * HrAgencyActionType._basicPrice;
+    }
 
     get actionDetails():any  {
         return {

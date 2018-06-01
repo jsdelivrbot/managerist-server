@@ -19,8 +19,7 @@ describe('Company controller basic test', () => {
                     .get('/company/financials/')
                     .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
                     .end((err:any, res:any) => {
-                        if (err)
-                            console.log(res.statusCode + ": ", res.body);
+                        if (err) return done(new Error(err));
 
                         let current = Storage.get('Company');
                         res.should.have.status(200);

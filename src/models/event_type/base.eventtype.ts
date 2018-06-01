@@ -23,7 +23,6 @@ export /* abstract */ class BaseEventType {
     constructor(ga:GameActivity, type:EventType = null) {
         this._type = type || (<EventType>EventType.getByName(this.constructor.name.replace('EventType', '')));
         this._ga = ga;
-        console.log('New ET ~ ' + this.constructor.name, ga);
     }
 
     /**
@@ -60,10 +59,8 @@ export /* abstract */ class BaseEventType {
     get generic() {return !this._probability && !this._period;}
 
     get throw():Promise<boolean> {
-        console.log('EVENT "' + this.constructor.name + '" THROW...');
         return this.probability.then((p:number) =>  {
             let rnd = Math.random();
-            console.log('EVENT "' + this.constructor.name + '" PROBABILITY = ' + p + ' > ' + rnd + ' ?');
             return p && (p > rnd);
         });
     }

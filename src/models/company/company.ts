@@ -10,6 +10,7 @@ import {HrCompanyDepartment} from "./departments/hr/department";
 import {FinanceCompanyDepartment} from "./departments/finance/department";
 import {MarketingCompanyDepartment} from "./departments/marketing/department";
 import {ProductionCompanyDepartment} from "./departments/production/department";
+import { Log, LogLevel } from '../../core/utils/log';
 
 export interface CompanyFinancials {
     _id: any;
@@ -236,7 +237,7 @@ export class Company extends GameBased {
 
         return (new User()).populate({name: U.randomName(), type: UserType.AI0}).save()
                 .then((u:any) => {
-                    console.log('\n\n\nNew User GENEGATED FOR COMPANY '+ (<any>this).name +' \n\n\n', !!(u && u._id));
+                    Log.log('New User GENEGATED FOR COMPANY '+ (<any>this).name +' ID:' + !!(u && u._id), LogLevel.Debug);
                     (<any>this).user = u._id;
                     return !!(u && u._id)
                 });

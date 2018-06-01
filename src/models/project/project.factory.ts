@@ -4,11 +4,11 @@ import {Project} from "./project";
 import {U} from "../../common/u";
 import {FeatureImplementation} from "../feature.implementation";
 import {Department} from "../department";
+import { LogLevel, Log } from "../../core/utils/log";
 export class ProjectFactory {
     private _product: Product;
 
     constructor(private _company:Company) {
-        console.log('ProjectFactory:Constructor');
         if (!_company._id)
             throw new Error('ProjectFactory: Company should be full, not a reference.');
     }
@@ -20,7 +20,7 @@ export class ProjectFactory {
      * @returns {Promise<Project>}
      */
     public generate(product:Product, options:any = null):Promise<Project> {
-        console.log('ProjectFactory:Generation');
+        Log.log('ProjectFactory:Generation for Product:' + (product._id || product), LogLevel.Debug);
         if (!product || !product._id)
             throw new Error('ProjectFactory:generate: Product should be full, not a reference.');
         this._product = product;
@@ -39,40 +39,18 @@ export class ProjectFactory {
                 features = U.big3o(this._product.features, 'priority').map(f => new FeatureImplementation(f.feature))
         }
         let dep = Department.getByName('Production');
-console.log('PRJ GEN:', {
-    company: this._company._id,
-    department: dep._id,
-    product: this._product._id,
-    features: features
-});
-        let prj;
-        try {
-            prj = (new Project(this._product.ga));
-        } catch(e) {
-            console.log('\n\n\n\n\n :( PRJ NOT ...CONSTRUCTED???', e.message,'\n\n\n\n\n');
-        }
-console.log('\n\n\n\n\n :( PRJ CONSTRUCTED...','\n\n\n\n\n');
-        return prj
+
+        return <Promise<Project>>(new Project(this._product.ga))
             .populate({
                 company: this._company._id,
                 department: dep._id,
                 product: this._product._id,
-                features: features,
-    //                todo: 1000, // TODO
-    //                completed: 0,
-    //                testingTodo: 200, // TODO
-    //                testingCompleted: 0,
-    //                deployTodo: 40,  // TODO
-    //                deployCompleted: 0
+                features: features
             })
             // TODO
             // all features if Startup
             // some features if Sprint(Upgrade common prj)
             // design featuresImplementations for features in project (maybe through delayed event)
-            .save()
-            .catch(e => {
-                console.log('\n\n\n\n\n :( PRJ NOT SAVED', e.message,'\n\n\n\n\n');
-                throw new Error(e);
-            });
+            .save();
     }
 }

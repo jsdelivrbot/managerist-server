@@ -1,6 +1,7 @@
 import {ActiveRecord, ActiveRecordInterface} from "../core/db/active.record";
 import {BaseGameController} from "./base.game.controller";
 import {GameBasedInterface} from "../models/game.based";
+import { Log, LogLevel } from "../core/utils/log";
 
 export abstract class CrudGameController extends BaseGameController {
     protected _activeRecordClass: GameBasedInterface;
@@ -16,7 +17,7 @@ export abstract class CrudGameController extends BaseGameController {
      */
     protected requestCheck(req:any) {
         super.requestCheck(req);
-        console.log("CRUD GAME CTRL CHECK: ", this.currentGame);
+        Log.log("CRUD GAME CTRL CHECK: " + this.currentGame, LogLevel.Debug, {color:'purple'});
 
         return !!this.currentGame;
     };
@@ -49,7 +50,7 @@ export abstract class CrudGameController extends BaseGameController {
     }
 
     public actionGet = (req: any, res: any, next: any):Promise<any> => {
-        console.log('\u001B[35m GET action\u001B[0m');
+        Log.log(this.constructor.name + ': GET action : ID:' + req.params.id, LogLevel.Debug, {color:'purple'});
         let withParam = req.query.with || [];
         //req.query.with && delete(req.query.with);
 
@@ -85,8 +86,10 @@ export abstract class CrudGameController extends BaseGameController {
                 ? this.ar.findById(req.body._id)
                 : Promise.resolve(this.ar)
         )).then((ar:ActiveRecord) => {
-            console.log("NEW AR:", ar.common);
-            console.log("BODY:", req.body);
+            Log.log({
+                req: this.constructor.name + ': POST action : ' + req.body._id ? ('update ID:' + req.body._id) : 'create:',
+                body: req.body
+            }, LogLevel.Debug, {color:'purple'});
             ar.populate(req.body)
                 .save()
                 .then(() => res.json({success: true, id: ar._id}))
@@ -101,7 +104,7 @@ export abstract class CrudGameController extends BaseGameController {
 
         return this.ar.delete(id)
             .then((ret:boolean) => {
-                console.log('\u001B[31mRecord - R.I.P.\u001B[0m');
+                Log.log(this.constructor.name + ' \u001B[31mRecord - R.I.P.\u001B[0m ' + id, LogLevel.Debug, {color:'purple'});
                 res.json({success: ret});
             })
             .catch((err:any) => {

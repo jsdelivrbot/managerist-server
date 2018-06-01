@@ -84,12 +84,7 @@ export class GameHrController extends BaseGameController {
                 .then((_g:Game) => g = _g)
                 .then(() => this.company)
                 .then((_c:Company) => c = _c)
-/*                .then(() => {
-                    console.log("SET PRIORITY:", req.body.roles);
-                    c.hrDepartment.priority = req.body.roles || null;
-                    return c.save();
-                })
-*/                .then(() =>
+                .then(() =>
                     (new RecruitmentPriorityActionType(this.ga)).do({
                         date: g.common.simulationDate,
                         company: c._id,
@@ -193,11 +188,9 @@ export class GameHrController extends BaseGameController {
      */
     actionHireable = (req: any, res: any, next: any) => {
         return this.company.then((c:Company) => {
-            console.log('COMPANY FOUND: ', c.name);
             return (new Employee(c.ga)).withRelations(['role']).findAll({visible: c._id})
         })
             .then((employees:any[]) => {
-                console.log('EMPLOYEES FOUND: ' + employees.length);
                 res.json(employees.map((e:any) => e.common));
             })
             .catch((err:any) => {
