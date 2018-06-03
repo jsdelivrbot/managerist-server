@@ -1,5 +1,5 @@
 import {Employee} from "../../models/employee";
-import {ResignmentActionType, AssignmentActionType, DismissalActionType, HireActionType} from "../../models/actions";
+import {ResignmentActionType, AssignmentActionType, DismissalActionType, HireActionType, HrAgencyActionType, HrAgencyPackage} from "../../models/actions";
 import {BaseGameController} from "../base.game.controller";
 import {Game} from "../../models/game";
 import {Company} from "../../models/company";
@@ -7,6 +7,8 @@ import {Action} from "../../models/actions/action";
 import {HrCompanyDepartment} from "../../models/company/departments/hr/department";
 import {Role} from "../../models/role";
 import {RecruitmentPriorityActionType} from "../../models/actions/types/recruitment.priority.actiontype";
+import { U } from "../../common";
+import { LogLevel, Log } from "../../core/utils/log";
 
 /**
  * Class GameHrController
@@ -33,9 +35,17 @@ export class GameHrController extends BaseGameController {
                 method: 'post',
                 handler: 'actionResign'
             }, {
+                route: '/fire', // alias for dissmiss (it's shorter tho)
+                method: 'post',
+                handler: 'actionDismiss'
+            }, {
                 route: '/dismiss',
                 method: 'post',
                 handler: 'actionDismiss'
+            }, {
+                route: '/agency',
+                method: 'post',
+                handler: 'actionHrAgency'
             }, {
                 route: '/hire',
                 method: 'post',
@@ -95,6 +105,31 @@ export class GameHrController extends BaseGameController {
     }
 
     /**
+     *
+     * @param req
+     * @param res
+     * @param next
+     * @return {any}
+     */
+    actionHrAgency = (req: any, res: any, next: any) => {
+        let g:Game,
+            c:Company;
+        return this._processActionCreation(req, res,
+            this.game
+                .then((_g:Game) => g = _g)
+                .then(() => this.company)
+                .then((_c:Company) => c = _c)
+                .then(() =>
+                    (new HrAgencyActionType(this.ga)).do({
+                        date: g.common.simulationDate,
+                        company: c._id,
+                        package: U.en(HrAgencyPackage, req.body.package)
+                    })
+                )
+        );
+    }
+
+    /**
      * HR: Assign employee to Product/Project (TODO: role)
      *
      * @param req
@@ -144,13 +179,15 @@ export class GameHrController extends BaseGameController {
      * @param next
      */
     actionDismiss = (req: any, res: any, next: any) => {
-        return this.game.then((g:Game) =>
-            this._processActionCreation(req, res,
-                (new DismissalActionType(this.ga)).do({
-                    date: g.common.simulationDate,
-                    company: req.body.company,
-                    employee: req.body._id,
-                })
+        return this.company.then((c:Company) =>
+            this.game.then((g:Game) =>
+                this._processActionCreation(req, res,
+                    (new DismissalActionType(this.ga)).do({
+                        date: g.common.simulationDate,
+                        company: c._id,
+                        employee: req.body._id,
+                    })
+                )
             )
         );
     }

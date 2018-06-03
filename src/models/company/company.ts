@@ -47,6 +47,9 @@ export class Company extends GameBased {
         };
     }
 
+    /**
+     * 
+     */
     get hrDepartment():HrCompanyDepartment {
         if (!this.departments) this.departments = [];
         let hr = Department.getByName('HR'),

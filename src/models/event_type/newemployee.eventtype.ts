@@ -99,14 +99,8 @@ export class NewEmployeeEventType extends BaseEventType {
             .then(() => this.hrStats)
             .then(() => this._getRole())
             .then((r:Role) => role = r)
-            .then(() => (new EmployeeFactory(this.ga)).generate(role, lvl))
+            .then(() => (new EmployeeFactory(this.ga)).generate(role, lvl, [this._company._id || this._company]))
             .then((emp:Employee) => this._employee = emp)
-            .then(() => this._employee
-                .populate({
-                    visible: [this._company._id || this._company]
-                })
-                .save()
-            )
             .then(() => {
                 let ed = this.eventData,
                     d = data;

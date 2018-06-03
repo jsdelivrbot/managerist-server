@@ -32,9 +32,9 @@ export class DismissalActionType extends BaseActionType {
         this._employee = data.employee;
         if (!data.company)
             return Promise.reject('Can\'t create "Dismisal" Event: Company is not set.');
-        this._company = data.comapny;
+        this._company = data.company;
 
-        return (this._company._id && this._company.role._id
+        return (this._company._id
                     ? Promise.resolve(this._company)
                     : (new Company(this._ga)).findById(this._company._id || this._company)
                     .then((c:Company) => this._company = c)

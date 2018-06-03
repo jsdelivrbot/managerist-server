@@ -5,7 +5,7 @@ import {Alert} from "../../../models/alerts/alert";
 import {EventType} from "../../../models/event.type";
 import {Event} from "../../../models/event";
 import {TestGame} from "../utils/test.game"
-import { Project, ProjectStatus, ProductStage } from "../../../models";
+import { Project, ProjectStatus, ProductStage, Product } from "../../../models";
 import { U } from "../../../common/u";
 
 describe('Game, first steps (actions) test', () => {
@@ -62,18 +62,25 @@ describe('Game, first steps (actions) test', () => {
     // Who knows. x days 's pretty long time, but 60s is ennormous amount of time...
         .timeout(30000);
 
-    it('Check Project/Product states after the project completition', (done:Function) => {
-        (new Project(Storage.get('ga'))).withRelations(['product']).findById(project._id)
+    it('Check Project states after the project completition', (done:Function) => {
+        (new Project(Storage.get('ga')))/*.withRelations(['product'])*/.findById(project._id)
             .then((p:Project) => {
                 U.en(ProjectStatus, p.status).should.eq(ProjectStatus.Closed);
-                p.should.have.property('product');
-                p.product.should.have.property('stage');
-                U.en(ProductStage, p.product.stage).should.eq(ProductStage.Alpha);
             })
             .then(() => done())
             .catch(e => done(new Error(e)))
     });
 
+    it('Check Product states after the project completition', (done:Function) => {
+        (new Product(Storage.get('ga'))).findById(project.product)
+            .then((p:Product) => {
+                p.should.have.property('stage');
+                U.en(ProductStage, p.stage).should.eq(ProductStage.Alpha);
+            })
+            .then(() => done())
+            .catch(e => done(new Error(e)))
+    });
+    
     xit('Check Marketings for Product after it\'s launch.', (done:Function) => {
         //TODO
     });

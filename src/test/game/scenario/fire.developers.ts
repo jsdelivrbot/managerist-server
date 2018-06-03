@@ -9,13 +9,13 @@ import {Employee} from "../../../models/employee";
 import {AlertType} from "../../../models/alerts/alert.type";
 import {Alert} from "../../../models/alerts/alert";
 
-describe('Fire all employees test', () => {
+describe('Fire all developers test', () => {
     let employees:any[];
 
-    xit('Get list of All Employees we have', (done:Function)=> {
+    it('Get list of All Developers we have', (done:Function)=> {
         //noinspection TypeScriptUnresolvedFunction
         chai.request(Managerist.app.server)
-            .get('/game/hr/employees')
+            .get('/game/production/team')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
                 if (err) done(new Error(err));
@@ -28,14 +28,14 @@ describe('Fire all employees test', () => {
             });
     });
 
-    xit('Fire all', (done:Function)=> {
+    it('Fire All developers', (done:Function)=> {
         Promise.all(
             employees.map(emp => 
                 new Promise((resolve, reject) =>{
                     chai.request(Managerist.app.server)
                     .post('/game/hr/fire')
                     .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
-                    .send({employee:emp._id})
+                    .send({_id:emp._id})
                     .end((err:any, res:any) => {
                         if (err) throw new Error(err);
                         res.should.have.status(200);
@@ -49,10 +49,11 @@ describe('Fire all employees test', () => {
         //noinspection TypeScriptUnresolvedFunction
     });
 
-    xit('Ensure that we have no Employees', (done:Function)=> {
+    it('Ensure that we have no Developers', (done:Function)=> {
+        let role = <Role>Role.getByName('Developer');
         //noinspection TypeScriptUnresolvedFunction
         chai.request(Managerist.app.server)
-            .get('/game/hr/employees')
+            .get('/game/production/team')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
                 if (err) done(new Error(err));

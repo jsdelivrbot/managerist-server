@@ -24,9 +24,10 @@ export class EmployeeFactory {
      *
      * @param role
      * @param lvl
+     * @param visible
      * @returns Promise<Employee|ActiveRecord>
      */
-    public generate(role: Role, lvl: ExpertiseLevel): Promise<Employee | ActiveRecord> {
+    public generate(role: Role, lvl: ExpertiseLevel, visible:any[] = []): Promise<Employee | ActiveRecord> {
         let gender = Math.random() > 0.5 ? Gender.Male : Gender.Female;
         return Technology.getForRole(role, lvl)
             .then((techs: any[]) => {
@@ -37,7 +38,8 @@ export class EmployeeFactory {
                     character: role.character.list,
                     expertise: techs,
                     role: role._id,
-                    level: lvl
+                    level: lvl,
+                    visible: visible
                 })).save()
             });
     }

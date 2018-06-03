@@ -6,12 +6,15 @@ import {Game} from "../../game";
 import {Company} from "../../company";
 import {ExpertiseLevel, TechnologyExpertise} from "../../technology";
 import {EmployeeFactory} from "../../employee/employee.factory";
+import { U } from "../../../common";
 
-export enum HrAgencyPackage {Vip, Normal, Basic};
+export enum HrAgencyPackage {Basic, Normal, Vip};
 
 export class HrAgencyActionType extends BaseActionType {
     protected _employee:Employee;
     protected _role:Role;
+    protected _pkg:HrAgencyPackage;
+    protected _price:number;
 
     private static _basicPrice = 500;
     static get basicPrice() { return HrAgencyActionType._basicPrice;}
@@ -34,7 +37,8 @@ export class HrAgencyActionType extends BaseActionType {
             date: this._date || this.ga.time,
             company: this._company._id,
             description: 'HR Agency found a new employee for you: '
-            + this._employee.name,
+            + this._employee.name
+            + ' it was cost to you '+this._price+'$ with package' + U.e(HrAgencyPackage, this._pkg),
             details: {
                 employee: this._employee._id,
                 role: this._employee.role,
@@ -52,6 +56,11 @@ export class HrAgencyActionType extends BaseActionType {
         if (!data.company)
             return Promise.reject('Can\'t create "Assign" Event: Company is not set.');
         this._company = data.company;
+        if (data.package == undefined)
+            return Promise.reject('Service package should be provided.');
+        this._pkg = U.en(HrAgencyPackage, data.package);
+
+        this._price = HrAgencyActionType.getPrice(this._pkg);
 
         let role:Role,
             lvl:ExpertiseLevel = TechnologyExpertise.randomLevel();
@@ -64,10 +73,11 @@ export class HrAgencyActionType extends BaseActionType {
             .then(() => this._company.hrDepartment.randomRole())
             .then((r:Role) => {
                 this._role = r;
-                return new EmployeeFactory(this.ga).generate(this._role, lvl);
+                return new EmployeeFactory(this.ga).generate(this._role, lvl, [this._company._id]);
             })
-            .then(() => {
-                this._company.funds = this._company.funds - this._company.hrDepartment.agencyPrice;
+            .then((emp:Employee) => {
+                this._employee = emp;
+                this._company.funds = this._company.funds - this._price
                 return this._company.save();
             })
             .then(() => super.do.call(this));

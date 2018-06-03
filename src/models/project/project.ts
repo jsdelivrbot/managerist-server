@@ -46,6 +46,7 @@ export class Project extends GameBased {
         status: String,
         type: String,
         features : SchemaTypes.Mixed,
+        product: { type: SchemaTypes.ObjectId, ref: 'Product' },
         reward : SchemaTypes.Mixed
     };
 
