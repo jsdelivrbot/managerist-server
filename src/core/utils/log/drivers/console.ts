@@ -10,7 +10,6 @@ export class Console extends LogDriver {
      * @param options 
      */
     public log(message:any, level:LogLevel = LogLevel.Info, options = {}) {
-        if (1) return true;
         if (!(message instanceof Error)) {
             if (typeof message != 'string')
                 message = JSON.stringify(message);
