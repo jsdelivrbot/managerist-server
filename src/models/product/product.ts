@@ -2,6 +2,7 @@ import {Product as ProductCommon, ProductStage, ProductArea} from '../../common/
 import {SchemaTypes, ActiveRecordRule, ActiveRecordRulesTypes} from "../../core/db/active.record";
 import {GameBased} from "../game.based";
 import {FeatureImplementation} from "../feature.implementation";
+import { Project } from '..';
 
 export {Product as ProductCommon, ProductStage, ProductArea} from '../../common/models/product';
 
@@ -30,5 +31,10 @@ export class Product extends GameBased {
             area: {type:ActiveRecordRulesTypes.ENUM, related: ProductArea},
             //reward: {type: ActiveRecordRulesTypes.CUSTOM, related: ProjectResults}
         };
+    }
+
+    resumeProject(p:Project)
+    {
+        
     }
 }

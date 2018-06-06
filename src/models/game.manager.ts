@@ -10,6 +10,8 @@ import {ProductionStats} from "./company/departments/production/stats";
 import {U} from "../common/u"
 import { Alert, AlertType } from "./alerts";
 import { Log, LogLevel } from "../core/utils/log";
+import { Product } from ".";
+import { ProjectResults } from "./project/project.results";
 
 export class GameManager {
     private _finStats: {[key:string]:FinanceStats} = {};
@@ -91,11 +93,12 @@ export class GameManager {
      * @param toDate
      * @returns {Promise<Event[]>}
      */
-    progressProjects(company:Company, fromDate:Date, toDate:Date):Promise<any> {
-        let secondsPassed:number = (toDate.getTime() - fromDate.getTime())/1000,
+    progressProjects(company:Company, fromDate:Date, toDate:Date):Promise<Event[]> {
+        let events: Event[] = [],
             prjEndAt = <AlertType>AlertType.getByName('ProjectEnd'),
-            prod:ProductionStats = this._prodStats[company._id];
-        if (!prod || !prod.isIninialized)
+            secondsPassed:number = (toDate.getTime() - fromDate.getTime())/1000,
+            prodStats:ProductionStats = this._prodStats[company._id];
+        if (!prodStats || !prodStats.isIninialized)
             throw new Error('No ProductionStats warmed-up for cid:' + company._id);
 
         return (new Project(company.ga))
@@ -103,30 +106,21 @@ export class GameManager {
             .then((projects:any[]) => {
                 Log.log("PROGRESS PROJECTS (" + projects.length + ") OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString() + ' ~ ' + secondsPassed, LogLevel.Debug);
                 return Promise.all(
-                    projects.filter(p => !!p.todo).map(p =>
-                        (new Position(p.ga)).findAll({project: p._id})
-                            .then((poss:Position[]) => {
-                                let burned = U.sum(poss.map(pos => pos.efficiency * secondsPassed)),
-                                    completed = p.completed + burned;
-                                return p.populate({
-                                    completed: Math.min(p.todo, completed),
-                                    status: p.todo < completed ? ProjectStatus.Closed : ProjectStatus.Active
-                                })
-                                .save()
-                                .then((p) => {
-                                    Log.log('Burned '+burned+' prj:' + (p.name | p._id) + ' ' + p.completed + ' out of ' + p.todo, LogLevel.Debug);
-                                    if (U.en(ProjectStatus, p.status) == ProjectStatus.Closed)
-                                        return prod.alertsStorage.throwKnown(prjEndAt, {
-                                            details:{
-                                                project:p._id
-                                            }
-                                        });
-                                    return true;
-                                });
+                    projects.filter(p => !!p.todo).map((p:Project) =>
+                        p.burnout(secondsPassed)
+                            .then(() => {
+                                if (p.isCompleted)
+                                    prodStats.alertsStorage.throwKnown(prjEndAt, {
+                                        details:{
+                                            project:p._id
+                                        }
+                                    })
+                                    .then(() => new ProjectResults(p).resume());
                             })
                     )
                 )
-            });
+            })
+            .then(() => events);
     }
 
     /**
@@ -145,6 +139,6 @@ export class GameManager {
             .then((cfin:CompanyFinancials) => {
                 let t = cfin.monthly;
                 return [];
-            })
+            });
     }
 }

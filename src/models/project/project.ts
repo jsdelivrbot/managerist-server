@@ -12,6 +12,9 @@ import {Department} from "../department";
 import {Employee} from "../employee";
 import {U} from "../../common/u";
 import { TechnologyUsage } from '../technology';
+import { ProductionStats } from '../company/departments/production/stats';
+import { AlertType } from '../alerts';
+import { Log, LogLevel } from '../../core/utils/log';
 
 /**
  * Class Project
@@ -101,5 +104,48 @@ export class Project extends GameBased {
                         )
                     })
             );
+    }
+
+    /**
+     * 
+     * @param seconds 
+     * @returns Promise<Project>
+     */
+    burnout(seconds:number) {
+        let burned, completed;
+
+        if (!this.isActive)
+            throw new Error('You can\'t possiply make a progress on a non-active project.');
+
+        return (new Position(this.ga))
+            .findAll({project: this._id})
+            .then((poss:Position[]) => {
+                let distribution = U.dstr(this.features.length);
+                burned = Math.min(
+                    this.todo - this.completed,
+                    U.sum(poss.map(pos => pos.efficiency * seconds))
+                );
+                completed = this.completed + burned;
+                for (let i=0; i < this.features.length; i++)
+                    this.features[i].completed = (this.features[i].completed || 0) + burned*distribution[i];
+
+                return this.populate({
+                        completed: completed,
+                        status: this.todo <= completed ? ProjectStatus.Resolved : ProjectStatus.Active
+                    })
+                    .save();
+            });
+    }
+
+    get isActive() {
+        return ProjectStatus.Active == U.en(ProjectStatus, this.status);
+    }
+
+    get isReady() {
+        return ProjectStatus.Resolved == U.en(ProjectStatus, this.status);
+    }
+    
+    get isCompleted() {
+        return [ProjectStatus.Resolved, ProjectStatus.Closed].includes(U.en(ProjectStatus, this.status));
     }
 }

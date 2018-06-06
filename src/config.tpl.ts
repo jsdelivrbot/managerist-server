@@ -15,6 +15,14 @@ export var server = {
 }
 
 /**
+ * 'console' is default even if you'll not use that param
+ * avalilable: 'nop', 'console', 'file', 'YourOwnClassName implements LogDriver'
+ */
+export var log = {
+    driver: 'console'
+}
+
+/**
  *  DB - required config
  *
  * @type {{host: string; connections: {name: string; db: string; host: string}[]}}

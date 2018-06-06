@@ -12,6 +12,14 @@ export class U extends Utils {
 
         return (sign ? '-':'') + (b >= 1 ? b + 'B ' : '') + (m >= 1 ? m + 'M ' : '') + (k ? k + 'k ' : '') + '$';
     }
+    /**
+     * a
+     *
+     * return array of "cnt" filled with "-"
+     * @todo rename to strpad
+     * @param cnt
+     */
+    static a = (cnt:number):any[] => Array.from('-'.repeat(cnt));
 
     static randomName():string {
         let n = String.fromCharCode(65 + Math.round(Math.random()*25));

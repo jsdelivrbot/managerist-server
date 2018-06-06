@@ -10,11 +10,12 @@ export class Console extends LogDriver {
      * @param options 
      */
     public log(message:any, level:LogLevel = LogLevel.Info, options = {}) {
+        if (1) return true;
         if (!(message instanceof Error)) {
             if (typeof message != 'string')
                 message = JSON.stringify(message);
             
-            message = this.colorize(message, level, options);
+            message = this._colorize(message, level, options);
         }
         if (LogLevel.Error == level)
             console.error(message);
@@ -32,7 +33,7 @@ export class Console extends LogDriver {
      * @param level 
      * @param options 
      */
-    protected colorize(message, level?:LogLevel, options?:any) {
+    protected _colorize(message, level?:LogLevel, options?:any) {
         let color = 0;
         if (options && options.color) {
             switch (options.color) {

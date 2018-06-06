@@ -10,6 +10,10 @@ export class Log {
         if (!Log._logDriverInstance) {
             let confLogDriver:any = Mean.config.log || {driver: 'console'},
                 logClass:any = Utils.capitaize(confLogDriver.driver);
+            try {
+                Log._logDriverInstance = new confLogDriver.driver(confLogDriver);
+            } catch(e) {}
+
             Log._logDriverInstance = new Drivers[logClass](confLogDriver);
         }
 

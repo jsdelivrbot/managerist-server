@@ -52,7 +52,8 @@ export class TechnologyUsage {
      * @param tu1Value 
      * @param tu2Volume 
      */
-    public static mergeFullGroups(tu1:TechnologyUsage[], tu2:TechnologyUsage[], tu1Value:number = 0.5, tu2Value:number = 0.5):TechnologyUsage[]{
+    public static mergeFullGroups(tu1:TechnologyUsage[], tu2:TechnologyUsage[], tu1Value:number = 0.5, tu2Value?:number):TechnologyUsage[]{
+        tu2Value = tu2Value || (1 - tu1Value);
         let tu:TechnologyUsage[];
         if (!tu1.length) return tu2;
         if (!tu2.length) return tu1;

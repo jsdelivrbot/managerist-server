@@ -39,6 +39,22 @@ describe('Game, first steps (actions) test', () => {
             });
     });
 
+    it('Chack that project now will have a progress with each Tick', (done) => {
+        TestGame.makeATick(1, () => {
+            (new Project(Storage.get('ga')))/*.withRelations(['product'])*/.findById(project._id)
+            .then((p:Project) => {
+                p.completed.should.greaterThan(0, 'Project make no profgress');
+                let fuatueresBurned = U.sumo(p.features, 'completed');
+                fuatueresBurned.should.greaterThan(1, 'Features not burned out with project.');
+                Math.abs(fuatueresBurned - p.completed).should.lessThan(1, 
+                    'Summ Features burned('+fuatueresBurned+') discrepancy with project (' + p.completed +').'
+                );
+            })
+            .then(() => done())
+            .catch(e => done(new Error(e)))            
+        })
+    })
+
     it('Burnout **Project : Tick ~ X (2X in worst case) days -  POST', (done:Function) => {
         prjEndAT = prjEndAT || <AlertType>(AlertType.getByName('ProjectEnd'));
         TestGame.waitDaysForAlert(prjEndAT, 2*x, () => processedDays++)
@@ -65,7 +81,9 @@ describe('Game, first steps (actions) test', () => {
     it('Check Project states after the project completition', (done:Function) => {
         (new Project(Storage.get('ga')))/*.withRelations(['product'])*/.findById(project._id)
             .then((p:Project) => {
-                U.en(ProjectStatus, p.status).should.eq(ProjectStatus.Closed);
+                p.isCompleted.should.eq(true, 
+                    'Project should be in completed state (Resolved, Closed) but it\'s "'+U.e(ProjectStatus, p.status)+'".'
+                );
             })
             .then(() => done())
             .catch(e => done(new Error(e)))

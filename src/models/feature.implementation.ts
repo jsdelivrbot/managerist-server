@@ -10,6 +10,41 @@ import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "./t
  *  Overloading common (possibly will be stored in DB)
  */
 export class FeatureImplementation extends FeatureImplementationCommon {
+    
+    /**
+     * 
+     * @param fis1 FeatureImplementation[]
+     * @param fis2 FeatureImplementation[]
+     * @returns FeatureImplementation[]
+     */
+    static merge(fis1:FeatureImplementation[], fis2:FeatureImplementation[]):FeatureImplementation[] {
+        let fis1F = fis1.map((fi) => (fi.feature._id || fi.feature).toString()),
+            fis2upd:FeatureImplementation[] = fis2.filter(fi => fis1F.includes(fi.feature._id || fi.feature).toString()),
+            fis2uniq = fis2.filter(fi => !fis1F.includes(fi.feature._id || fi.feature).toString());
+        fis1 = fis1.map((fi) => {
+            let fi2 = fis2upd.find(_fi => 
+                (fi.feature._id || fi.feature).toString() == (_fi.feature._id || _fi.feature).toString()
+            );
+            if (fi2) fi.merge(fi2);
+            return fi;
+        });
+        fis1 = fis1.concat(fis2uniq);
+        return fis1;
+    }
+
+    /**
+     * @param fi 
+     * @returns FeatureImplementation
+     */
+    merge(fi:FeatureImplementation):FeatureImplementation {
+        let parity = this.size / fi.completed;
+        this.technologies = TechnologyUsage.mergeFullGroups(this.technologies || [], fi.technologies, parity);
+        this.version++;
+        this.quality = (parity * this.quality + (1 - parity) *fi.quality) / 2;
+
+        return this;
+    }
+
     /**
      * designImplementation
      *
@@ -102,7 +137,7 @@ export class FeatureImplementation extends FeatureImplementationCommon {
                 res[bp] = this.feature._id || this.feature;
             else if ('technologies' == bp)
                 res[bp] = this.technologies.map((t:TechnologyUsage) => t.list);
-            else if (!Number.isNaN(+bp))
+            else if ((typeof (<any>this)[bp]).toLowerCase() != <any>'function')
                 res[bp] = (<any>this)[bp];
         }
         return res;

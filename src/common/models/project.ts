@@ -13,7 +13,7 @@ export enum ProjectType {
     // Other
     Special
 };
-export enum ProjectStatus {Active, Paused, Cancelled, Closed};
+export enum ProjectStatus {New, Active, Paused, Cancelled, Resolved, Closed};
 
 /**
  *  p0x0 Class Project
@@ -34,7 +34,7 @@ export class Project {
     public product: Product = new Product;
     public features: FeatureImplementation[] = [];
     public type: ProjectType = ProjectType.Startup;
-    public status: ProjectStatus = ProjectStatus.Paused;
+    public status: ProjectStatus = ProjectStatus.New;
 
     public todo: number = 0;
     public completed: number = 0;
