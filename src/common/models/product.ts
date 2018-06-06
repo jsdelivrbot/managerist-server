@@ -5,7 +5,7 @@ import {FeatureImplementation} from "./feature";
 export enum ProductArea {HW, OS, Tool, Framework, Client};
 
 export enum ProductStage {
-    Idea, Alpha, Beta, Active, Maintenance, Closed
+    Idea, Planned, Alpha, Beta, Active, Maintenance, Closed
     //Design, Develop, Alpha, Beta, Release, Deploy, Active
 };
 

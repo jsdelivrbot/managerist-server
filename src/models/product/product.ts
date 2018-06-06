@@ -3,6 +3,7 @@ import {SchemaTypes, ActiveRecordRule, ActiveRecordRulesTypes} from "../../core/
 import {GameBased} from "../game.based";
 import {FeatureImplementation} from "../feature.implementation";
 import { Project } from '..';
+import { U } from '../../common';
 
 export {Product as ProductCommon, ProductStage, ProductArea} from '../../common/models/product';
 
@@ -33,8 +34,31 @@ export class Product extends GameBased {
         };
     }
 
-    resumeProject(p:Project)
+    invalidateStatus():Product
     {
+        if (!U.sumo(this.features, 'isDesigned')) {
+            this.stage = ProductStage.Idea;
+            return this;
+        }
+        let fvSum = U.sumo(this.features, 'version');
+        if (fvSum < this.features.length) {
+            this.stage = ProductStage.Planned;
+        }
+        if (fvSum == this.features.length) {
+            this.stage = ProductStage.Alpha;
+            return this;
+        }
+
+        if (U.en(ProductStage, this.stage) == ProductStage.Alpha) {
+            this.stage = ProductStage.Beta;
+            return this;
+        }
+
+        if (U.en(ProductStage, this.stage) == ProductStage.Beta) {
+            this.stage = ProductStage.Active;
+            return this;
+        }
         
+        return this;
     }
 }

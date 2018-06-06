@@ -11,7 +11,7 @@ export class ProjectResults extends ProjectResultsCommon {
             throw new Error('Project should be full valid Project ActiveRecord');
     }
 
-    resume(){
+    resume() {
         if (!this._project.isReady)
             throw new Error('Project state "' + U.e(ProjectStatus, this._project.status) + '" is not where it\'s reward can be applied.');
 
@@ -24,9 +24,10 @@ export class ProjectResults extends ProjectResultsCommon {
 
     protected _applyProductReward(prd:Product):Promise<any> {
         let features:FeatureImplementation[] = FeatureImplementation.merge(prd.features, this._project.features);
-        return prd.populate({
-
-        })
-        .save();
+        prd.populate({features:features});
+        prd.populate(this.product || {});
+        return prd
+            .invalidateStatus()
+            .save();
     }
 }
