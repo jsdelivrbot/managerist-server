@@ -63,7 +63,7 @@ export class HrAgencyActionType extends BaseActionType {
         this._price = HrAgencyActionType.getPrice(this._pkg);
 
         let role:Role,
-            lvl:ExpertiseLevel = TechnologyExpertise.randomLevel();
+            lvl:ExpertiseLevel = TechnologyExpertise.randomLevel(this._minLevel4Pkg(), this._maxLevel4Pkg());
 
         return (this._company._id
                     ? Promise.resolve(this._company)
@@ -82,4 +82,20 @@ export class HrAgencyActionType extends BaseActionType {
             })
             .then(() => super.do.call(this));
     }
+
+    _minLevel4Pkg():ExpertiseLevel {
+        if (this._pkg == HrAgencyPackage.Vip)
+            return ExpertiseLevel.Senior;
+        if (this._pkg == HrAgencyPackage.Normal)
+            return ExpertiseLevel.Junior;
+        return ExpertiseLevel.Intern;
+    }
+
+    _maxLevel4Pkg():ExpertiseLevel {
+        if (this._pkg == HrAgencyPackage.Vip)
+            return ExpertiseLevel.Expert;
+        if (this._pkg == HrAgencyPackage.Normal)
+            return ExpertiseLevel.Senior;
+        return ExpertiseLevel.Middle;
+    }    
 }

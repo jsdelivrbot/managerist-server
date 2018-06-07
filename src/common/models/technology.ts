@@ -100,7 +100,7 @@ export enum ExpertiseLevel{Intern, Junior, Middle, Senior, Expert}
  * To describe level of proficiency
  */
 export class TechnologyExpertise {
-    static randomLevel() {
+    static randomLevel(minLevel:ExpertiseLevel = ExpertiseLevel.Intern, maxLevel:ExpertiseLevel = ExpertiseLevel.Expert) {
         return ((r) => {
             if (r > 0.9)
                 return ExpertiseLevel.Expert;
@@ -111,7 +111,22 @@ export class TechnologyExpertise {
             if (r > 0.2)
                 return ExpertiseLevel.Junior;
             return ExpertiseLevel.Intern;
-        })(Math.random());
+        })(Math.min(TechnologyExpertise.lvlToVal(maxLevel), Math.max(TechnologyExpertise.lvlToVal(minLevel), Math.random())));
+    }
+
+    static lvlToVal(lvl:ExpertiseLevel, upper:boolean = false) {
+        lvl = U.en(ExpertiseLevel, lvl);
+        let res = 0;
+        if (ExpertiseLevel.Expert == lvl)
+            res = 0.9;
+        else if (ExpertiseLevel.Senior == lvl)
+            res = 0.8;
+        else if (ExpertiseLevel.Middle == lvl)
+            res = 0.6;
+        else if (ExpertiseLevel.Junior == lvl)
+            res = 0.2;
+
+    return res + (upper ? 0.1 : 0);
     }
     static get milestones():number[] { return [0.95, 0.7, 0.3, 0.1];}
     static getMaxTech(lvl:ExpertiseLevel, branch:KnowledgeBranch|null = null) {

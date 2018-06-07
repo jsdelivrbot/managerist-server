@@ -19,7 +19,7 @@ describe('Hire Sale with help of HrAgency test', () => {
 
     it('Set hiring priority = Sale', (done:Function)=> {
         role = <Role>Role.getByName('Sale');
-        //noinspection TypeScriptUnresolvedFunction
+
         chai.request(Managerist.app.server)
             .post('/game/hr/priority')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))

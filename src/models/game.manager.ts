@@ -154,8 +154,8 @@ export class GameManager {
             .then((products:any[]) => {
                 Log.log("PRODUCT UPDATES (" + products.length + ") OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString(), LogLevel.Debug);
                 return Promise.all(
-                    products.filter(p => !!p.todo).map((p:Product) =>
-                        (new ProductManager(p, prodStats))
+                    products.map((p:Product) =>
+                        (new ProductManager(p, prodStats, mktStats, hrStats))
                             .checkUpdates(fromDate, toDate)
                     )
                 )

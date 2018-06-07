@@ -36,7 +36,10 @@ export class ProductManager {
         return (new Audience(this._product.ga)).findAll({product: this._product._id})
             .then((auds:Audience[]) => 
                 Promise.all(
-                    auds.map(aud => new AudienceManager(aud).updateReaction(from, to))
+                    auds.map(aud => 
+                        new AudienceManager(aud, this._marketStats, this._prodStats, this._hrStats)
+                            .updateReaction(from, to)
+                    )
                 )
             )
             .then((auds:Audience[]) => 
