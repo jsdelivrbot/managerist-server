@@ -9,9 +9,6 @@ import {U} from "../../common/u";
  * Class AudienceFactory
  */
 export class AudienceFactory {
-    protected static _basicSize = 100;
-    protected static _basicGrowth = 0.1;
-
     private _product:Product;
 
     constructor(private _company:Company) {
@@ -20,9 +17,12 @@ export class AudienceFactory {
     }
 
     /**
-     *
+     * generate
+     * 
+     * actually Audience Factory
+     * 
      * @param product
-     * @returns {Audience}
+     * @returns Audience
      */
     public generate(product:Product|any) {
         if (!product._id)
@@ -33,7 +33,8 @@ export class AudienceFactory {
         let stats:MarketingStats = new MarketingStats(this._company),
             efficiency = 0;
 
-        return stats.efficiency
+        return stats.init()
+            .then(() => stats.efficiency)
             .then((e:number) => efficiency = e)
             .then(() => {
                 let featureValues:FeatureValue[] = this.genFeatureValues(this._product.features, 1),
@@ -42,8 +43,7 @@ export class AudienceFactory {
                     .populate({
                         product: this._product._id,
                         name: U.featureName(),
-                        /*** @todo improve logic of starting count calculation **/
-                        size: Math.max(AudienceFactory._basicSize, AudienceFactory._basicSize*efficiency*2),
+                        size: this.calculateStartingSize(efficiency),
                         conversion: 0,
                         converted: 0,
                         features: featureValues
@@ -52,12 +52,20 @@ export class AudienceFactory {
                         satisfaction: a.calcSatisfaction(this._product.features)
                     })
                     .populate({
-                        /*** @todo improve logic of growth calculation **/
-                        growth: Math.max(AudienceFactory._basicGrowth, AudienceFactory._basicGrowth*efficiency*2)
-                        + ((<any>this).satisfaction || 0 - 0.5)
+                        growth: a.calcGrowth(efficiency)
                     })
                     .save();
             })
+    }
+
+    /**
+     * determine starting Audience size
+     * @todo improve logic of starting count calculation
+     * 
+     * @param promotionEfficeincy 
+     */
+    public calculateStartingSize(promotionEfficeincy: number) {
+        return Math.max(Audience.basicSize, Audience.basicSize*promotionEfficeincy*2);
     }
 
     /**
@@ -67,35 +75,14 @@ export class AudienceFactory {
      *
      * @param featureIds
      * @param keyCount
-     * @returns {FeatureValue[]}
+     * @returns FeatureValue[]
      */
-    public genFeatureValues(featureIds:any[], keyCount = 1) {
+    public genFeatureValues(featureIds:any[], keyCount = 1):FeatureValue[] {
         let featureValues:FeatureValue[] = [],
-            value = 1,
-            kinv = featureIds.length/2 <= keyCount;
-        for (let i=0; i<featureIds.length; i++) {
-            let fi = featureIds[i],
-                tval = i == featureIds.length -1
-                    ? value
-                    : Math.random() * value/(featureIds.length - featureValues.length);
-            //noinspection TypeScriptValidateTypes
-            featureValues.push(new FeatureValue(
-                fi.feature,
-                kinv,
-                tval
-            ));
-
-            value -= tval;
-        }
-
-        if (kinv) keyCount = featureValues.length - keyCount;
-        if (keyCount>0)
-            while(keyCount) {
-                let ri = Math.floor(featureValues.length * Math.random());
-                if (featureValues[ri].key == !kinv) continue;
-                featureValues[ri].key = !kinv;
-                keyCount--;
-            }
-        return featureValues;
+            distribution = U.dstr(featureIds.length),
+            keyValues = U.bigX(distribution, keyCount);
+        return featureIds.map((f, i) => 
+            new FeatureValue(f, keyValues.includes(distribution[i]), distribution[i])
+        );
     }
 }

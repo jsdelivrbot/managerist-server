@@ -4,6 +4,7 @@ export class Audience {
     _id: any;
     name: string = '';
     size: number = 0;
+    priceMultiplier:number = 1;
     conversion: number = 0; // percentage - cached value ~ shows how efficient(can be) your sales in converting audience to customers
     converted: number = 0; // percentage - cached value ~ existing customers/audience size
     satisfaction: number = 0;  // percentage - cached value ~ rate shows of how FeatureValues relates with FeatureImplementations

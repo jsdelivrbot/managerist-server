@@ -65,6 +65,6 @@ export class FeatureImplementation {
         return l;
     }
 
-    public get implemented():boolean { return (this.version || 0) > 0;};
-    public get designed():boolean { return (this.todo || 0) > 0;};
+    get implemented():boolean { return (this.version || 0) > 0;};
+    get designed():boolean { return (this.todo || 0) > 0;};
 }

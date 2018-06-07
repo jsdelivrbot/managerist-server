@@ -12,7 +12,8 @@ export class Utils {
     static sum = (_arr:number[]):number => _arr.length ? _arr.slice(0).reduce((a:number, b:number) => a+b, 0) : 0;
     static sumo = (_arr:any[], prop:string):number => Utils.sum(_arr.map((a) => a[prop]));
     static avg = (_arr:number[]):number => _arr.length ? Utils.sum(_arr)/_arr.length : 0;
-    static big3 = (_arr:number[]):number[] => _arr.slice(0).sort((a,b) => b - a).slice(0, 3);
+    static bigX = (_arr:number[], x:number):number[] => _arr.slice(0).sort((a,b) => b - a).slice(0, x);
+    static big3 = (_arr:number[]):number[] => Utils.bigX(_arr, 3);
     static big3o = (_arr:any[], prop:string):any[] => _arr.slice(0).sort((a,b) => b[prop]- a[prop]).slice(0, 3);
     static dstr = (n:number):number[] => [...new Array(n)].reduce((a,_,i) => a[1].push(-a[0]+(a[0]+=(1 - a[0])*(n-i < 2 ? 1 : Math.random()))) && a, [0,[]])[1];
 }

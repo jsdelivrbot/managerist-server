@@ -29,7 +29,7 @@ export class Employee extends GameBased {
     company: Company;
     position: Position;
     efficiency: number;
-    skills: any[];
+    character: Character;
     level: ExpertiseLevel;
     expertise: TechnologyExpertise[];
 

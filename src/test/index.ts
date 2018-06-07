@@ -45,6 +45,7 @@ describe('App test', () => {
 
 // GAME LOGICS
     require('./game/departments/production');
+    require('./game/departments/marketing');
 
 //  require('./game/first.steps');
 
@@ -54,6 +55,7 @@ describe('App test', () => {
     require('./game/scenario/hragency');
     require('./game/scenario/estimate.project');
     require('./game/scenario/burnout');
+    require('./game/scenario/hire.sales');
     require('./game/scenario/upgrade.product');
 
     //require('./game/game.delete');

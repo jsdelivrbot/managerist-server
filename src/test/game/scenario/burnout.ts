@@ -7,10 +7,12 @@ import {Event} from "../../../models/event";
 import {TestGame} from "../utils/test.game"
 import { Project, ProjectStatus, ProductStage, Product } from "../../../models";
 import { U } from "../../../common/u";
+import { Audience } from "../../../models/audience";
 
 describe('Game, first steps (actions) test', () => {
     let team:any[],
         project:any,
+        product:Product,
         prjEndAT:AlertType,
         processedDays = 0,
         x = 0;
@@ -39,11 +41,11 @@ describe('Game, first steps (actions) test', () => {
             });
     });
 
-    it('Chack that project now will have a progress with each Tick', (done) => {
+    it('Check that project now will have a progress with each Tick', (done) => {
         TestGame.makeATick(1, () => {
             (new Project(Storage.get('ga')))/*.withRelations(['product'])*/.findById(project._id)
             .then((p:Project) => {
-                p.completed.should.greaterThan(0, 'Project make no profgress');
+                p.completed.should.greaterThan(0, 'Project make no progress');
                 let fuatueresBurned = U.sumo(p.features, 'completed');
                 fuatueresBurned.should.greaterThan(1, 'Features not burned out with project.');
                 Math.abs(fuatueresBurned - p.completed).should.lessThan(1, 
@@ -93,14 +95,24 @@ describe('Game, first steps (actions) test', () => {
         (new Product(Storage.get('ga'))).findById(project.product)
             .then((p:Product) => {
                 p.should.have.property('stage');
-                U.en(ProductStage, p.stage).should.eq(ProductStage.Alpha);
+                p.isRun.should.eq(true, 'Product should be launched');
+                product = p;
             })
             .then(() => done())
             .catch(e => done(new Error(e)))
     });
     
-    xit('Check Marketings for Product after it\'s launch.', (done:Function) => {
-        //TODO
+    it('Check Marketings: Audiences have non-zero conversion rate (on next Tick).', (done:Function) => {
+        TestGame.makeATick(1, () => {
+            (new Audience(Storage.get('ga'))).findAll({product: product._id})
+            .then((a:Audience[]) => {
+                a.length.should.greaterThan(0, 'Audiences should actually exists');
+                let ttlConversion = U.sumo(a, 'conversion');
+                ttlConversion.should.greaterThan(0, 'Audiences should have non-zero(even if really close to it) conversion rate.');
+            })
+            .then(() => done())
+            .catch(e => done(new Error(e)))            
+        })
     });
 
     xit('Check Finance for Product after it\'s launch.', (done:Function) => {

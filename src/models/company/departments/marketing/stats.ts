@@ -8,6 +8,8 @@ import {DepartmentStats} from "../stats";
 import {DepartmentAlertsInterface} from "../alerts";
 import {CompanyDepartmentInterface} from "../company.department";
 import {MarketingCompanyDepartment} from "./department";
+import { Product } from "../../..";
+import { Feature } from "../../../feature";
 
 /**
  * Class ProductionStats
@@ -16,7 +18,7 @@ import {MarketingCompanyDepartment} from "./department";
 export class MarketingStats extends DepartmentStats {
     protected static _departmentDetailsClass:CompanyDepartmentInterface = MarketingCompanyDepartment;
     protected static _alertsClass: DepartmentAlertsInterface = MarketingAlerts;
-    protected _employeeWorkload:number = 10;
+    protected _ordinalEmployeeEfficiency:number = 0.1;
 
     /**
      * get workload
@@ -26,16 +28,43 @@ export class MarketingStats extends DepartmentStats {
      * @returns {Promise<number>}
      */
     public get workload():Promise<number> {
-        //noinspection TypeScriptValidateTypes
-        return Promise.all([
-            (new Credit(this._company.ga)).findAll({company:this._company._id})
-                .then((cds:Credit[]|any[]) =>
-                    (<Array<any>>cds).reduce((a:any, b:any):any => a.workload + b.workload, 0)
-                ),
-            this.allEmployees
-                .then((emps:Employee[]) => emps.length * this._employeeWorkload)
-        ])
-            .then((wls:number[]) => U.sum(wls));
+        return (new Product(this._company.ga))
+            .findAll({company:this._company._id})
+            .then((prods:Product[]) =>
+                Promise.all(
+                    prods.map((p:Product) =>  
+                        Promise.all(
+                            p.features.map(fi => 
+                                (new Feature(p.ga)).findById(fi.feature)
+                                    .then((f:Feature) => f.volume)
+                            )
+                        )
+                        .then((wls:number[]) => U.sum(wls))
+                    )
+                )
+                .then((wls:number[]) => U.sum(wls))
+            );
+    }
+
+    /**
+     * get capacity
+     *
+     * return available numbers in man/hours
+     *
+     * @returns {Promise<number>}
+     */
+    public get capacity():Promise<number> {
+        return super.capacity
+            .then((salesCapacity:number) => {
+                let ordinalEmpsCapacity = 
+                    this._employees.filter(e => 
+                        !this._depEmployees.map(de => de._id.toString()).includes(e._id.toString())
+                    ).reduce((a,e:Employee) => 
+                        a + this._ordinalEmployeeEfficiency * e.character.Communication,
+                        0
+                    );
+                return salesCapacity + ordinalEmpsCapacity;
+            });
     }
 
     /**
@@ -46,13 +75,31 @@ export class MarketingStats extends DepartmentStats {
      * @returns {Promise<number>}
      */
     public get complexity():Promise<number> {
+        return (new Product(this._company.ga))
+        .findAll({company:this._company._id})
+        .then((prods:Product[]) =>
+            Promise.all(
+                prods.map((p:Product) =>  
+                    Promise.all(
+                        p.features.map(fi => 
+                            (new Feature(p.ga)).findById(fi.feature)
+                                .then((f:Feature) => f.complexity)
+                        )
+                    )
+                    .then((wls:number[]) => U.avg(wls))
+                )
+            )
+            .then((wls:number[]) => U.avg(wls))
+        );
+    }
+
+    /**
+     * @property salesEfficiency number
+     * 
+     * efficiency in selling products in general
+     */
+    public get salesEfficiency(): Promise<number> {
         // TODO
-        // 1. - link with project
-        // 2. - company financials
-        return this.allEmployees.then((emps) => {
-            if (emps.length > 5)
-                return 1.5;
-            return 1;
-        });
+        return this.efficiency;
     }
 }

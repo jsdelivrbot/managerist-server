@@ -142,4 +142,17 @@ export class FeatureImplementation extends FeatureImplementationCommon {
         }
         return res;
     }
+
+    /**
+     * burnout
+     * 
+     * @param seconds number
+     * @param employees Employee[]
+     * @return Promise<FeatureImplementation>
+     */
+    burnout(seconds:number, employees:Employee[] = []): Promise<FeatureImplementation> {
+        this.completed =  (this.completed || 0) + seconds;
+        return Promise.resolve(true)
+            .then(() => this);
+    }    
 }

@@ -14,6 +14,7 @@ export class Product {
     _id: any;
 
     name: string = '';
+    price: number = 1; // Basic price for the product
     version: number = 0;
     monthly: number = 0;
     net: number = 0;

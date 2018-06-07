@@ -1,13 +1,20 @@
 import {ActiveRecord, ActiveRecordInterface} from "../core/db/active.record";
 import {GameActivity} from "./game";
 import {Managerist} from "../app";
+import { Technology } from "./technology";
+import { Company } from ".";
 
 export interface GameBasedInterface extends ActiveRecordInterface {
     new (a:GameActivity, data?:any) : GameBased;
 }
 export abstract class GameBased extends  ActiveRecord {
     //common
-    _id:any;
+    name:string = '';
+    complexity: number;
+    volume: number;
+    //TBD: industry: Industry
+    branch: Technology;
+    inventor: Company;
 
     protected _ga:GameActivity;
     /**

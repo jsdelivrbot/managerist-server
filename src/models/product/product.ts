@@ -15,6 +15,7 @@ export class Product extends GameBased {
     bugRate: number;
     tdRate: number;
     stage: ProductStage;
+    price: number;
 
     features: FeatureImplementation[];
 
@@ -32,6 +33,28 @@ export class Product extends GameBased {
             area: {type:ActiveRecordRulesTypes.ENUM, related: ProductArea},
             //reward: {type: ActiveRecordRulesTypes.CUSTOM, related: ProjectResults}
         };
+    }
+
+    static get activeStagesS()
+    {
+        return [
+            U.e(ProductStage, ProductStage.Alpha),
+            U.e(ProductStage, ProductStage.Beta),
+            U.e(ProductStage, ProductStage.Active),
+            U.e(ProductStage, ProductStage.Maintenance)
+        ]
+    }
+    
+    /**
+     * Invalidate product overall value (that may be proposed by investors to buyout product)
+     */
+    invalidateNet():Promise<Product> {
+        
+        // TODO
+        this.net = this.net;
+
+        return Promise.resolve(true)
+            .then(() => this);
     }
 
     invalidateStatus():Product
@@ -58,7 +81,12 @@ export class Product extends GameBased {
             this.stage = ProductStage.Active;
             return this;
         }
-        
+        // Active, Maintenance, Closed do not changes 
         return this;
+    }
+
+    get isRun()
+    {
+        return [ProductStage.Planned, ProductStage.Idea, ProductStage.Closed].includes(U.en(ProductStage, this.stage));
     }
 }

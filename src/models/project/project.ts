@@ -15,6 +15,8 @@ import { TechnologyUsage } from '../technology';
 import { ProductionStats } from '../company/departments/production/stats';
 import { AlertType } from '../alerts';
 import { Log, LogLevel } from '../../core/utils/log';
+import { Feature } from '../feature';
+import { FeatureManager } from '../feature/feature.manager';
 
 /**
  * Class Project
@@ -107,11 +109,13 @@ export class Project extends GameBased {
     }
 
     /**
+     * burnout
      * 
-     * @param seconds 
+     * @param seconds number
+     * @param employees Employee[]
      * @returns Promise<Project>
      */
-    burnout(seconds:number) {
+    burnout(seconds:number, employees:Employee[] = []):Promise<Project> {
         let burned, completed;
 
         if (!this.isActive)
@@ -126,15 +130,42 @@ export class Project extends GameBased {
                     U.sum(poss.map(pos => pos.efficiency * seconds))
                 );
                 completed = this.completed + burned;
-                for (let i=0; i < this.features.length; i++)
-                    this.features[i].completed = (this.features[i].completed || 0) + burned*distribution[i];
-
-                return this.populate({
-                        completed: completed,
-                        status: this.todo <= completed ? ProjectStatus.Resolved : ProjectStatus.Active
+                
+                /** @todo take into account that distribution not synced with rest of FI-todo, so there maybe leftover **/
+                return Promise.all(
+                    this.features.map((f, i) =>
+                        (new FeatureImplementation(f))
+                        .burnout(burned*distribution[i], employees)
+                    )
+                );
+            })
+            .then((fis:FeatureImplementation[]) => 
+                Promise.all(
+                    fis.map(fi => {
+                        if (fi.todo <= fi.completed) {
+                            let pFeature = fi.feature._id
+                                ? Promise.resolve(fi.feature)
+                                : (new Feature(this.ga)).findById(fi.feature);
+                            
+                            /** @todo maybe throw some Alert on global feature updated (then it means move all to game.manager level) */
+                            return pFeature
+                                .then((f:Feature) => new FeatureManager(f).upgrade(fi))
+                                .then(() => fi);
+                        }
+                        return Promise.resolve(fi)
                     })
-                    .save();
-            });
+                )
+                .then(() => fis)
+            )
+            .then((fi:FeatureImplementation[]) => 
+                this.populate({
+                    completed: completed,
+                    status: this.todo <= completed ? ProjectStatus.Resolved : ProjectStatus.Active,
+                    features: fi
+                })
+                .save()
+            )
+            .then(() => this);
     }
 
     get isActive() {

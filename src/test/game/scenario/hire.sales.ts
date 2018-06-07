@@ -11,14 +11,14 @@ import { Alert } from "../../../models/alerts/alert";
 import { HrAgencyPackage, HrAgencyActionType } from "../../../models/actions";
 import { U } from "../../../common/u";
 
-describe('Hire developer with help of HrAgency test', () => {
+describe('Hire Sale with help of HrAgency test', () => {
     let noDevAT:AlertType,
         role:Role,
         employeeId:any,
         funds:number = 0;
 
-    it('Set hiring priority = Developer', (done:Function)=> {
-        role = <Role>Role.getByName('Developer');
+    it('Set hiring priority = Sale', (done:Function)=> {
+        role = <Role>Role.getByName('Sale');
         //noinspection TypeScriptUnresolvedFunction
         chai.request(Managerist.app.server)
             .post('/game/hr/priority')
@@ -41,25 +41,7 @@ describe('Hire developer with help of HrAgency test', () => {
             });
     });
 
-    it('GET current Financials', (done)=> {
-        //noinspection TypeScriptUnresolvedFunction
-        chai.request(Managerist.app.server)
-            .get('/company/financials/')
-            .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
-            .end((err:any, res:any) => {
-                if (err) return done(new Error(err));
-
-                let current = Storage.get('Company');
-                res.should.have.status(200);
-                res.body.should.have.property('funds');
-                res.body.funds.should.greaterThan(0);
-                funds = res.body.funds;
-                done();
-            });
-
-    });
-
-    it('Pay HrAgency for Developer to find', (done:Function)=> {
+    it('Pay HrAgency for Sale to find', (done:Function)=> {
         //noinspection TypeScriptUnresolvedFunction
         chai.request(Managerist.app.server)
             .post('/game/hr/agency')
@@ -73,26 +55,8 @@ describe('Hire developer with help of HrAgency test', () => {
             });
     });
 
-    it('GET Financials, check that charged correctly', (done)=> {
+    it('Get list of Hireable, check that new Sale in the list', (done:Function)=> {
         //noinspection TypeScriptUnresolvedFunction
-        chai.request(Managerist.app.server)
-            .get('/company/financials/')
-            .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
-            .end((err:any, res:any) => {
-                if (err) return done(new Error(err));
-
-                let current = Storage.get('Company');
-                res.should.have.status(200);
-                res.body.should.have.property('funds');
-                res.body.funds.should.greaterThan(0);
-                let diff = funds - res.body.funds,
-                    price = HrAgencyActionType.getPrice(HrAgencyPackage.Vip);
-                diff.should.eq(price);
-                done();
-            });
-    });
-
-    it('Get list of Hireable, check that new Developer in the list', (done:Function)=> {
         chai.request(Managerist.app.server)
             .get('/game/hr/hireable')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
@@ -107,13 +71,16 @@ describe('Hire developer with help of HrAgency test', () => {
                 available = available.filter((e:Employee) => 
                     (e.role._id || e.role).toString() == role._id.toString()
                 );
-                available.length.should.eq(1);
+                available.length.should.greaterThan(1, 'There is no any Sales.');
                 employeeId = available[0]._id;
                 done();
             });
     });
 
-    it('Hire that new Employee', (done:Function)=> {
+    it('Hire that new Sale', (done:Function)=> {
+        if (!employeeId)
+            return  done(new Error('Previous test-case should pass.'));
+
         chai.request(Managerist.app.server)
             .post('/game/hr/hire')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
@@ -130,7 +97,7 @@ describe('Hire developer with help of HrAgency test', () => {
 
     it('Reset hiring priority (to keep process going on its own)', (done:Function)=> {
         role = <Role>Role.getByName('Developer');
-        //noinspection TypeScriptUnresolvedFunction
+
         chai.request(Managerist.app.server)
             .post('/game/hr/priority')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
@@ -151,4 +118,19 @@ describe('Hire developer with help of HrAgency test', () => {
                     .catch(e => done(new Error(e)));
             });
     });
+
+    it('Get list of Sales', (done:Function)=> {
+        chai.request(Managerist.app.server)
+            .get('/game/production/team')
+            .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
+            .end((err:any, res:any) => {
+                if (err) return done(res.statusCode + ": ", res.body, err.message);
+
+                res.should.have.status(200);
+                res.body.should.be.a('array');
+                res.body.length.should.eq(1);
+
+                done();
+            });
+    });    
 });

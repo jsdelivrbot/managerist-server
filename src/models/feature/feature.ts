@@ -2,16 +2,16 @@ import {
     Feature as FeatureCommon,
     FeatureImplementation as FeatureImplementationCommon,
     FeatureValue as FeatureValueCommon
-} from "../common/models/feature";
-export {Feature as FeatureCommon} from '../common/models/feature';
-import {GameBased} from "./game.based";
-import {Employee} from "./employee";
-import {SchemaTypes, ActiveRecord} from "../core/db/active.record";
+} from "../../common/models/feature";
+export {Feature as FeatureCommon} from '../../common/models/feature';
+import {GameBased} from "../game.based";
+import {Employee} from "../employee";
+import {SchemaTypes, ActiveRecord} from "../../core/db/active.record";
 
-import {Product, ProductCommon} from "./product";
-import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "./technology";
-import {U} from "../common/u";
-import {FeatureImplementation} from "./feature.implementation";
+import {Product, ProductCommon} from "../product";
+import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "../technology";
+import {U} from "../../common/u";
+import {FeatureImplementation} from "../feature.implementation";
 
 export class Feature extends GameBased {
     protected static _defaultVolume = 2592000; // 60*60*24*30  ~ 1 month of work
