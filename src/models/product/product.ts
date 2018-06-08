@@ -59,7 +59,7 @@ export class Product extends GameBased {
 
     invalidateStatus():Product
     {
-        if (!U.sumo(this.features, 'isDesigned')) {
+        if (!U.sumo(this.features, 'designed')) {
             this.stage = ProductStage.Idea;
             return this;
         }
@@ -85,8 +85,11 @@ export class Product extends GameBased {
         return this;
     }
 
-    get isRun()
-    {
-        return [ProductStage.Planned, ProductStage.Idea, ProductStage.Closed].includes(U.en(ProductStage, this.stage));
+    get isRun() {
+        return Product.activeStagesS.includes(U.e(ProductStage, this.stage));
     }
+
+    get isInactive() {
+        return !this.isRun;
+    }    
 }

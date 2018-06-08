@@ -14,7 +14,10 @@ export class FeatureManager {
      * @returns Promise<Feature>
      */
     upgrade(fi: FeatureImplementation): Promise<Feature> {
-        // TODO
+        this._feature.implementations = this._feature.implementations || [];
+        this._feature.implementations.push(fi.technologies);
+        this._feature.volume =  ((this._feature.volume || fi.size) + fi.size) / 2;
+        this._feature.complexity =  (this._feature.complexity + (2-fi.quality)) / 2;
         return  this._feature.save()
             .then(() => this._feature);
     }

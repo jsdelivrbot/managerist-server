@@ -19,7 +19,7 @@ export class ProjectResults extends ProjectResultsCommon {
             ? Promise.resolve(this._project.product)
             : new Product(this._project.ga).findById(this._project.product);
         return pProduct
-            .then((pr:Product) => this._applyProductReward);
+            .then((pr:Product) => this._applyProductReward(pr));
     }
 
     protected _applyProductReward(prd:Product):Promise<any> {

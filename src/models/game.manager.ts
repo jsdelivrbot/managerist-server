@@ -150,11 +150,11 @@ export class GameManager {
             hrStats:HrStats = this._hrStats[company._id];
 
         return (new Product(company.ga))
-            .findAll({company: company._id, status: Product.activeStagesS})
+            .findAll({company: company._id})
             .then((products:any[]) => {
                 Log.log("PRODUCT UPDATES (" + products.length + ") OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString(), LogLevel.Debug);
                 return Promise.all(
-                    products.map((p:Product) =>
+                    products.filter((p:Product) => p.isRun).map((p:Product) =>
                         (new ProductManager(p, prodStats, mktStats, hrStats))
                             .checkUpdates(fromDate, toDate)
                     )

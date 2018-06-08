@@ -102,13 +102,13 @@ export enum ExpertiseLevel{Intern, Junior, Middle, Senior, Expert}
 export class TechnologyExpertise {
     static randomLevel(minLevel:ExpertiseLevel = ExpertiseLevel.Intern, maxLevel:ExpertiseLevel = ExpertiseLevel.Expert) {
         return ((r) => {
-            if (r > 0.9)
+            if (r >= 0.9)
                 return ExpertiseLevel.Expert;
-            if (r > 0.8)
+            if (r >= 0.8)
                 return ExpertiseLevel.Senior;
-            if (r > 0.6)
+            if (r >= 0.6)
                 return ExpertiseLevel.Middle;
-            if (r > 0.2)
+            if (r >= 0.2)
                 return ExpertiseLevel.Junior;
             return ExpertiseLevel.Intern;
         })(Math.min(TechnologyExpertise.lvlToVal(maxLevel), Math.max(TechnologyExpertise.lvlToVal(minLevel), Math.random())));

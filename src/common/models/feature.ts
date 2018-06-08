@@ -8,8 +8,9 @@ export enum FeatureSpecial{Documentation, TechnicalDocumentation, AutomatesTests
 export class Feature {
     _id:any;
     name:string = '';
-    complexity: number = 0;
+    complexity: number = 1;
     volume: number = 0;
+    implementations:TechnologyUsage[][];
     //TBD: industry: Industry
     branch: KnowledgeBranch;
     inventor: Company;
@@ -66,5 +67,6 @@ export class FeatureImplementation {
     }
 
     get implemented():boolean { return (this.version || 0) > 0;};
-    get designed():boolean { return (this.todo || 0) > 0;};
+    get estimated():boolean { return (this.todo || 0) > 0;};
+    get designed():boolean { return this.implemented || this.estimated;};
 }

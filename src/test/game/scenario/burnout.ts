@@ -32,9 +32,14 @@ describe('Game, first steps (actions) test', () => {
                 x = project.todo/(3600*24);
                 x.should.be.greaterThan(1);
                 if (x > 10) {
-                    console.log('\n\n Project Extimated with '+x+' days, reduce it to 5 for test. \n\n\n');
+                    console.log('\n\n Project Estimated with '+x+' days (so all the features), reduce it to 5 for test. \n\n\n');
                     (new Project(Storage.get('ga'))).findById(project._id)
-                        .then(p => p.populate({todo: 120*3600}).save())
+                        .then((p:Project) => {
+                            return p.populate({
+                                todo: 120*3600, 
+                                features: p.features.map(f => (f.todo = 120*3600 / p.features.length) && f)
+                            }).save()
+                        })
                         .then(() => done())
                 } else 
                     done();
@@ -103,6 +108,9 @@ describe('Game, first steps (actions) test', () => {
     });
     
     it('Check Marketings: Audiences have non-zero conversion rate (on next Tick).', (done:Function) => {
+        if (!product)
+            return done(new Error('Previous test should pass.'));
+
         TestGame.makeATick(1, () => {
             (new Audience(Storage.get('ga'))).findAll({product: product._id})
             .then((a:Audience[]) => {

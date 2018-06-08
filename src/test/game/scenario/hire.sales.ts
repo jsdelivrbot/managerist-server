@@ -71,7 +71,7 @@ describe('Hire Sale with help of HrAgency test', () => {
                 available = available.filter((e:Employee) => 
                     (e.role._id || e.role).toString() == role._id.toString()
                 );
-                available.length.should.greaterThan(1, 'There is no any Sales.');
+                available.length.should.greaterThan(0, 'There is no any Sales.');
                 employeeId = available[0]._id;
                 done();
             });
@@ -121,7 +121,7 @@ describe('Hire Sale with help of HrAgency test', () => {
 
     it('Get list of Sales', (done:Function)=> {
         chai.request(Managerist.app.server)
-            .get('/game/production/team')
+            .get('/game/marketing/team')
             .set('Authorization', 'Bearer ' + Storage.get('gameToken'))
             .end((err:any, res:any) => {
                 if (err) return done(res.statusCode + ": ", res.body, err.message);

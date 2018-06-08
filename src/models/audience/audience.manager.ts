@@ -27,7 +27,7 @@ export class AudienceManager {
     init():Promise<boolean> {
         let pProduct = this._audience.product._id
             ? Promise.resolve(this._audience.product)
-            : (new Product(this._audience.ga)).findById(this._audience.product._id);
+            : (new Product(this._audience.ga)).findById(this._audience.product);
 
         return pProduct
             .then((p:Product) => this._product = p)
@@ -45,11 +45,12 @@ export class AudienceManager {
         let ev:Event[],
             daysPassed:number = (to.getTime() - from.getTime())/1000,
             fv:FeatureValue[] = this._audience.features,
-            fi:FeatureImplementation[] = this._product.features,
+            fi:FeatureImplementation[],
             efficiency = 0,
             salesEfficiency = 0;
 
         return this.init()
+            .then(() => fi = this._product.features)
             .then(() => this._marketStats.efficiency)
             .then((e:number) => efficiency = e)
             .then(() => this._marketStats.salesEfficiency)

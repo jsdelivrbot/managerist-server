@@ -25,8 +25,9 @@ export class FeatureImplementation extends FeatureImplementationCommon {
             let fi2 = fis2upd.find(_fi => 
                 (fi.feature._id || fi.feature).toString() == (_fi.feature._id || _fi.feature).toString()
             );
-            if (fi2) fi.merge(fi2);
-            return fi;
+            return fi2
+                ? (new FeatureImplementation(fi)).merge(fi2)
+                : fi;
         });
         fis1 = fis1.concat(fis2uniq);
         return fis1;
@@ -37,11 +38,14 @@ export class FeatureImplementation extends FeatureImplementationCommon {
      * @returns FeatureImplementation
      */
     merge(fi:FeatureImplementation):FeatureImplementation {
-        let parity = this.size / fi.completed;
-        this.technologies = TechnologyUsage.mergeFullGroups(this.technologies || [], fi.technologies, parity);
-        this.version++;
-        this.quality = (parity * this.quality + (1 - parity) *fi.quality) / 2;
-
+        if (this.implemented) {
+            let parity = this.size / fi.completed;
+            this.technologies = TechnologyUsage.mergeFullGroups(this.technologies || [], fi.technologies, parity);
+            this.quality = (parity * this.quality + (1 - parity) *fi.quality) / 2;
+            this.version = Math.max(this.version, fi.version);            
+        } else {
+            this.list = fi.list || fi;
+        }
         return this;
     }
 
@@ -124,7 +128,7 @@ export class FeatureImplementation extends FeatureImplementationCommon {
     }
 
     set list(obj:any) {
-        for (let bp of obj)
+        for (let bp of Object.getOwnPropertyNames(obj))
             (<any>this)[bp] = obj[bp];
     }
 
@@ -152,6 +156,10 @@ export class FeatureImplementation extends FeatureImplementationCommon {
      */
     burnout(seconds:number, employees:Employee[] = []): Promise<FeatureImplementation> {
         this.completed =  (this.completed || 0) + seconds;
+        // TODO
+        let currQ = employees.reduce((a) => a, 0.5);
+
+        this.quality = (this.completed - seconds) / this.completed * this.quality +  seconds / this.completed * currQ;
         return Promise.resolve(true)
             .then(() => this);
     }    

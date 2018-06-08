@@ -39,10 +39,14 @@ export class MarketingStats extends DepartmentStats {
                                     .then((f:Feature) => f.volume)
                             )
                         )
-                        .then((wls:number[]) => U.sum(wls))
+                        .then((wls:number[]) => {
+                            return U.sum(wls);
+                        })
                     )
                 )
-                .then((wls:number[]) => U.sum(wls))
+                .then((wls:number[]) => {
+                    return U.sum(wls);
+                })
             );
     }
 

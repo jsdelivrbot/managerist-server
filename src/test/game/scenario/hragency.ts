@@ -10,6 +10,7 @@ import { AlertType } from "../../../models/alerts/alert.type";
 import { Alert } from "../../../models/alerts/alert";
 import { HrAgencyPackage, HrAgencyActionType } from "../../../models/actions";
 import { U } from "../../../common/u";
+import { ExpertiseLevel } from "../../../models/technology";
 
 describe('Hire developer with help of HrAgency test', () => {
     let noDevAT:AlertType,
@@ -99,15 +100,14 @@ describe('Hire developer with help of HrAgency test', () => {
             .end((err:any, res:any) => {
                 if (err) return done(new Error(err));
 
-                res.should.have.status(200);
+                res.should.have.status(200, 'Status != 200');
                 res.body.should.be.a('array');
-                res.body.length.should.greaterThan(0);
-
                 let available = res.body;
                 available = available.filter((e:Employee) => 
                     (e.role._id || e.role).toString() == role._id.toString()
+                    && [ExpertiseLevel.Senior, ExpertiseLevel.Expert].includes(U.en(ExpertiseLevel, e.level))
                 );
-                available.length.should.eq(1);
+                available.length.should.greaterThan(0, 'Since we used "VIP" package, there should be at least 1 Senior available.');
                 employeeId = available[0]._id;
                 done();
             });

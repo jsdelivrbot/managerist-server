@@ -2,7 +2,7 @@ import {Company} from "./company";
 import {Position} from "./position";
 import {Product} from "./product";
 import {Project} from "./project";
-import {TechnologyExpertise} from "./technology";
+import {TechnologyExpertise, ExpertiseLevel} from "./technology";
 import {Role} from "./role"
 import {Character} from "./character"
 
@@ -17,6 +17,7 @@ export class Employee {
     expertise:TechnologyExpertise[] = [];
     efficiency: number = 0;
     salary: number = 0;
+    level: ExpertiseLevel = ExpertiseLevel.Junior;
 
     description: string = '';
 

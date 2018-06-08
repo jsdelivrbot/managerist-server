@@ -5,20 +5,29 @@ import {
 } from "../../common/models/feature";
 export {Feature as FeatureCommon} from '../../common/models/feature';
 import {GameBased} from "../game.based";
-import {Employee} from "../employee";
-import {SchemaTypes, ActiveRecord} from "../../core/db/active.record";
+import {SchemaTypes} from "../../core/db/active.record";
 
 import {Product, ProductCommon} from "../product";
-import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "../technology";
+import {Technology, KnownBranch, TechnologyUsage} from "../technology";
 import {U} from "../../common/u";
-import {FeatureImplementation} from "../feature.implementation";
+import { Company } from "../company";
 
 export class Feature extends GameBased {
+    // common
+    name:string;
+    complexity: number;
+    volume: number;
+    implementations:TechnologyUsage[][];
+    //TBD: industry: Industry
+    branch: Technology;
+    inventor: Company;
+
     protected static _defaultVolume = 2592000; // 60*60*24*30  ~ 1 month of work
     protected _common = FeatureCommon;
     protected _schema: any = {
         branch: SchemaTypes.ObjectId,
-        inventor: SchemaTypes.ObjectId
+        inventor: SchemaTypes.ObjectId,
+        implementations: SchemaTypes.Mixed
     }
 
     /**

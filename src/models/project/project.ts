@@ -121,50 +121,61 @@ export class Project extends GameBased {
         if (!this.isActive)
             throw new Error('You can\'t possiply make a progress on a non-active project.');
 
+        /** @hack ~ somewhere there should be interfaces or straiten property filler */
+        this.features = this.features.map(f => new FeatureImplementation(f));
+
         return (new Position(this.ga))
             .findAll({project: this._id})
             .then((poss:Position[]) => {
-                let distribution = U.dstr(this.features.length);
-                burned = Math.min(
-                    this.todo - this.completed,
-                    U.sum(poss.map(pos => pos.efficiency * seconds))
-                );
+                let distribution = U.dstr(this.features.filter(_fi => _fi.estimated).length);
+                burned = U.sum(poss.map(pos => pos.efficiency * seconds));
                 completed = this.completed + burned;
                 
-                /** @todo take into account that distribution not synced with rest of FI-todo, so there maybe leftover **/
+                /** @todo cameup with leftover, currently added to "next version" of feature **/
                 return Promise.all(
-                    this.features.map((f, i) =>
-                        (new FeatureImplementation(f))
-                        .burnout(burned*distribution[i], employees)
-                    )
+                    this.features.map((f) => {
+                        if (!f.estimated) return f;
+                        let portion = distribution.pop();
+                        return f.burnout(burned*portion, employees);
+                    })
                 );
             })
             .then((fis:FeatureImplementation[]) => 
                 Promise.all(
-                    fis.map(fi => {
-                        if (fi.todo <= fi.completed) {
+                    fis.map((fi:FeatureImplementation) => {
+                        if (fi.estimated && fi.todo <= fi.completed) {
                             let pFeature = fi.feature._id
                                 ? Promise.resolve(fi.feature)
                                 : (new Feature(this.ga)).findById(fi.feature);
-                            
+                            fi.size = (fi.size || 0) + fi.completed;
+                            fi.completed = fi.completed - fi.todo;
+                            fi.todo = 0;
+                            fi.version++;
                             /** @todo maybe throw some Alert on global feature updated (then it means move all to game.manager level) */
                             return pFeature
                                 .then((f:Feature) => new FeatureManager(f).upgrade(fi))
-                                .then(() => fi);
+                                .then(() => fi)
+                                .catch((e) => {
+                                    throw new Error('Failed to upgrade "world experience" on feature: ' + (fi.feature._id || fi.feature));
+                                });
                         }
                         return Promise.resolve(fi)
                     })
                 )
                 .then(() => fis)
             )
-            .then((fi:FeatureImplementation[]) => 
-                this.populate({
+            .then((fi:FeatureImplementation[]) => {
+                let compleatedFeatures = fi.filter(_fi => !_fi.estimated).length;
+                return this.populate({
                     completed: completed,
-                    status: this.todo <= completed ? ProjectStatus.Resolved : ProjectStatus.Active,
+                    // Check if all features shoud be designed once again
+                    status: compleatedFeatures == fi.length 
+                        ? ProjectStatus.Resolved 
+                        : ProjectStatus.Active,
                     features: fi
                 })
                 .save()
-            )
+            })
             .then(() => this);
     }
 
