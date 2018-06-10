@@ -18,6 +18,7 @@ export abstract class CompanyDepartment extends CommonCompanyDepartment {
     get common() {
         return {
             department: this.department._id || this.department,
+            head: this.head._id || this.head
         };
     }
 }

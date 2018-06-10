@@ -9,8 +9,8 @@ import { Log, LogLevel } from "../core/utils/log";
 
 
 export abstract class BaseGameController extends  BaseController {
-    protected _G:Game;
-    protected _U:User;
+    protected _game:Game;
+    protected _user:User;
     protected _company:Company;
     protected _currentUser:string;
     protected _currentGame:string;
@@ -65,11 +65,11 @@ export abstract class BaseGameController extends  BaseController {
      * @returns Promise<Game|null>
      */
     get game(): Promise<Game|null> {
-        if (this._G) return Promise.resolve(this._G);
+        if (this._game) return Promise.resolve(this._game);
 
         return (new Game).findById(this.currentGame)
             .then((g:Game) => {
-                this._G = g;
+                this._game = g;
                 return g;
             })
             .catch(e => Promise.resolve(null))
@@ -81,11 +81,11 @@ export abstract class BaseGameController extends  BaseController {
      * @returns Promise<User|null>
      */
     get user(): Promise<User|null> {
-        if (this._U) return Promise.resolve(this._U);
+        if (this._user) return Promise.resolve(this._user);
 
         return (new User).findById(this.currentUser)
             .then((u:User) => {
-                this._U = u;
+                this._user = u;
                 return u;
             })
             .catch(e => Promise.resolve(null))

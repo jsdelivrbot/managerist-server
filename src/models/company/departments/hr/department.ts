@@ -14,6 +14,7 @@ export class HrCompanyDepartment extends CompanyDepartment {
     get common() {
         return {
             department: this.department._id || this.department,
+            head: this.head._id || this.head,
             priority: (this.priority || []).map((r:any) => r._id || r),
             agencyPrice: this.agencyPrice || HrCompanyDepartment._DEFAULT_AGENCY_PRICE
         };

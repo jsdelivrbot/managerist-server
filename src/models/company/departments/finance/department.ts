@@ -8,7 +8,8 @@ export class FinanceCompanyDepartment extends CompanyDepartment {
 
     get common() {
         return {
-            department: this.department._id
+            department: this.department._id,
+            head: this.head._id || this.head
         };
     }
 }
