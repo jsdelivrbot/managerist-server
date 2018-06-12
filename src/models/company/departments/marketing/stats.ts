@@ -64,7 +64,7 @@ export class MarketingStats extends DepartmentStats {
                     this._employees.filter(e => 
                         !this._depEmployees.map(de => de._id.toString()).includes(e._id.toString())
                     ).reduce((a,e:Employee) => 
-                        a + this._ordinalEmployeeEfficiency * e.character.Communication,
+                        a + this._ordinalEmployeeEfficiency * e.character.Communication * (1 - e.character.Trustworthy),
                         0
                     );
                 return salesCapacity + ordinalEmpsCapacity;

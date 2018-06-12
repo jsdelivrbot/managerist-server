@@ -36,6 +36,7 @@ export abstract class GameDepartmentsController extends BaseGameController {
     }
 
     protected _prepare(): Promise<boolean> {
+        this._company = this._game = null;
         return this.game
             .then(() => this.company)
             .then((c:Company) => this._stats = (new this._statsClass(c)))
@@ -91,8 +92,10 @@ export abstract class GameDepartmentsController extends BaseGameController {
             .then(() => this._stats.employees)
 
             .then((employees:Employee[]) => {
-                // TODO
-                res.json(employees[0] || null);
+                let head = employees.find(e => 
+                    e._id.toString() == this._company.productionDepartment.head.toString()
+                )
+                res.json(head.common);
             });
     }
 
@@ -112,8 +115,8 @@ export abstract class GameDepartmentsController extends BaseGameController {
                 (new SetHeadActionType(this.ga)).do({
                     date: this._game.common.simulationDate,
                     company: this._company._id,
-                    employee: req.body._employee,
-                    department: req.body._deprtment,
+                    employee: req.body.employee,
+                    department: this._stats.department,
                 })
             ));
     }

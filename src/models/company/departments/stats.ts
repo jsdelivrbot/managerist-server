@@ -35,6 +35,14 @@ export abstract class DepartmentStats {
     protected _initialized:boolean = false;
 
     /**
+     * @returns {Department}
+     */
+    public get department():Department
+    {
+        return this._departmentDetails.department;
+    }
+
+    /**
      * @returns {boolean}
      */
     public get isIninialized():boolean {
