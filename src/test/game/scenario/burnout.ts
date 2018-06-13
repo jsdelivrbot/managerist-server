@@ -116,7 +116,7 @@ describe('Game, first steps (actions) test', () => {
             .then((a:Audience[]) => {
                 a.length.should.greaterThan(0, 'Audiences should actually exists');
                 let ttlConversion = U.sumo(a, 'conversion');
-                ttlConversion.should.greaterThan(0, 'Audiences should have non-zero(even if really close to it) conversion rate.');
+                ttlConversion.should.not.eq(0, 'Audiences should have non-zero(even if really close to it or negative) conversion rate.');
             })
             .then(() => done())
             .catch(e => done(new Error(e)))            
