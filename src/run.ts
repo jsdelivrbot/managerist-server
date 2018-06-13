@@ -1,4 +1,9 @@
 import {Managerist} from "./app";
-import * as Config from "./config";
+var Config;
+try {
+    Config = require("./config");
+} catch(e) {
+    Config = process.env.MANAGERIST_CONF || {};
+}
 
 new Managerist(Config.server.port, Config);
