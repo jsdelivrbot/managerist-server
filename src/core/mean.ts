@@ -95,7 +95,8 @@ export class Mean {
         this._app.use(passport.session());
 
         // Init Cache
-        this._cache = new Cache(config.cache);
+        if (config.cache)
+            this._cache = new Cache(config.cache);
         // Init Db
         this._db = new Db(config.db);
 

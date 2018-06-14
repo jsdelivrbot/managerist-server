@@ -1,9 +1,5 @@
 import {Managerist} from "./app";
-var Config;
-try {
-    Config = require("./config");
-} catch(e) {
-    Config = process.env.MANAGERIST_CONF || {};
-}
+import { ConfigLoader } from "./core/config.loader";
 
+var Config = (new ConfigLoader("./config")).Config;
 new Managerist(Config.server.port, Config);

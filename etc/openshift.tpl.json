@@ -46,8 +46,8 @@
         "ports": [
           {
             "name": "web",
-            "port": 9001,
-            "targetPort": 9001
+            "port": "${{MANAGERIST_PORT}}",
+            "targetPort": "${{MANAGERIST_PORT}}"
           }
         ],
         "selector": {
@@ -110,6 +110,38 @@
               {
                 "name": "NPM_MIRROR",
                 "value": "${NPM_MIRROR}"
+              },
+              {
+                "name": "MEAN_PORT",
+                "value": "${MANAGERIST_PORT}"
+              },
+              {
+                "name": "MEAN_JWT_KEY",
+                "value": "${CONTEXT_DIR}/dist/secured/jwt-rs256"
+              },
+              {
+                "name": "MEAN_JWT_KEY_PUB",
+                "value": "${CONTEXT_DIR}/dist/secured/jwt-rs256.pub"
+              },
+              {
+                "name": "MEAN_DB_HOST",
+                "value": "${MONGODB_SERVICE_HOST}"
+              },
+              {
+                "name": "MEAN_DB_USER",
+                "value": "${DATABASE_USER}"
+              },
+              {
+                "name": "MEAN_DB_PASSWORD",
+                "value": "${DATABASE_PASSWORD}"
+              },
+              {
+                "name": "MEAN_DB_DB",
+                "value": "${DATABASE_NAME}"
+              },
+              {
+                "name": "MEAN_SESSION_SALT",
+                "value": "${MANAGERIST_SALT}"
               }
             ]
           }
@@ -196,13 +228,13 @@
                 "volumeMounts": [
                   {
                     "name": "${NAME}-secured",
-                    "mountPath": "${CONTEXT_DIR}/secured",
+                    "mountPath": "${CONTEXT_DIR}/dist/secured",
                     "readOnly": true
                   }
                 ],
                 "ports": [
                   {
-                    "containerPort": 9001
+                    "containerPort": "${{MANAGERIST_PORT}}"
                   }
                 ],
                 "env": [
@@ -247,7 +279,7 @@
                   "initialDelaySeconds": 3,
                   "httpGet": {
                     "path": "/stats",
-                    "port": 9001
+                    "port": "${{MANAGERIST_PORT}}"
                   }
                 },
                 "livenessProbe": {
@@ -255,7 +287,7 @@
                   "initialDelaySeconds": 30,
                   "httpGet": {
                     "path": "/stats",
-                    "port": 9001
+                    "port": "${{MANAGERIST_PORT}}"
                   }
                 },
                 "resources": {
@@ -573,6 +605,25 @@
       "displayName": "Custom NPM Mirror URL",
       "description": "The custom NPM mirror URL",
       "value": ""
+    },
+    {
+      "name": "MANAGERIST_PORT",
+      "displayName": "API port number",
+      "description": "Custom port number on what API will be available",
+      "value": "9001"
+    },
+    {
+      "name": "MANAGERIST_JWT_KEY",
+      "displayName": "JWT RSA key name from the storage",
+      "description": "JWT RSA key name from the storage",
+      "value": "jwt-rs256"
+    },
+    {
+      "name": "MANAGERIST_SALT",
+      "displayName": "APP SESSION SALT",
+      "description": "Salt.",
+      "generate": "expression",
+      "from": "[a-zA-Z0-9]{16}"
     }
   ]
 }

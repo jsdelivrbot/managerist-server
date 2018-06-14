@@ -11,8 +11,11 @@ var __redisClient: redis.RedisClient;
  */
 export class Cache {
     constructor(config:any) {
+        // Only Redis supported, for now
+        if (config.type != 'redis') return this;
+
         if (!__redisClient) {
-            __redisClient = redis.createClient();
+            __redisClient = redis.createClient(config);
             __redisClient.on('error', (err: Error) => {
                 Log.log(err, LogLevel.Error);
                 __redisClient.quit();
