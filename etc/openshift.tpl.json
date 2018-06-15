@@ -117,11 +117,11 @@
               },
               {
                 "name": "MEAN_JWT_KEY",
-                "value": "${CONTEXT_DIR}/dist/secured/jwt-rs256"
+                "value": "${CONTEXT_DIR}/dist/secured/${MANAGERIST_JWT_KEY}"
               },
               {
                 "name": "MEAN_JWT_KEY_PUB",
-                "value": "${CONTEXT_DIR}/dist/secured/jwt-rs256.pub"
+                "value": "${CONTEXT_DIR}/dist/secured/${MANAGERIST_JWT_KEY}.pub"
               },
               {
                 "name": "MEAN_DB_HOST",
@@ -225,13 +225,6 @@
               {
                 "name": "managerist-srv-persistent",
                 "image": " ",
-                "volumeMounts": [
-                  {
-                    "name": "${NAME}-secured",
-                    "mountPath": "${CONTEXT_DIR}/dist/secured",
-                    "readOnly": true
-                  }
-                ],
                 "ports": [
                   {
                     "containerPort": "${{MANAGERIST_PORT}}"
@@ -294,14 +287,6 @@
                   "limits": {
                     "memory": "${MEMORY_LIMIT}"
                   }
-                }
-              }
-            ],
-            "volumes": [
-              {
-                "name": "${NAME}-secured",
-                "secret": {
-                  "secretName": "jwt-rs256"
                 }
               }
             ]
@@ -614,9 +599,9 @@
     },
     {
       "name": "MANAGERIST_JWT_KEY",
-      "displayName": "JWT RSA key name from the storage",
-      "description": "JWT RSA key name from the storage",
-      "value": "jwt-rs256"
+      "displayName": "JWT RSA key name",
+      "description": "JWT RSA key name",
+      "value": "jwtRS256"
     },
     {
       "name": "MANAGERIST_SALT",
