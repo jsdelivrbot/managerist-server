@@ -7,17 +7,20 @@ export enum LogLevel {Debug, Info, Warning, Error};
 export class Log {
     private static _logDriverInstance:LogDriver = null;
     private static _instantiate() {
+        let drv:LogDriver;
+
         if (!Log._logDriverInstance) {
             let confLogDriver:any = Mean.config.log || {driver: 'console'},
                 logClass:any = Utils.capitaize(confLogDriver.driver);
             try {
-                Log._logDriverInstance = new confLogDriver.driver(confLogDriver);
-            } catch(e) {}
-
-            Log._logDriverInstance = new Drivers[logClass](confLogDriver);
+                drv = new confLogDriver.driver(confLogDriver);
+            } catch(e) {
+                drv = new Drivers[logClass](confLogDriver);
+            }
         }
-
-        return Log._logDriverInstance;
+        if (Mean.config.log)
+            Log._logDriverInstance = drv;
+        return Log._logDriverInstance || drv;
     }
     private static get _log() { return Log._logDriverInstance || Log._instantiate();}
     

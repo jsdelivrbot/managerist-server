@@ -12,11 +12,12 @@ export class ConfigLoader {
             user: '',
             password: '',
             connections: [{
-                name: '',
+                name: 'main',
                 host: '',
                 user: '',
                 password: '',
-                db: ''
+                db: '',
+                seed: __dirname + '/../api-db/'
             }],
         },
         auth: {
@@ -47,6 +48,7 @@ export class ConfigLoader {
         MEAN_DB_USER: 'db.user',
         MEAN_DB_PASSWORD: 'db.password',
         MEAN_DB_DB: 'db.connections.0.db',
+        MEAN_DB_SEED: 'db.connections.0.seed',
         MEAN_JWT_KEY: 'auth.providers.jwt.privateKey',
         MEAN_JWT_KEY_PUB: 'auth.providers.jwt.publicKey',
         MEAN_SESSION_SALT: 'security.sessionSalt'

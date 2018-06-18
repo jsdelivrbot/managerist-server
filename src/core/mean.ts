@@ -46,10 +46,10 @@ export class Mean {
     private static _instance: Mean;
 
     static get config():any {
-        return Mean._instance._config;
+        return Mean._instance ? Mean._instance._config : {};
     }
     static get db():Db {
-        return Mean._instance._db;
+        return Mean._instance ? Mean._instance._db : null;
     }
     static get cache():Cache { return Mean._instance._cache;}
 
@@ -62,10 +62,7 @@ export class Mean {
 
     constructor(port:number, config:any) {
         if (Mean._instance) {
-            console.error(
-                '\u001B[31m Server already run on port: ' + Mean._instance._port
-                + ' ~ aka ~ ' + this.constructor.name + '\u001B[0m'
-            );
+            Log.log('Server already run on port: ' + Mean._instance._port + ' ~ aka ~ ' + this.constructor.name, LogLevel.Error);
             return Mean._instance;
         }
         Mean._instance = this;
@@ -111,24 +108,32 @@ export class Mean {
         /**
          * Server with gzip compression.
          */
-        return new Promise<http.Server>((resolve, reject) => {
-            this._server = this._app.listen(port, () => {
-                this._port = (<any>this._server.address()).port;
-                Log.log('App is listening on port: ' + port, LogLevel.Debug);
-            });
-            this._server.on('connection', (socket: any) => {
-                // Add a newly connected socket
-                var socketId: any = this._nextSocketId++;
-                this._sockets[socketId] = socket;
-                Log.log('socket ' +  socketId + ' opened', LogLevel.Debug);
-                // Remove the socket when it closes
-                socket.on('close', () => {
-                    Log.log('socket ' + socketId + ' closed', LogLevel.Debug);
-                    delete this._sockets[socketId];
+        return this._db.init()
+        .then(res => {
+            if (!res) throw new Error('DB Connections failed to instantiate.');
+        })
+        .then(() => 
+            new Promise<http.Server>((resolve, reject) => {
+                this._server = this._app.listen(port, () => {
+                    this._port = (<any>this._server.address()).port;
+                    Log.log('App is listening on port: ' + port, LogLevel.Debug);
                 });
-            });
-            return resolve(this._server);
-        }).catch((e) => {
+                this._server.on('connection', (socket: any) => {
+                    // Add a newly connected socket
+                    var socketId: any = this._nextSocketId++;
+                    this._sockets[socketId] = socket;
+                    //Log.log('socket ' +  socketId + ' opened', LogLevel.Debug);
+                    // Remove the socket when it closes
+                    socket.on('close', () => {
+                        //Log.log('socket ' + socketId + ' closed', LogLevel.Debug);
+                        delete this._sockets[socketId];
+                    });
+                });
+                return resolve(this._server);
+            })
+        ).catch((e) => {
+            Log.log(e.message, LogLevel.Error);
+
             if (e.syscall !== 'listen') {
                 throw e;
             }
@@ -140,11 +145,11 @@ export class Mean {
             // handle specific listen errors with friendly messages
             switch (e.code) {
                 case 'EACCES':
-                    console.error('\u001B[31m' + bind + ' requires elevated privileges' + '\u001B[0m');
+                    Log.log(bind + ' requires elevated privileges', LogLevel.Error);
                     process.exit(1);
                     break;
                 case 'EADDRINUSE':
-                    console.error('\u001B[31m' + bind + ' is already in use' + '\u001B[0m');
+                    Log.log(bind + ' is already in use', LogLevel.Error);
                     process.exit(1);
                     break;
                 default:

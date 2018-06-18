@@ -129,11 +129,11 @@
               },
               {
                 "name": "MEAN_DB_USER",
-                "value": "${DATABASE_USER}"
+                "value": "admin"
               },
               {
                 "name": "MEAN_DB_PASSWORD",
-                "value": "${DATABASE_PASSWORD}"
+                "value": "${DATABASE_ADMIN_PASSWORD}"
               },
               {
                 "name": "MEAN_DB_DB",
@@ -142,6 +142,10 @@
               {
                 "name": "MEAN_SESSION_SALT",
                 "value": "${MANAGERIST_SALT}"
+              },
+              {
+                "name": "MANAGERIST_DB_GAME_PREFIX",
+                "value": "${MANAGERIST_DB_GAME_PREFIX}"
               }
             ]
           }
@@ -609,6 +613,12 @@
       "description": "Salt.",
       "generate": "expression",
       "from": "[a-zA-Z0-9]{16}"
+    },
+    {
+      "name": "MANAGERIST_DB_GAME_PREFIX",
+      "displayName": "generated Game DB prefix",
+      "description": "generated Game DB prefix",
+      "value": "mng-game"
     }
   ]
 }

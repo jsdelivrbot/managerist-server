@@ -1,9 +1,10 @@
 import * as mongoose from 'mongoose';
 import { Log, LogLevel } from '../utils/log';
+import { ConnectionManager } from './connection.manager';
 
 export class Db {
     private _config: any = {};
-    private _connections: any = {};
+    private _connections: {[key:string]:mongoose.Connection} = {};
     private _defaultConnection: string;
 
     get default() {
@@ -14,29 +15,54 @@ export class Db {
         return this._connections || {};
     }
 
-    addConnection(conn: any):boolean {
+    addConnection(conn: any): Promise<boolean> {
         conn.host = conn.host || this._config.host;
         //dbName: string, host:string = 'localhost'
         if (!conn || !conn.name || !conn.host || !conn.db) {
-            console.error('\u001B[31m' + (conn ? conn.name : 'Unknown connection') + ' ~ lack of params (host|name|db)' + '\u001B[0m');
-            return false;
+            Log.log((conn ? conn.name : 'Unknown connection') + ' ~ lack of params (host|name|db)', LogLevel.Error);
+            Log.log(conn, LogLevel.Debug, {color:'cyan'});
+            return Promise.resolve(false);
         }
 
         // connection already exists
         // TODO: maybe check if connection have same host/db params as existing
-        if (this._connections[conn.name])
-            return true;
+        if (this._connections[conn.name]) {
+            Log.log('Connection ' + conn.name + ' on '+ conn.host + '/' + conn.db + ' already exists', LogLevel.Warning);
+            return Promise.resolve(true);
+        }
 
         try {
-            this._connections[conn.name] = mongoose.createConnection('mongodb://' + conn.host + '/' + conn.db, {})
+            let dbUser = conn.user || this._config.user,
+                dbPass = conn.password || this._config.password;
+            this._connections[conn.name] = mongoose.createConnection(
+                'mongodb://' + conn.host + '/' + conn.db,
+                dbUser
+                    ? {
+                        user: dbUser,
+                        pass: dbPass
+                    }
+                    : {}
+            )
             if (conn.default || !this._defaultConnection)
                 this._defaultConnection = conn.name;
-            Log.log('Connected to the: mongodb://' + conn.host + '/' + conn.db, LogLevel.Debug);
+            Log.log('Connected to the: mongodb://' + conn.host + '/' + conn.db, LogLevel.Debug, {color:'purple'});
+            Log.log(conn, LogLevel.Debug, {color:'cyan'});
+            Log.log(dbUser
+                ? {
+                    user: dbUser,
+                    pass: dbPass
+                }
+                : {}, LogLevel.Debug, {color:'green'});
+            if (conn.seed) {
+                Log.log('Have a seed for connection: ' + conn.name + ' (dir:' + conn.seed + ')', LogLevel.Debug, {color:'purple'});
+                return (new ConnectionManager(this._connections[conn.name]))
+                    .importJSONs(conn.seed)
+            }
         } catch(err) {
             Log.log(err.message, LogLevel.Error);
-            return false;
+            return Promise.resolve(false);
         }
-        return true;
+        return Promise.resolve(true);
     }
 
     removeConnection(connName:string) {
@@ -51,9 +77,17 @@ export class Db {
         (mongoose as any).Promise = global.Promise;
         this._config = config;
 
-        for(let conn of config.connections)
-            this.addConnection(conn);
-
         return this;
+    }
+
+    public init(): Promise<boolean> {
+        Log.log('Have a ' + this._config.connections.length + ' DB connections', LogLevel.Debug, {color:'purple'});
+        return Promise.all(
+            this._config.connections.map(conn => this.addConnection(conn))
+        )
+        .then((oks:any[]) => {
+            Log.log(oks, LogLevel.Debug, {color:'cyan'});
+            return !(oks.filter(ok => !ok).length)
+        });
     }
 }

@@ -23,7 +23,8 @@ export var db =  {
         },{
             name: 'main',
             db: 'managerist-test-main',
-            host: 'localhost'
+            host: 'localhost',
+            seed: __dirname + '/../api-db'
         },{
             name: 'game',
             db: 'managerist-test-shared',
