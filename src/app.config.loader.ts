@@ -21,7 +21,7 @@ export class ConfigLoader extends BaseConfigLoader {
     }
     get Config() { 
         let base = super.Config,
-            config = this._merge(base, this._appConfig);
+            config = ConfigLoader._merge(base, this._appConfig);
 
         Log.log(base.db, LogLevel.Debug, {color:'yellow'});
         Log.log(this._appConfig.db, LogLevel.Debug, {color:'blue'});
@@ -37,14 +37,14 @@ export class ConfigLoader extends BaseConfigLoader {
         return config;
     }
 
-    private _merge(current, update) {
+    private static _merge(current, update) {
         Object.keys(update).forEach(function(key) {
           // if update[key] exist, and it's not a string or array,
           // we go in one level deeper
           if (current.hasOwnProperty(key) 
               && typeof current[key] === 'object'
               && !(current[key] instanceof Array)) {
-            this._merge(current[key], update[key]);
+            ConfigLoader._merge(current[key], update[key]);
       
           // if update[key] doesn't exist in current, or it's a string
           // or array, then assign/overwrite current[key] to update[key]
