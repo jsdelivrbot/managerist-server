@@ -33,15 +33,12 @@ export class Db {
 
         try {
             let dbUser = conn.user || this._config.user,
-                dbPass = conn.password || this._config.password;
+                dbPass = conn.password || this._config.password,
+                userURI = dbUser
+                    ? dbUser + ':' + dbPass + '@'
+                    : '';
             this._connections[conn.name] = mongoose.createConnection(
-                'mongodb://' + conn.host + '/' + conn.db,
-                dbUser
-                    ? {
-                        user: dbUser,
-                        pass: dbPass
-                    }
-                    : {}
+                'mongodb://' + userURI + conn.host + '/' + conn.db
             )
             if (conn.default || !this._defaultConnection)
                 this._defaultConnection = conn.name;
