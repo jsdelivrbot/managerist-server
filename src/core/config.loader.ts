@@ -9,7 +9,7 @@ export class ConfigLoader {
         },
         db: {
             host: '',
-            user: '',
+            user: 'admin',
             password: '',
             connections: [{
                 name: 'main',
@@ -45,8 +45,9 @@ export class ConfigLoader {
         MEAN_PORT: 'server.port',
         MEAN_LOG_DRIVER: 'log.driver',
         MEAN_DB_HOST: 'db.host',
-        MEAN_DB_USER: 'db.user',
-        MEAN_DB_PASSWORD: 'db.password',
+        MEAN_DB_ADMIN_PASSWORD: 'db.password',
+        MEAN_DB_USER: 'db.connections.0.user',
+        MEAN_DB_PASSWORD: 'db.connections.0.password',
         MEAN_DB_DB: 'db.connections.0.db',
         MEAN_DB_SEED: 'db.connections.0.seed',
         MEAN_JWT_KEY: 'auth.providers.jwt.privateKey',

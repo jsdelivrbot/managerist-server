@@ -129,10 +129,14 @@
               },
               {
                 "name": "MEAN_DB_USER",
-                "value": "admin"
+                "value": "${DATABASE_USER}"
               },
               {
                 "name": "MEAN_DB_PASSWORD",
+                "value": "${DATABASE_PASSWORD}"
+              },
+              {
+                "name": "MEAN_DB_ADMIN_PASSWORD",
                 "value": "${DATABASE_ADMIN_PASSWORD}"
               },
               {
