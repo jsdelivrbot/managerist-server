@@ -43,7 +43,7 @@ describe('App test', () => {
     // Check that Employee was created correctly
     require('./employee/employee.startup');
 
-// GAME LOGICS
+/*/ GAME LOGICS
     require('./game/departments/production');
     require('./game/departments/marketing');
 
@@ -57,7 +57,7 @@ describe('App test', () => {
 //    require('./game/scenario/upgrade.product');
 
     //require('./game/game.delete');
-
+*/
     after(() => {
         //Promise.resolve(true)
         cleanupDb()

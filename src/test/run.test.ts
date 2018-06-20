@@ -1,5 +1,5 @@
 import {Managerist} from "../app";
-import { ConfigLoader } from "../core/config.loader";
+import { ConfigLoader } from "../app.config.loader";
 
 export var run = () => {
     var Config = (new ConfigLoader("../config")).Config, 

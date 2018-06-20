@@ -38,11 +38,13 @@ export class Db {
                     ? dbUser + ':' + dbPass + '@'
                     : '';
             this._connections[conn.name] = mongoose.createConnection(
-                'mongodb://' + userURI + conn.host + '/' + conn.db
+                'mongodb://' /*+ userURI*/ + conn.host + '/' + conn.db,
+                {useMongoClient: true}
             )
+            
             if (conn.default || !this._defaultConnection)
                 this._defaultConnection = conn.name;
-            Log.log('Connected to the: mongodb://' + conn.host + '/' + conn.db, LogLevel.Debug, {color:'purple'});
+            Log.log('Connected to the: mongodb://' + userURI + conn.host + '/' + conn.db, LogLevel.Debug, {color:'purple'});
             Log.log(conn, LogLevel.Debug, {color:'cyan'});
             Log.log(dbUser
                 ? {

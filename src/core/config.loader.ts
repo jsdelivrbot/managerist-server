@@ -1,3 +1,5 @@
+import { LogLevel, Log } from "./utils/log";
+
 export class ConfigLoader {
     protected _config:any = {
         env: 'prod',
@@ -13,7 +15,6 @@ export class ConfigLoader {
             password: '',
             connections: [{
                 name: 'main',
-                host: '',
                 user: '',
                 password: '',
                 db: '',
@@ -61,6 +62,7 @@ export class ConfigLoader {
     constructor(protected _configFile:string = __dirname + '../config.js') {
         this.loadFromFile(_configFile);
         this.updateWithEnv();
+        Log.log(this.Config, LogLevel.Warning, {color:'yellow'});
     }
 
     loadFromFile(file:string) {
@@ -77,7 +79,7 @@ export class ConfigLoader {
         let envMap = this.envMap;
         for (let key of Object.getOwnPropertyNames(envMap)) {
             let paramAddress = envMap[key].split('.'),
-                configVar = this._config,
+                configVar = this.Config,
                 tailParam = paramAddress.slice(0).pop();
             for (let param of paramAddress)
                 if (typeof configVar[param] == 'object')
