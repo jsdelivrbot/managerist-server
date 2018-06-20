@@ -38,7 +38,7 @@ export class Db {
                     ? dbUser + ':' + dbPass + '@'
                     : '';
             this._connections[conn.name] = mongoose.createConnection(
-                'mongodb://' /*+ userURI*/ + conn.host + '/' + conn.db,
+                'mongodb://' + userURI + conn.host + '/' + conn.db + '?authSource=admin',
                 {useMongoClient: true}
             )
             
