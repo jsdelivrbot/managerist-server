@@ -22,7 +22,10 @@ var cleanupDb = ():Promise<any> => {
             .then(() =>
                 Promise.all(
                     gamesList.map((g) =>
-                        Managerist.db.connections[Managerist.newGameConnection(g)].dropDatabase()
+                        Managerist.newGameConnection(g)
+                            .then(() => 
+                                Managerist.db.connections[Managerist.getGameConnection(g)].dropDatabase()
+                            )
                     )
                 )
             )
@@ -31,19 +34,21 @@ var cleanupDb = ():Promise<any> => {
 };
 
 describe('App test', () => {
-    before(() => testApp.run());
+    before(() => {
+        testApp.run();
+    });
 
     require('./_core/init');
     require('./user/register');
     // Create Game with "Angel" setup
     require('./game/game.basics');
-
+/*
     // Check that Company created, and have correct financials data
     require('./company/company.basics');
     // Check that Employee was created correctly
     require('./employee/employee.startup');
 
-/*/ GAME LOGICS
+/* / GAME LOGICS
     require('./game/departments/production');
     require('./game/departments/marketing');
 

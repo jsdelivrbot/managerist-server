@@ -65,7 +65,7 @@ export abstract class GameBased extends  ActiveRecord {
      */
     get connection() {
         if (!this._connection) {
-            this._connection = Managerist.newGameConnection(this._ga.gameId);
+            this._connection = Managerist.getGameConnection(this._ga.gameId);
         }
         return this._connection;
     }

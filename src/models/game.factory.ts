@@ -9,6 +9,7 @@ import {ProductFactory} from './product/product.factory';
 import {AudienceFactory} from "./audience/audience.factory";
 import {EmployeeFactory} from "./employee/employee.factory";
 import {U} from "../common/u";
+import { Managerist } from "../app";
 
 /**
  * Class GameSetup
@@ -81,6 +82,12 @@ export class GameFactory {
             }));
         return this._game
             .save()
+            .then(() => Managerist.newGameConnection(this._game._id))
+            .then((res:boolean) => {
+                if (!res) throw new Error('Failed to create Game-DB for ' + this._game._id);
+                
+                return res;
+            })
             .then(() => {
                 return (new Company(new GameActivity(userId, this._game._id, t), {
                     user: userId,

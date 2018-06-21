@@ -55,17 +55,15 @@ export class Managerist extends Mean {
         return Managerist.config.db.gameDbPrefix + gameId;
     }
 
-    static newGameConnection(gameId:any):string {
+    static newGameConnection(gameId:any):Promise<boolean> {
         let dbName = Managerist.getGameConnection(gameId);
         if (Managerist.db.connections[dbName])
             return dbName;
-        Managerist.db.addConnection({
+        return Managerist.db.addConnection({
             host: Managerist.config.db.host,
             name: dbName,
             db: dbName
         });
-
-        return dbName;
     }
 
     /**
@@ -87,7 +85,10 @@ export class Managerist extends Mean {
             .then(() =>
                 Promise.all(
                     gamesList.map((g) =>
-                        Managerist.db.connections[Managerist.newGameConnection(g)].dropDatabase()
+                        Managerist.newGameConnection(g)
+                            .then(() => 
+                                Managerist.db.connections[Managerist.getGameConnection(g)].dropDatabase()
+                            )
                     )
                 )
             )

@@ -24,12 +24,9 @@ export class ConfigLoader extends BaseConfigLoader {
         return env;
     }
     get Config() { 
-        Log.log(ConfigLoader._appConfig.db, LogLevel.Debug, {color:'blue'});
         let base = super.Config,
             config = BaseConfigLoader._merge(base, ConfigLoader._appConfig);
 
-        Log.log(base.db, LogLevel.Debug, {color:'yellow'});
-        Log.log(config.db, LogLevel.Debug, {color:'green'});
         /**
          *  if it's openshift (MONGODB_SERVICE_HOST ~ post build generated env, so was not used for managerist container 
          * (maybe ordering(load mongo first) will solve issue))

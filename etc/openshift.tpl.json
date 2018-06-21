@@ -609,7 +609,7 @@
       "name": "MANAGERIST_JWT_KEY",
       "displayName": "JWT RSA key name",
       "description": "JWT RSA key name",
-      "value": "jwtRS256"
+      "value": ""
     },
     {
       "name": "MANAGERIST_SALT",
