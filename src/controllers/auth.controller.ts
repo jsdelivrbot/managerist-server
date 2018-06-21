@@ -55,6 +55,7 @@ export class AuthController extends  BaseController {
                 res.json({token: Token.createJwt(u.common)});
             })
             .catch((e:Error) => {
+                Log.log(e.message, LogLevel.Error);
                 res.status(500).json(e.toString());
             });
     }
