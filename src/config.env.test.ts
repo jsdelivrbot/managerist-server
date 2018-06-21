@@ -13,7 +13,6 @@ export var server = {
  * @type {{host: string; connections: {name: string; db: string; host: string}[]}}
  */
 export var db =  {
-    host: 'localhost',
     gameDbPrefix: 'managerist-test-',
     connections: [
         {
@@ -28,28 +27,4 @@ export var db =  {
             db: 'managerist-test-shared'
         },
     ]
-};
-
-/**
- * Auth config  - Passport compilant
- *
- * TODO - basic login/password  LocalStrategy
- *
- * @type {[provider]: {clientID: string; clientSecret: string; callbackURL: string}}
- */
-export var auth = {
-    providers: {
-        plain: {
-            allowPlainPassword: true
-        },
-        jwt: {
-            privateKey: __dirname + '/secured/jwtRS256.test.key',
-            publicKey: __dirname + '/secured/jwtRS256.test.key.pub',
-            algorithm: 'RSA-SHA256'
-        }
-    }
-};
-
-export var security = {
-    sessionSalt: 'super-secret-salt-whatever'
 };
