@@ -37,7 +37,7 @@ export class Db {
                 userURI = dbUser
                     ? dbUser + ':' + dbPass + '@'
                     : '',
-                srcParam = dbUser && (dbUser == 'admin' ? '?authSource=admin' : '?authSource=' + conn.db),
+                srcParam = dbUser && (dbUser == 'admin' ? '?authSource=admin' : ('?authSource=' + conn.db)),
                 connURI = 'mongodb://' + userURI + conn.host + '/' + conn.db + srcParam;
             //'mongodb://amin:'+ process.env.MONGODB_ADMIN_PASSWORD+'@' + process.env.MONGODB_SERVICE_HOST+':27017/managerist?authSource=admin'
             this._connections[conn.name] = mongoose.createConnection(
