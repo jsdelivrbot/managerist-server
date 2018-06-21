@@ -59,9 +59,10 @@ export class ConfigLoader {
     get envMap() { return this._envMap;}
     get Config() { return this._config;}
     
-    constructor(protected _configFile:string = __dirname + '../config.js') {
+    constructor(protected _configFile:string = __dirname + '../config.js', noenv=false) {
         this.loadFromFile(_configFile);
-        this.updateWithEnv();
+        if (noenv)
+            this.updateWithEnv();
         Log.log(this.Config, LogLevel.Warning, {color:'yellow'});
     }
 
@@ -90,4 +91,25 @@ export class ConfigLoader {
                 configVar[tailParam] = process.env[key] || configVar[tailParam];
         }
     }
+    public override(update) {
+        this._config = ConfigLoader._merge(this._config, update);
+        return this;
+    }
+    protected static _merge(current, update) {
+        Object.keys(update||{}).forEach(function(key) {
+          // if update[key] exist, and it's not a string or array,
+          // we go in one level deeper
+          if (current.hasOwnProperty(key) 
+              && typeof current[key] === 'object'
+              && !(current[key] instanceof Array)) {
+            ConfigLoader._merge(current[key], update[key]);
+      
+          // if update[key] doesn't exist in current, or it's a string
+          // or array, then assign/overwrite current[key] to update[key]
+          } else {
+            current[key] = update[key];
+          }
+        });
+        return current;
+    }    
 }
