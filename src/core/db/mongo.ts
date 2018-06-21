@@ -36,15 +36,18 @@ export class Db {
                 dbPass = conn.password || this._config.password,
                 userURI = dbUser
                     ? dbUser + ':' + dbPass + '@'
-                    : '';
+                    : '',
+                srcParam = dbUser && (dbUser == 'admin' ? '?authSource=admin' : '?authSource=' + conn.db),
+                connURI = 'mongodb://' + userURI + conn.host + '/' + conn.db + srcParam;
+            //'mongodb://amin:'+ process.env.MONGODB_ADMIN_PASSWORD+'@' + process.env.MONGODB_SERVICE_HOST+':27017/managerist?authSource=admin'
             this._connections[conn.name] = mongoose.createConnection(
-                'mongodb://' + userURI + conn.host + '/' + conn.db + '?authSource=admin',
+                connURI,
                 {useMongoClient: true}
             )
             
             if (conn.default || !this._defaultConnection)
                 this._defaultConnection = conn.name;
-            Log.log('Connected to the: mongodb://' + userURI + conn.host + '/' + conn.db, LogLevel.Debug, {color:'purple'});
+            Log.log('Connected to the: ' + connURI, LogLevel.Debug, {color:'purple'});
             Log.log(conn, LogLevel.Debug, {color:'cyan'});
             Log.log(dbUser
                 ? {
