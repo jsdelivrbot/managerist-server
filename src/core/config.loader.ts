@@ -59,9 +59,14 @@ export class ConfigLoader {
     get envMap() { return this._envMap;}
     get Config() { return this._config;}
     
-    constructor(protected _configFile:string = __dirname + '../config.js', noenv=false) {
+    /**
+     * 
+     * @param _configFile 
+     * @param skipEnv 
+     */
+    constructor(protected _configFile:string = __dirname + '../config.js', skipEnv = false) {
         this.loadFromFile(_configFile);
-        if (noenv)
+        if (!skipEnv)
             this.updateWithEnv();
         Log.log(this.Config, LogLevel.Warning, {color:'yellow'});
     }
