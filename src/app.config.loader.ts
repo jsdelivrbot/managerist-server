@@ -1,5 +1,4 @@
 import { ConfigLoader as BaseConfigLoader} from "./core/config.loader";
-import { Log, LogLevel } from "./core/utils/log";
 
 export class ConfigLoader extends BaseConfigLoader {
     private static _appConfig = {
@@ -20,7 +19,7 @@ export class ConfigLoader extends BaseConfigLoader {
     get envMap() { 
         let base = super.envMap,
             env = Object.assign(base, ConfigLoader._appEnvMap);
-        Log.log(env, LogLevel.Error);
+
         return env;
     }
     get Config() { 
@@ -33,7 +32,6 @@ export class ConfigLoader extends BaseConfigLoader {
          **/
         if (process.env.OPENSHIFT_BUILD_NAME) {
             config.db.host = process.env.MONGODB_SERVICE_HOST + ':' + process.env.MONGODB_SERVICE_PORT;
-            Log.log('DB HOST OVERRIDEN: ' + config.db.host, LogLevel.Warning, {color:'purple'});
         }
         return config;
     }

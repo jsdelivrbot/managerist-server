@@ -1,5 +1,3 @@
-import { LogLevel, Log } from "./utils/log";
-
 export class ConfigLoader {
     protected _config:any = {
         env: 'prod',
@@ -68,7 +66,6 @@ export class ConfigLoader {
         this.loadFromFile(_configFile);
         if (!skipEnv)
             this.updateWithEnv();
-        Log.log(this.Config, LogLevel.Warning, {color:'yellow'});
     }
 
     loadFromFile(file:string) {
