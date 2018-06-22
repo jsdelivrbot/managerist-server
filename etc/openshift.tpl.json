@@ -117,11 +117,11 @@
               },
               {
                 "name": "MEAN_JWT_KEY",
-                "value": "${APP_ROOT}/dist/secured/${MANAGERIST_JWT_KEY}"
+                "value": "${APP_ROOT}/src/dist/secured/${MANAGERIST_JWT_KEY}"
               },
               {
                 "name": "MEAN_JWT_KEY_PUB",
-                "value": "${APP_ROOT}/dist/secured/${MANAGERIST_JWT_KEY}.pub"
+                "value": "${APP_ROOT}/src/dist/secured/${MANAGERIST_JWT_KEY}.pub"
               },
               {
                 "name": "MEAN_DB_HOST",

@@ -42,13 +42,13 @@ describe('App test', () => {
     require('./user/register');
     // Create Game with "Angel" setup
     require('./game/game.basics');
-/*
+
     // Check that Company created, and have correct financials data
     require('./company/company.basics');
     // Check that Employee was created correctly
     require('./employee/employee.startup');
 
-/* / GAME LOGICS
+// GAME LOGICS
     require('./game/departments/production');
     require('./game/departments/marketing');
 
@@ -62,7 +62,7 @@ describe('App test', () => {
 //    require('./game/scenario/upgrade.product');
 
     //require('./game/game.delete');
-*/
+
     after(() => {
         //Promise.resolve(true)
         cleanupDb()
