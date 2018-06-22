@@ -27,8 +27,8 @@ export class ConfigLoader {
                     allowPlainPassword: true
                 },
                 jwt: {
-                    privateKey: __dirname + '/../secured/jwt-rs256.key',
-                    publicKey: __dirname + '/../secured/jwt-rs256.key.pub',
+                    privateKey: __dirname + '/../secured/jwtRS256.gen.key',
+                    publicKey: __dirname + '/../secured/jwtRS256.gen.key.pub',
                     algorithm: 'RSA-SHA256'
                 }
             }
