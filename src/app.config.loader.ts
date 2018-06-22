@@ -27,11 +27,13 @@ export class ConfigLoader extends BaseConfigLoader {
             config = BaseConfigLoader._merge(base, ConfigLoader._appConfig);
 
         /**
-         *  if it's openshift (MONGODB_SERVICE_HOST ~ post build generated env, so was not used for managerist container 
+         *  if it's openshift (MONGODB_SERVICE_HOST, APP_ROOT ~ post build generated env, so was not used for managerist container 
          * (maybe ordering(load mongo first) will solve issue))
          **/
         if (process.env.OPENSHIFT_BUILD_NAME) {
             config.db.host = process.env.MONGODB_SERVICE_HOST + ':' + process.env.MONGODB_SERVICE_PORT;
+            config.auth.providers.jwt.privateKey = config.auth.providers.jwt.privateKey.replace('${APP_ROOT}', process.env.APP_ROOT);
+            config.auth.providers.jwt.publicKey = config.auth.providers.jwt.publicKey.replace('${APP_ROOT}', process.env.APP_ROOT);
         }
         return config;
     }
