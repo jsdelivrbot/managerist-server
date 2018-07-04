@@ -4,11 +4,13 @@ export class ConfigLoader extends BaseConfigLoader {
     private static _appConfig = {
         db: {
             gameDbPrefix: 'managerist-game-',
+            user: '',
+            password: '',
             connections: [{
                 name: 'main',
                 user: '',
                 password: '',
-                db: '',
+                db: 'managerist-core',
                 seed: __dirname + '/../api-db/'
             }],
         },
@@ -16,15 +18,12 @@ export class ConfigLoader extends BaseConfigLoader {
     private static _appEnvMap = {
         MANAGERIST_DB_GAME_PREFIX: 'db.gameDbPrefix'        
     };
-    get envMap() { 
-        let base = super.envMap,
-            env = Object.assign(base, ConfigLoader._appEnvMap);
-
-        return env;
+    get envMap() {
+        return Object.assign(super.envMap, ConfigLoader._appEnvMap);
     }
-    get Config() { 
-        let base = super.Config,
-            config = BaseConfigLoader._merge(base, ConfigLoader._appConfig);
+
+    get defaults() {
+        let config:any = ConfigLoader._appConfig;
 
         /**
          *  if it's openshift (MONGODB_SERVICE_HOST, APP_ROOT ~ post build generated env, so was not used for managerist container 

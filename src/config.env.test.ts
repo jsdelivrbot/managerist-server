@@ -13,6 +13,7 @@ export var server = {
  * @type {{host: string; connections: {name: string; db: string; host: string}[]}}
  */
 export var db =  {
+    host: 'localhost',
     gameDbPrefix: 'managerist-test-',
     connections: [
         {

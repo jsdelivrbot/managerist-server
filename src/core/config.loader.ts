@@ -8,7 +8,7 @@ export class ConfigLoader {
             driver: 'console'
         },
         db: {
-            host: '',
+            host: 'localhost',
             user: 'admin',
             password: '',
             connections: [{
@@ -63,16 +63,24 @@ export class ConfigLoader {
      * @param skipEnv 
      */
     constructor(protected _configFile:string = __dirname + '../config.js', skipEnv = false) {
-        this.loadFromFile(_configFile);
+        ConfigLoader._merge(this._config, this.defaults);
         if (!skipEnv)
             this.updateWithEnv();
+        this.loadFromFile(_configFile);
+    }
+
+    /**
+     * provide defaults for derived classes
+     */
+    get defaults() {
+        return {};
     }
 
     loadFromFile(file:string) {
         let fconfig;
         try {
             fconfig = require(file);
-            this._config = fconfig;
+            ConfigLoader._merge(this._config, fconfig);
         } catch(e) {
             return false;
         }

@@ -38,7 +38,7 @@ export class Db {
                 : '',
             srcParam = dbUser && (dbUser == 'admin' ? '?authSource=admin' : ('?authSource=' + conn.db)),
             connURI = 'mongodb://' + userURI + conn.host + '/' + conn.db + srcParam;
-        //'mongodb://amin:'+ process.env.MONGODB_ADMIN_PASSWORD+'@' + process.env.MONGODB_SERVICE_HOST+':27017/managerist?authSource=admin'
+        Log.log(connURI, LogLevel.Debug, {color:"cyan"});
         return new Promise((connectionEstablished) => {
                 this._connections[conn.name] = (<any>mongoose.createConnection)(
                     connURI,
