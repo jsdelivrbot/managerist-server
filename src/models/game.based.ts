@@ -8,14 +8,6 @@ export interface GameBasedInterface extends ActiveRecordInterface {
     new (a:GameActivity, data?:any) : GameBased;
 }
 export abstract class GameBased extends  ActiveRecord {
-    //common
-    name:string = '';
-    complexity: number;
-    volume: number;
-    //TBD: industry: Industry
-    branch: Technology;
-    inventor: Company;
-
     protected _ga:GameActivity;
     /**
      *

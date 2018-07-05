@@ -45,12 +45,18 @@ export class AuthController extends  BaseController {
         if (!name || !uuid)
             return res.status(400).json({error: 'Name and UUID should be provided.'});
 
-        (new User({
-            name: name,
-            uuid: uuid,
-            type: 'mobile'
-        }))
-            .save()
+        let pUser = (new User).find({uuid:uuid})
+            .then((u:any) => {
+                if (u) return u;
+
+                return (new User({
+                    name: name,
+                    uuid: uuid,
+                    type: 'mobile'
+                }))
+                    .save();
+            });
+        pUser
             .then((u:any) => {
                 res.json({token: Token.createJwt(u.common)});
             })
