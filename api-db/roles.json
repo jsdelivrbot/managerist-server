@@ -15,3 +15,4 @@
 {"_id":{"$oid":"5a953386d85933659c3e78db"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"HR","trait":{"n":30,"character":{"Intelligence":0.7,"Appearance":0.7,"Trustworthy":0.4}}}
 {"_id":{"$oid":"5a9533a2d85933659c3e78dc"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"Recruiter","trait":{"n":35,"character":{"Intelligence":0.7,"Communucation":1.1,"Appearance":0.7,"Trustworthy":0.4}}}
 {"_id":{"$oid":"5a9533cbd85933659c3e78dd"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"COO","trait":{"n":45,"character":{"Leadership":0.7,"Communucation":1.2}}}
+{"_id":{"$oid":"5b3f68d5f8aeca3aaf921a52"},"name":"Handyman","trait":{"n":20,"character":{"Appearence" : 0.3,"Focusing" : 0.3,"Communication" : 0.3,"Trustworthy" : 0.2,"Leadership" : 0.2,"Intelligence" : 0.5}}}
