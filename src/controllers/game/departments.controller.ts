@@ -5,6 +5,7 @@ import {DepartmentStatsInterface, DepartmentStats} from "../../models/company/de
 import {DepartmentAlerts} from "../../models/company/departments/alerts";
 import {Alert} from "../../models/alerts/alert";
 import { SetHeadActionType } from "../../models/actions/types/set.head.actiontype";
+import { CompanyDepartment } from "../../models/company/departments/company.department";
 
 export abstract class GameDepartmentsController extends BaseGameController {
     protected abstract _statsClass:DepartmentStatsInterface;
@@ -92,10 +93,9 @@ export abstract class GameDepartmentsController extends BaseGameController {
             .then(() => this._stats.employees)
 
             .then((employees:Employee[]) => {
-                let head = employees.find(e => 
-                    e._id.toString() == this._company.productionDepartment.head.toString()
-                )
-                res.json(head.common);
+                let cDep:CompanyDepartment = this._company.productionDepartment,
+                    head = (cDep.head && employees.find(e => e._id.toString() == cDep.head.toString())) || null;
+                res.json(head && head.common);
             });
     }
 

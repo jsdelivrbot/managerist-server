@@ -9,11 +9,15 @@ import {Role} from "../../models/role";
 import {RecruitmentPriorityActionType} from "../../models/actions/types/recruitment.priority.actiontype";
 import { U } from "../../common";
 import { LogLevel, Log } from "../../core/utils/log";
+import { GameDepartmentsController } from "./departments.controller";
+import { HrStats } from "../../models/company/departments/hr/stats";
+import { DepartmentStatsInterface } from "../../models/company/departments/stats";
 
 /**
  * Class GameHrController
  */
-export class GameHrController extends BaseGameController {
+export class GameHrController extends GameDepartmentsController {
+    protected _statsClass:DepartmentStatsInterface = HrStats;
     constructor(app:any) {
         super(app,[
             {

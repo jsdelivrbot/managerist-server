@@ -21,13 +21,11 @@ export abstract class BaseGameController extends  BaseController {
      * @return {boolean}
      */
     protected requestCheck(req:any) {
-        let jwtData = UserIdentity.checkBearer(req);
+        let jwtData:any = UserIdentity.checkBearer(req);
 
         if (jwtData) {
-            //noinspection JSAnnotator
             req.session.currentUser = jwtData._id;
             if (jwtData.gameId)
-                //noinspection JSAnnotator
                 req.session.currentGame = jwtData.gameId;
         }
 
@@ -98,6 +96,7 @@ export abstract class BaseGameController extends  BaseController {
      */
     get company(): Promise<Company|null> {
         if (this._company) return Promise.resolve(this._company);
+        Log.log(this.ga, LogLevel.Debug, {color:'purple'});
         return (new Company(this.ga)).find({user: this.currentUser})
             .then((c:Company) => {
                 this._company = c;
