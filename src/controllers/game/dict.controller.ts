@@ -13,10 +13,11 @@ import { ActionType } from "../../models/actions/action.type";
 import { AlertType } from "../../models/alerts";
 import { EventType } from "../../models/event.type";
 import { Role } from "../../models/role";
+import { Feature } from "../../models/feature";
 
 
 
-export class DictController extends BaseController /*BaseGameController*/ {
+export class DictController extends BaseGameController {
     constructor(app:any) {
         super(app, [
             {
@@ -49,6 +50,11 @@ export class DictController extends BaseController /*BaseGameController*/ {
                 method: 'get',
                 handler: 'actionTechnology'
             },
+            {
+                route: '/feature',
+                method: 'get',
+                handler: 'actionFeature'
+            },
         ]);
     }
 
@@ -65,6 +71,21 @@ export class DictController extends BaseController /*BaseGameController*/ {
                 res.json(data.map(m => m.common))
             );
     }
+
+    /**
+     * Get departments
+     *
+     * @param req
+     * @param res
+     * @param next
+     */
+    actionFeature = (req: any, res: any, next: any) => {
+        (new Feature(this.ga)).findAll()
+            .then((data:any[]) =>
+                res.json(data.map(m => m.common))
+            );
+    }
+
 
     /**
      * Get action types
