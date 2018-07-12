@@ -54,6 +54,7 @@ export class Employee extends GameBased {
         );
         if (cmmn.role._id)
             cmmn.role = cmmn.role.common;
+        cmmn.character = (<any>this).character.list || (<any>this).character;
         return cmmn;
     }
 
