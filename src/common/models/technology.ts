@@ -182,6 +182,8 @@ export class TechnologyExpertise {
     /**
      * invalidateVolume
      *
+     * @todo rename "volume" to "expertise" for example, volume should be int - not partial or percent
+     * 
      * to set volume according to level
      *
      * @param lvl
