@@ -80,11 +80,11 @@ export abstract class DepartmentStats {
     /**
      * allEmployees
      *
-     * private method to preload and get all employees
+     * get all employees at a company
      *
      * @return {Promise<Employee[]>}
      */
-    protected get allEmployees():Promise<Employee[]|any[]> {
+    public get allEmployees():Promise<Employee[]|any[]> {
         if (this._employees.length)
             return Promise.resolve(this._employees);
 

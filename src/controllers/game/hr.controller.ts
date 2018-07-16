@@ -18,6 +18,7 @@ import { DepartmentStatsInterface } from "../../models/company/departments/stats
  */
 export class GameHrController extends GameDepartmentsController {
     protected _statsClass:DepartmentStatsInterface = HrStats;
+    protected _stats: HrStats;
     constructor(app:any) {
         super(app,[
             {
@@ -58,6 +59,10 @@ export class GameHrController extends GameDepartmentsController {
                 route: '/hireable',
                 method: 'get',
                 handler: 'actionHireable'
+            }, {
+                route: '/employees',
+                method: 'get',
+                handler: 'actionAllEmployees'
             }
         ]);
     }
@@ -231,6 +236,26 @@ export class GameHrController extends GameDepartmentsController {
         return this.company.then((c:Company) => {
             return (new Employee(c.ga)).withRelations(['role']).findAll({visible: c._id})
         })
+            .then((employees:any[]) => {
+                res.json(employees.map((e:any) => e.common));
+            })
+            .catch((err:any) => {
+                res.status(500).send(err.message);
+            });
+    }
+
+    /**
+     * actionAllEmployees
+     *
+     * HR: Get list of awailable for hiring
+     *
+     * @param req
+     * @param res
+     * @param next
+     * @returns {Promise<void>}
+     */
+    actionAllEmployees = (req: any, res: any, next: any) => {
+        return this._stats.allEmployees
             .then((employees:any[]) => {
                 res.json(employees.map((e:any) => e.common));
             })
