@@ -14,7 +14,7 @@ export class EmployeeFactory {
     private static _facesAwailable = 10;
 
     public static randomFace(g: Gender) {
-        return (g == Gender.Male ? 'm' : 'w') + '_' + Math.round(Math.random() * EmployeeFactory._facesAwailable);
+        return (g == Gender.Male ? 'm' : 'w') + '_' + (Math.floor(Math.random() * EmployeeFactory._facesAwailable) + 1);
     }
 
     /**
