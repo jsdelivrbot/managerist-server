@@ -93,8 +93,10 @@ export abstract class GameDepartmentsController extends BaseGameController {
             .then(() => this._stats.employees)
 
             .then((employees:Employee[]) => {
-                let cDep:CompanyDepartment = this._company.productionDepartment,
+                let cDep:CompanyDepartment = 
+                        this._company.departments.find(d => d.department.toString() == this._stats.department._id.toString()),
                     head = (cDep.head && employees.find(e => e._id.toString() == cDep.head.toString())) || null;
+
                 res.json(head && head.common);
             });
     }
