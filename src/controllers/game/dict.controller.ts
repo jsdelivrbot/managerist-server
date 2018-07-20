@@ -14,6 +14,7 @@ import { AlertType } from "../../models/alerts";
 import { EventType } from "../../models/event.type";
 import { Role } from "../../models/role";
 import { Feature } from "../../models/feature";
+import { runInThisContext } from "vm";
 
 
 
@@ -80,6 +81,9 @@ export class DictController extends BaseGameController {
      * @param next
      */
     actionFeature = (req: any, res: any, next: any) => {
+        if (!this._currentGame)
+            return  res.status(403).json({error: "Game not loaded."});
+
         (new Feature(this.ga)).findAll()
             .then((data:any[]) =>
                 res.json(data.map(m => m.common))
