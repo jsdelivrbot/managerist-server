@@ -240,6 +240,14 @@
                 ],
                 "env": [
                   {
+                    "name": "GIT_COMMITTER_NAME",
+                    "value": "${MANAGERIST_MAINTAINER}"
+                  },
+                  {
+                    "name": "GIT_COMMITTER_EMAIL",
+                    "value": "${MANAGERIST_MAINTAINER_EMAIL}"
+                  },
+                  {
                     "name": "DATABASE_SERVICE_NAME",
                     "value": "${DATABASE_SERVICE_NAME}"
                   },
@@ -623,6 +631,18 @@
       "displayName": "generated Game DB prefix",
       "description": "generated Game DB prefix",
       "value": "mng-game"
+    },
+    {
+      "name": "MANAGERIST_MAINTAINER",
+      "displayName": "Maintainer",
+      "description": "Maintainer (Git name)",
+      "value": "lebeker"
+    },
+    {
+      "name": "MANAGERIST_MAINTAINER_EMAIL",
+      "displayName": "Maintainer Email",
+      "description": "Maintainer (Git email)",
+      "value": "lebeker@gmail.com"
     }
   ]
 }
