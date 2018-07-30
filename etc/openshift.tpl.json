@@ -102,8 +102,9 @@
           "type": "Source",
           "sourceStrategy": {
             "from": {
-              "kind": "DockerImage",
-              "name": "node-8-alpine"
+              "kind": "ImageStreamTag",
+              "namespace": "${NAMESPACE}",
+              "name": "nodejs:${NODEJS_VERSION}"
             },
             "env":  [
               {

@@ -53,7 +53,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "install": "npm run clean && tsc",
+    "install": "npm run clean && tsc && sh etc/keygen.sh",
     "test": "echo 'OK'",
     "realtest": "mocha --timeout 999999 --colors ./dist/test/",
     "start": "node ./dist/run.js",
