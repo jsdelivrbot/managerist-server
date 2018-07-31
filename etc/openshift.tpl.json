@@ -150,6 +150,14 @@
               {
                 "name": "MANAGERIST_DB_GAME_PREFIX",
                 "value": "${MANAGERIST_DB_GAME_PREFIX}"
+              },
+              {
+                "name": "GIT_COMMITTER_NAME",
+                "value": "${MANAGERIST_MAINTAINER}"
+              },
+              {
+                "name": "GIT_COMMITTER_EMAIL",
+                "value": "${MANAGERIST_MAINTAINER_EMAIL}"
               }
             ]
           }
@@ -635,13 +643,13 @@
     {
       "name": "MANAGERIST_MAINTAINER",
       "displayName": "Maintainer",
-      "description": "Maintainer (Git name)",
+      "description": "Maintainer (Git Name)",
       "value": "lebeker"
     },
     {
       "name": "MANAGERIST_MAINTAINER_EMAIL",
-      "displayName": "Maintainer Email",
-      "description": "Maintainer (Git email)",
+      "displayName": "Maintainers Email",
+      "description": "Maintainer (Git Email)",
       "value": "lebeker@gmail.com"
     }
   ]
