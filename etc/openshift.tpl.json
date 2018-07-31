@@ -124,10 +124,6 @@
                 "value": "${APP_ROOT}/src/dist/secured/${MANAGERIST_JWT_KEY}.pub"
               },
               {
-                "name": "MEAN_DB_HOST",
-                "value": "${MONGODB_SERVICE_HOST}"
-              },
-              {
                 "name": "MEAN_DB_USER",
                 "value": "admin"
               },
@@ -508,7 +504,7 @@
       "name": "NODEJS_VERSION",
       "displayName": "Version of NodeJS Image",
       "description": "Version of NodeJS image to be used (6, 8, or latest).",
-      "value": "8",
+      "value": "latest",
       "required": true
     },
     {
