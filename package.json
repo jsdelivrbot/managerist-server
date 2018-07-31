@@ -31,6 +31,7 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "feature-name-generator": "git+https://github.com/lebeker/feature-name-generator.git",
+    "project-name-generator": "^2.1.5",
     "keypair": "^1.0.1",
     "mongoose": "^4.13.14",
     "passport": "^0.4.0",

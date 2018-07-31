@@ -1,6 +1,6 @@
 import { Utils } from "../core/utils/utils";
-
-var FeatureNameGenerator = require('feature-name-generator');
+//............................................................... FUCKING OPENSHI\*F*\T!!!!
+var FeatureNameGenerator = /*require('feature-name-generator') */ require('project-name-generator');
 
 export class U extends Utils {
     static format$(num: number):string {
