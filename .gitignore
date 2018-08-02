@@ -1,6 +1,7 @@
 *.js
 *.key
 *.key.pub
+package-lock.json
 src/config.ts
 
 .idea/
