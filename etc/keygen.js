@@ -9,12 +9,12 @@ console.log("RSA generated.");
 if (!fs.existsSync(ODIR))
     fs.mkdirSync(ODIR);
 
-fs.writeFile(ODIR + KNAME, pair.private, function(err) {
+fs.writeFile(ODIR + KNAME + '.key', pair.private, function(err) {
     if(err)  return console.log(err);
     console.log("RSA private saved.");
 });
 
-fs.writeFile(ODIR + KNAME + '.pub', pair.public, function(err) {
+fs.writeFile(ODIR + KNAME + '.key.pub', pair.public, function(err) {
     if(err)  return console.log(err);
     console.log("RSA public saved.");
 });
