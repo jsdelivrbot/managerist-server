@@ -55,7 +55,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "preinstall": "sh etc/openshift.sh",
+    "preinstall_openshift": "sh etc/openshift.sh",
     "install": "npm run clean && tsc && node etc/keygen.js",
     "test": "echo 'OK'",
     "realtest": "mocha --timeout 999999 --colors ./dist/test/",
