@@ -41,6 +41,7 @@ export class ConfigLoader {
         }
     };
     private _envMap:any = {
+        PORT: 'server.port',
         MEAN_PORT: 'server.port',
         MEAN_LOG_DRIVER: 'log.driver',
         MEAN_DB_HOST: 'db.host',
