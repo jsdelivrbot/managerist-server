@@ -52,7 +52,9 @@ export class Managerist extends Mean {
     }
 
     static getGameConnection(gameId:any) {
-        return Managerist.config.db.gameDbPrefix + gameId;
+        return Managerist.config.db.monogame
+            ? 'main'
+            : Managerist.config.db.gameDbPrefix + gameId;
     }
 
     static newGameConnection(gameId:any):Promise<boolean> {

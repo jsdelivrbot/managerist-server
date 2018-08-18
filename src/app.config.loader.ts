@@ -4,6 +4,7 @@ export class ConfigLoader extends BaseConfigLoader {
     private static _appConfig = {
         db: {
             gameDbPrefix: 'managerist-game-',
+            monogame: false,
             user: '',
             password: '',
             connections: [{
@@ -16,7 +17,8 @@ export class ConfigLoader extends BaseConfigLoader {
         },
     };    
     private static _appEnvMap = {
-        MANAGERIST_DB_GAME_PREFIX: 'db.gameDbPrefix'        
+        MANAGERIST_DB_GAME_PREFIX: 'db.gameDbPrefix',
+        MANAGERIST_DB_MONOGAME: 'db.monogame'
     };
     get envMap() {
         return Object.assign(super.envMap, ConfigLoader._appEnvMap);
