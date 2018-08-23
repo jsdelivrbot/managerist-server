@@ -6,6 +6,8 @@ import {DepartmentAlerts} from "../../models/company/departments/alerts";
 import {Alert} from "../../models/alerts/alert";
 import { SetHeadActionType } from "../../models/actions/types/set.head.actiontype";
 import { CompanyDepartment } from "../../models/company/departments/company.department";
+import { Log, LogLevel } from "../../core/utils/log";
+import { ESRCH } from "constants";
 
 export abstract class GameDepartmentsController extends BaseGameController {
     protected abstract _statsClass:DepartmentStatsInterface;
@@ -37,7 +39,7 @@ export abstract class GameDepartmentsController extends BaseGameController {
                 route: '/details',
                 method: 'get',
                 handler: 'actionDetails'
-            },
+            }
         ]));
     }
 
@@ -59,7 +61,7 @@ export abstract class GameDepartmentsController extends BaseGameController {
      * @param next
      * @returns {Promise<void>}
      */
-    actionAlerts = (req: any, res: any, next: any):any => {
+    public actionAlerts = (req: any, res: any, next: any):any => {
         return this._prepare()
             .then(() => <any>this._stats.alertsStorage.alerts())
             .then((alerts:Alert[]) => {
@@ -77,7 +79,7 @@ export abstract class GameDepartmentsController extends BaseGameController {
      * @param next
      * @returns {Promise<void>}
      */
-    actionTeam = (req: any, res: any, next: any) => {
+    public actionTeam = (req: any, res: any, next: any) => {
         return this._prepare()
             .then(() => this._stats.employees)
             .then((employees:Employee[]) => res.json(employees.map((e:any) => e.common)));
@@ -93,16 +95,19 @@ export abstract class GameDepartmentsController extends BaseGameController {
      * @param next
      * @returns {Promise<void>}
      */
-    actionHead = (req: any, res: any, next: any) => {
+    public actionHead = (req: any, res: any, next: any) => {
         return this._prepare()
             .then(() => this._stats.employees)
-
             .then((employees:Employee[]) => {
+                let statsDep = (this._stats && this._stats.department && this._stats.department._id) ||  '';
                 let cDep:CompanyDepartment = 
-                        this._company.departments.find(d => d.department.toString() == this._stats.department._id.toString()),
+                        this._company.departments.find(d => d.department.toString() == statsDep.toString()),
                     head = (cDep.head && employees.find(e => e._id.toString() == cDep.head.toString())) || null;
-
-                res.json(head && head.common);
+                Log.log("Start Dep ~ " + this.constructor.name + ' ' + statsDep, LogLevel.Info);
+                res.status(head ? 200 : 204).send(head && head.common);
+            })
+            .catch(e => {
+                Log.log(e, LogLevel.Error);
             });
     }
 
@@ -116,7 +121,7 @@ export abstract class GameDepartmentsController extends BaseGameController {
      * @param next
      * @returns {Promise<void>}
      */
-    actionSetHead = (req: any, res: any, next: any) => {
+    public actionSetHead = (req: any, res: any, next: any) => {
         return this._prepare()
             .then(() => this._processActionCreation(req, res,
                 (new SetHeadActionType(this.ga)).do({
@@ -125,7 +130,10 @@ export abstract class GameDepartmentsController extends BaseGameController {
                     employee: req.body.employee,
                     department: this._stats.department,
                 })
-            ));
+            ))
+            .catch(e => {
+                Log.log(e, LogLevel.Error);
+            });
     }
 
     /**
@@ -138,15 +146,19 @@ export abstract class GameDepartmentsController extends BaseGameController {
      * @param next
      * @returns {Promise<void>}
      */
-    actionDetails = (req: any, res: any, next: any) => {
+    public actionDetails = (req: any, res: any, next: any) => {
         return this._prepare()
-            .then(() => this._stats.employees)
-
-            .then((employees:Employee[]) => {
-                let cDep:CompanyDepartment = 
-                        this._company.departments.find(d => d.department.toString() == this._stats.department._id.toString());
-
-                res.json(cDep && cDep.common);
+            .then(() => {
+                let statsDep = (this._stats && this._stats.department && this._stats.department._id) ||  '',
+                    cDep:CompanyDepartment = 
+                        this._company.departments.find(
+                            d => d.department.toString() == statsDep.toString()
+                        );
+                Log.log("Details "+this.constructor.name, LogLevel.Warning);
+                res.status(cDep ? 200 : 204).send(cDep && cDep.common);
+            })
+            .catch(e => {
+                Log.log(e, LogLevel.Error);
             });
     }    
 }
