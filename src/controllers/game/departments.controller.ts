@@ -33,6 +33,11 @@ export abstract class GameDepartmentsController extends BaseGameController {
                 method: 'post',
                 handler: 'actionSetHead'
             },
+            {
+                route: '/details',
+                method: 'get',
+                handler: 'actionDetails'
+            },
         ]));
     }
 
@@ -122,4 +127,26 @@ export abstract class GameDepartmentsController extends BaseGameController {
                 })
             ));
     }
+
+    /**
+     * actionDetails
+     * 
+     * Get details of department
+     * 
+     * @param req
+     * @param res
+     * @param next
+     * @returns {Promise<void>}
+     */
+    actionDetails = (req: any, res: any, next: any) => {
+        return this._prepare()
+            .then(() => this._stats.employees)
+
+            .then((employees:Employee[]) => {
+                let cDep:CompanyDepartment = 
+                        this._company.departments.find(d => d.department.toString() == this._stats.department._id.toString());
+
+                res.json(cDep && cDep.common);
+            });
+    }    
 }
