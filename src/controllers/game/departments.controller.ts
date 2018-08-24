@@ -103,8 +103,11 @@ export abstract class GameDepartmentsController extends BaseGameController {
                 let cDep:CompanyDepartment = 
                         this._company.departments.find(d => d.department.toString() == statsDep.toString()),
                     head = (cDep.head && employees.find(e => e._id.toString() == cDep.head.toString())) || null;
-                Log.log("Start Dep ~ " + this.constructor.name + ' ' + statsDep, LogLevel.Info);
-                res.status(head ? 200 : 204).send(head && head.common);
+                if (!head)
+                    return res.status(204).send({});
+
+                Log.log(head.common || head, LogLevel.Debug);
+                return res.json(head.common || head);
             })
             .catch(e => {
                 Log.log(e, LogLevel.Error);
@@ -154,8 +157,10 @@ export abstract class GameDepartmentsController extends BaseGameController {
                         this._company.departments.find(
                             d => d.department.toString() == statsDep.toString()
                         );
-                Log.log("Details "+this.constructor.name, LogLevel.Warning);
-                res.status(cDep ? 200 : 204).send(cDep && cDep.common);
+                if (!cDep)
+                    return res.status(204).send({});
+                Log.log(cDep.common || cDep, LogLevel.Debug);
+                return res.json(cDep.common || cDep);
             })
             .catch(e => {
                 Log.log(e, LogLevel.Error);
