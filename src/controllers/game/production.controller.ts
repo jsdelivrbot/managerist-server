@@ -62,7 +62,7 @@ export class GameProductionController extends GameDepartmentsController {
                 this._processActionCreation(req, res,
                     (new EstimateActionType(this.ga)).do({
                         date: g.common.simulationDate,
-                        company: req.body.company,
+                        company: this._company._id,
                         project: req.body.project,
                         employee: req.body.employee,
                     })
