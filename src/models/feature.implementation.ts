@@ -1,8 +1,10 @@
-import {FeatureImplementation as FeatureImplementationCommon} from "../common/models/feature";
+import {FeatureImplementation as FeatureImplementationCommon, Bug as BugCommon} from "../common/models/feature";
 import {Feature} from "./feature"
 import {Employee} from "./employee"
 import {U} from "../common/u"
 import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "./technology";
+
+export class Bug extends BugCommon {}
 
 /**
  * Class FeatureImplementation

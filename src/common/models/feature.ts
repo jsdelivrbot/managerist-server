@@ -3,11 +3,22 @@ import {Company} from "./company";
 
 export enum FeatureSpecial{Documentation, TechnicalDocumentation, AutomatesTests, Bug};
 /**
+ * Implementation issue
+ */
+export class Bug {
+    created: number; // development time-mark when was "put"
+    repeatable: number; // 0-1 ~ hardness of reproduction
+    critical: number; // 0-1 ~ 0-0.3 non-critical; 0.3-0.6 warn level; >0.6 - critical error
+    discovered: number; // 0 or something else
+}
+
+/**
  * Class Feature
  */
 export class Feature {
     _id:any;
     name:string = '';
+    icon:string = ""
     complexity: number = 1;
     volume: number = 0;
     implementations:TechnologyUsage[][];
@@ -45,6 +56,7 @@ export class FeatureImplementation {
     public version:number = 0;   // Iteration number, 0 ~ first attempt
 
     public quality:number = 0;
+    public bugs: Bug[] = [];
     public value:number = 0; // ???
     constructor(
         public feature:Feature|any,

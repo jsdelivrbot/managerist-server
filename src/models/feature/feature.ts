@@ -14,7 +14,8 @@ import { Company } from "../company";
 
 export class Feature extends GameBased {
     // common
-    name:string;
+    name: string;
+    ico: string;
     complexity: number;
     volume: number;
     implementations:TechnologyUsage[][];
@@ -74,7 +75,8 @@ export class Feature extends GameBased {
                             branch: Technology.getKnownBranch(KnownBranch.Programming),
                             inventor: product.company,
                             complexity: Feature.defaultVolume,
-                            name: U.featureName()
+                            name: U.featureName(),
+                            icon: (Math.floor(Math.random() * 1599)).toString(16) // fa-xxxx max value FA icons seems reside in a range 1-1598
                         })).save()
                     ))
                     // then fill the rest with existed

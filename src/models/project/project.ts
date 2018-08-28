@@ -1,9 +1,9 @@
-import {Project as ProjectCommon, ProjectType, ProjectStatus, ProjectResults} from '../../common/models/project';
+import {Project as ProjectCommon, Bomb as BombCommon, ProjectType, ProjectStatus, ProjectResults} from '../../common/models/project';
 export {Project as ProjectCommon, ProjectType, ProjectStatus, ProjectResults} from '../../common/models/project';
 
 import {SchemaTypes, ActiveRecord, ActiveRecordRule, ActiveRecordRulesTypes} from "../../core/db/active.record";
 import {GameBased} from "../game.based";
-import {FeatureImplementation} from "../feature.implementation";
+import {FeatureImplementation, Bug} from "../feature.implementation";
 import {Product, ProductStage} from "../product";
 import {Company} from "../company";
 import {Audience} from "../audience";
@@ -18,6 +18,8 @@ import { Log, LogLevel } from '../../core/utils/log';
 import { Feature } from '../feature';
 import { FeatureManager } from '../feature/feature.manager';
 
+export class Bomb extends BombCommon {}
+
 /**
  * Class Project
  */
@@ -30,10 +32,12 @@ export class Project extends GameBased {
     public audience: Audience|any; // for marketing-type
     public product: Product;
     public features: FeatureImplementation[]; // features working on
+    public bombs: Bomb[];
     public type: ProjectType;
     public status: ProjectStatus;
 
     public todo: number;
+    public quality: number;
     public completed: number;
     public testingTodo: number;
     public testingCompleted: number;
@@ -51,6 +55,8 @@ export class Project extends GameBased {
         status: String,
         type: String,
         features : SchemaTypes.Mixed,
+        bugs : SchemaTypes.Mixed,
+        bombs : SchemaTypes.Mixed,
         product: { type: SchemaTypes.ObjectId, ref: 'Product' },
         reward : SchemaTypes.Mixed
     };
@@ -135,8 +141,13 @@ export class Project extends GameBased {
                 return Promise.all(
                     this.features.map((f) => {
                         if (!f.estimated) return f;
-                        let portion = distribution.pop();
-                        return f.burnout(burned*portion, employees);
+                        let portion = burned * distribution.pop();
+
+                        // bugs
+                        f.bugs = f.bugs || [];                        
+                        f.bugs.push(...this.collectBugs(portion, this.startDate + portion));
+
+                        return f.burnout(portion, employees);
                     })
                 );
             })
@@ -159,26 +170,99 @@ export class Project extends GameBased {
                                     throw new Error('Failed to upgrade "world experience" on feature: ' + (fi.feature._id || fi.feature));
                                 });
                         }
-                        return Promise.resolve(fi)
+                        return Promise.resolve(fi);
                     })
                 )
                 .then(() => fis)
             )
             .then((fi:FeatureImplementation[]) => {
-                let compleatedFeatures = fi.filter(_fi => !_fi.estimated).length;
+                let compleatedFeatures = fi.filter(_fi => !_fi.estimated).length,
+                    q = fi.length && (U.sumo(fi, "quality") / fi.length),
+                    bombs = this.bombs || [];
+                
+                this.quality = q;
+                this.startDate = this.startDate || this._ga.time;
+                this.lastActivityDate = this._ga.time;
+
+                // get(collect) bombs @todo 
+                bombs.push(...this.collectBombs(seconds, this.startDate + completed));
+                
                 return this.populate({
                     completed: completed,
                     // Check if all features shoud be designed once again
                     status: compleatedFeatures == fi.length 
                         ? ProjectStatus.Resolved 
                         : ProjectStatus.Active,
-                    features: fi
+                    features: fi,
+                    bombs: bombs,
+                    quality: q
                 })
                 .save()
             })
             .then(() => this);
     }
 
+    /**
+     * get(collect) bugs 
+     * @todo   currently  ~ 1bug/day if 0% QA efficiency
+     * @param seconds 
+     */
+    collectBugs(seconds: number, timestamp: number) {
+        let bugs = [],
+            day = 60*60*24;
+        while(seconds > 0) {
+            let quant = seconds < day ? seconds / day : day;
+            if (this.quality * Math.random() < (quant * (1 - this.ciPower) )) {
+                bugs.push(<Bug>{
+                    created: timestamp,
+                    repeatable: Math.random(),
+                    critical: Math.random(),
+                    discovered: +(Math.random() < this.qaPower)
+                });
+            }
+            seconds -= day;
+        }
+        return bugs;
+    }
+
+    /**
+     * get(collect) bombs (potential deployment issues) 
+     * @todo   currently  ~ once in a defaultFeature implementation time
+     * @param seconds 
+     */
+    collectBombs(seconds: number, timestamp: number) {
+        let bombs = [],
+            def: number = Feature.defaultVolume;
+        while(seconds > 0) {
+            let quant = seconds < def ? seconds / def : def;
+            if (this.quality * Math.random() < (quant * (1 - this.ciPower) )) {
+                bombs.push(<Bomb>{
+                    created: timestamp,
+                    chances: Math.random(),
+                    severity: +(Math.random() < this.ciPower)
+                });
+            }
+            seconds -= def;
+        }
+        return bombs;
+    }
+
+    /**
+     * 0-1
+     * @todo 
+     */
+    get qaPower() {
+        return 0;
+    }
+
+    /**
+     * 0-1 
+     * @todo
+     */
+    get ciPower() {
+        return 0;
+    }
+    
     get isActive() {
         return ProjectStatus.Active == U.en(ProjectStatus, this.status);
     }

@@ -16,6 +16,14 @@ export enum ProjectType {
 export enum ProjectStatus {New, Active, Paused, Cancelled, Resolved, Closed};
 
 /**
+ * Deployment cavern
+ */
+export class Bomb {
+    created: number; // development time-mark when was "put"
+    chances: number; // 0-1 ~ chances to hit during deployment
+    severity: number; // 0-1 ~ possible impact & hardness (on lost time) when hit
+}
+/**
  *  p0x0 Class Project
  *
  * representation of workload, to achieve something:
@@ -37,6 +45,8 @@ export class Project {
     public status: ProjectStatus = ProjectStatus.New;
 
     public todo: number = 0;
+    public quality:number = 0;
+    public bombs: Bomb[] = [];
     public completed: number = 0;
     public testingTodo: number = 0;
     public testingCompleted: number = 0;
