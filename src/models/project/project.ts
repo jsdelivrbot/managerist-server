@@ -127,6 +127,9 @@ export class Project extends GameBased {
         if (!this.isActive)
             throw new Error('You can\'t possiply make a progress on a non-active project.');
 
+        this.startDate = this.startDate || this._ga.time;
+        this.lastActivityDate = this._ga.time;
+
         /** @hack ~ somewhere there should be interfaces or straiten property filler */
         this.features = this.features.map(f => new FeatureImplementation(f));
 
@@ -181,8 +184,6 @@ export class Project extends GameBased {
                     bombs = this.bombs || [];
                 
                 this.quality = q;
-                this.startDate = this.startDate || this._ga.time;
-                this.lastActivityDate = this._ga.time;
 
                 // get(collect) bombs @todo 
                 bombs.push(...this.collectBombs(seconds, this.startDate + completed));
@@ -212,7 +213,7 @@ export class Project extends GameBased {
             day = 60*60*24;
         while(seconds > 0) {
             let quant = seconds < day ? seconds / day : day;
-            if (this.quality * Math.random() < (quant * (1 - this.ciPower) )) {
+            if ((this.quality || 1) * Math.random() < (quant * (1 - this.ciPower) )) {
                 bugs.push(<Bug>{
                     created: timestamp,
                     repeatable: Math.random(),
