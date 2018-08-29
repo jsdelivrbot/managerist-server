@@ -25,8 +25,10 @@ export abstract class BaseGameController extends  BaseController {
 
         if (jwtData) {
             req.session.currentUser = jwtData._id;
-            if (jwtData.gameId)
+            if (jwtData.gameId) {
+                Log.log("G: " + jwtData.gameId, LogLevel.Debug);
                 req.session.currentGame = jwtData.gameId;
+            }
         }
 
         this._currentUser = req && req.session
@@ -63,7 +65,7 @@ export abstract class BaseGameController extends  BaseController {
      * @returns Promise<Game|null>
      */
     get game(): Promise<Game|null> {
-        if (this._game) return Promise.resolve(this._game);
+        if (this._game && this._game._id.toString() == this.currentGame.toString()) return Promise.resolve(this._game);
 
         return (new Game).findById(this.currentGame)
             .then((g:Game) => {

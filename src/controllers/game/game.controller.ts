@@ -228,8 +228,9 @@ export class GameController extends  BaseGameController {
     actionTick = (req: any, res: any, next: any) => {
         return this.game.then((arGame:Game) => {
             let game:GameCommon = arGame.common,
-                dt = game.options.speed * 3600; // 1h * game speed
-            Log.log("Game ID: " + arGame._id + ' -- TICK Clicked.');
+                count: number = req.body.count || 1,
+                dt = count * game.options.speed * 3600; // 1h * game speed
+            Log.log("Game ID: " + arGame._id + ' -- (' + count + ')TICK Clicked.');
             return this._respondUpdatedEventsToDate(req, res, arGame, dt);
         });
     };
