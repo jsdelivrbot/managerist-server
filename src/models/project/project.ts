@@ -240,7 +240,7 @@ export class Project extends GameBased {
                 bombs.push(<Bomb>{
                     created: timestamp,
                     chances: Math.random(),
-                    severity: +(Math.random() < this.ciPower)
+                    severity: Math.random() * (1 - this.ciPower)
                 });
             }
             seconds -= def;
