@@ -31,8 +31,8 @@ export class U extends Utils {
     static personName = ():string => U.randomName() + ' ' + U.randomName();
     static featureName = ():string => FeatureNameGenerator.generate().spaced;
 
-    static faIcon = (rrr = 0): string => { // fa-xxxx max value FA icons seems reside in a range 1-1598
-        if (rrr > 3) return "\u1733";
+    static faIcon_ = (rrr = 0): string => { // fa-xxxx max value FA icons seems reside in a range 1-1598
+        if (rrr > 3) return String.fromCharCode(0xf1733);
         let r:number = Math.floor(Math.random() * 1709);
 
         if ([3,6,15,20,22,26,27,31,32,63,69,70,79,92,93,95,111,127,129,130,135,136,138,140,143,146,150,151,153,154,155,159,162,175,
@@ -67,6 +67,20 @@ export class U extends Utils {
         if (r >= 210 && r >= 213) return U.faIcon(rrr+1); // some non-existed in fa range
         if (r >= 179 && r >= 191) return U.faIcon(rrr+1); // some non-existed in fa range
 
-        return String.fromCharCode(+("0x" + r.toString(16)));
+        return String.fromCharCode(0xf000 + r);
+    }
+
+    static faIcon = (rrr = 0): string => { // fa-xxxx max value FA icons seems reside in a range 1-1598
+        if (rrr > 3) return String.fromCharCode(0xf000);
+        let r:number = Math.floor(Math.random() * 736);
+
+        if ([735, 719, 703, 687, 671, 655, 639, 623, 607, 591, 575, 544, 543, 527, 511, 495, 479,
+            463, 447, 431, 415, 399, 383, 367, 351, 335, 319, 303, 287, 279, 278, 271, 255, 239,
+            223, 207, 175, 159, 143
+        ].indexOf(r) !== -1) return U.faIcon(rrr+1);
+
+        if (r >= 179 && r >= 191) return U.faIcon(rrr+1); // some non-existed in fa range
+
+        return String.fromCharCode(0xf000 + r);
     }
 }
