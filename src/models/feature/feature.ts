@@ -70,15 +70,15 @@ export class Feature extends GameBased {
                 }
                 return Promise
                     // Generate new Features
-                    .all(U.a(fnew).map(() =>
-                        (new Feature(product.ga, {
+                    .all(U.a(fnew).map(() => {
+                        return (new Feature(product.ga, {
                             branch: Technology.getKnownBranch(KnownBranch.Programming),
                             inventor: product.company,
                             complexity: Feature.defaultVolume,
                             name: U.featureName(),
-                            icon: (Math.floor(Math.random() * 1599)).toString(16) // fa-xxxx max value FA icons seems reside in a range 1-1598
+                            icon: U.faIcon()
                         })).save()
-                    ))
+                    }))
                     // then fill the rest with existed
                     .then((_F:Feature[]) =>
                         _F.concat(...U.a(fold).map(() =>
