@@ -11,6 +11,7 @@ import {Product, ProductCommon} from "../product";
 import {Technology, KnownBranch, TechnologyUsage} from "../technology";
 import {U} from "../../common/u";
 import { Company } from "../company";
+import { FA } from "../../common/fa";
 
 export class Feature extends GameBased {
     // common
@@ -76,7 +77,7 @@ export class Feature extends GameBased {
                             inventor: product.company,
                             complexity: Feature.defaultVolume,
                             name: U.featureName(),
-                            icon: U.faIcon()
+                            icon: FA.faIcon()
                         })).save()
                     }))
                     // then fill the rest with existed
