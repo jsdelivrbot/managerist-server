@@ -1,14 +1,11 @@
 import {Game, GameActivity} from "./game";
 import {Project, ProjectStatus} from "./project";
-import {Position} from "./position"
 import {Event} from "./event";
-import {ProjectUpdateEventType} from "./event_type/production/project.update.eventtype";
 import {Company, CompanyFinancials} from "./company";
 import {EventGenerator} from "./event.generator";
 import {FinanceStats} from "./company/departments/finance/stats";
 import {ProductionStats} from "./company/departments/production/stats";
-import {U} from "../common/u"
-import { Alert, AlertType } from "./alerts";
+import { AlertType } from "./alerts";
 import { Log, LogLevel } from "../core/utils/log";
 import { Product } from ".";
 import { ProjectResults } from "./project/project.results";

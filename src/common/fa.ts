@@ -66,10 +66,10 @@ export class FA {
 
         if (r >= 1491) return FA.faIcon(rrr+1); // some non-existed in fa range
 
-        if (r >= 1290 && r >= 1302) return FA.faIcon(rrr+1); // some non-existed in fa range
-        if (r >= 1176 && r >= 1273) return FA.faIcon(rrr+1); // some non-existed in fa range
+        if (r >= 1290 && r <= 1302) return FA.faIcon(rrr+1); // some non-existed in fa range
+        if (r >= 1176 && r <= 1273) return FA.faIcon(rrr+1); // some non-existed in fa range
 
-        if (r >= 860 && r >= 1127) return FA.faIcon(rrr+1); // some non-existed in fa range
+        if (r >= 860 && r <= 1127) return FA.faIcon(rrr+1); // some non-existed in fa range
         
 
         if (r >= 781 && r <= 855) return FA.faIcon(rrr+1); // some non-existed in fa range

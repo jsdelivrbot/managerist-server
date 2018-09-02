@@ -58,8 +58,8 @@ export class AudienceManager {
             .then(() => {
                 return this._audience
                     .populate({
-                        size: this._audience.size + this._audience.growth * daysPassed,
-                        conversion: this._audience.satisfaction * this._audience.growth * salesEfficiency
+                        size: Math.min(0, this._audience.size + this._audience.growth * daysPassed),
+                        conversion: Math.min(0, this._audience.satisfaction * this._audience.growth * salesEfficiency)
                     })
                     .populate({
                         satisfaction: this._audience.calcSatisfaction(this._product.features),

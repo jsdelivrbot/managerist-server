@@ -24,7 +24,7 @@ export class Feature extends GameBased {
     branch: Technology;
     inventor: Company;
 
-    protected static _defaultVolume = 2592000; // 60*60*24*30  ~ 1 month of work
+    protected static _defaultVolume = 259200; // 60*60*24*3  ~ 3 days of work
     protected _common = FeatureCommon;
     protected _schema: any = {
         branch: SchemaTypes.ObjectId,
