@@ -101,7 +101,7 @@ export /* abstract */ class BaseEventType {
             .sort({date: -1})
             .find({
                 company: companyId,
-                type: this.typeString,
+                type: this.type._id,
                 //date: {$gt: date - this.period}
             })
             .then((ar:any) => <Event>ar);
