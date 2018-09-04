@@ -218,7 +218,8 @@ export class Project extends GameBased {
                     created: timestamp,
                     repeatable: Math.random(),
                     critical: Math.random(),
-                    discovered: +(Math.random() < this.qaPower)
+                    detected: +(Math.random() < this.qaPower),
+                    fixed: 0
                 });
             }
             seconds -= day;

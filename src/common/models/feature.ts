@@ -9,7 +9,8 @@ export class Bug {
     created: number; // development time-mark when was "put"
     repeatable: number; // 0-1 ~ hardness of reproduction
     critical: number; // 0-1 ~ 0-0.3 non-critical; 0.3-0.6 warn level; >0.6 - critical error
-    discovered: number; // 0 or something else
+    detected: number; // 0 or something else
+    fixed: number; // 0 or something else
 }
 
 /**

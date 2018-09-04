@@ -159,10 +159,16 @@ export class FeatureImplementation extends FeatureImplementationCommon {
     burnout(seconds:number, employees:Employee[] = []): Promise<FeatureImplementation> {
         this.completed =  (this.completed || 0) + seconds;
         // TODO
-        let currQ = employees.reduce((a) => a, 0.5);
+        let currQ = this.calcQuality(employees);
 
         this.quality = (this.completed - seconds) / this.completed * this.quality +  seconds / this.completed * currQ;
         return Promise.resolve(true)
             .then(() => this);
-    }    
+    }
+
+    calcQuality(employees: Employee[]) {
+        let empsEfficiency = employees.reduce((a, e: Employee) => a + e.calculateTechEfficiency(this.technologies) / employees.length, 0),
+            bugsBurden = 1 - this.bugs.reduce((a, b) => a + b.critical * (b.fixed ? 0 : (b.detected ? 0.5 : 1)), 0) / Feature.defaultAllowedBugs;
+        return empsEfficiency * bugsBurden;
+    }
 }

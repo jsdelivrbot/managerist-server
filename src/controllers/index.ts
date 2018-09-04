@@ -14,6 +14,7 @@ import {GameFinanceController} from "./game/finance.controller";
 import {GameMarketingController} from "./game/marketing.controller";
 import { StatsController } from './stats.controller';
 import { DictController } from './game/dict.controller';
+import { AudienceController } from './audience.controller';
 
 export function init(app: express.Application) {
     new StatsController(app);
@@ -21,6 +22,7 @@ export function init(app: express.Application) {
 
     new CompanyController(app);
     new ProductController(app);
+    new AudienceController(app);
     new ProjectController(app);
     new EmployeeController(app);
     new UserController(app);

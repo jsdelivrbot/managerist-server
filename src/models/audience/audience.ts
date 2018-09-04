@@ -1,13 +1,11 @@
 import {Audience as AudienceCommon} from '../../common/models/audience';
 export {Audience as AudienceCommon} from '../../common/models/audience';
 import {GameBased} from "../game.based";
-import {SchemaTypes} from "../../core/db/active.record";
+import {SchemaTypes, ActiveRecord} from "../../core/db/active.record";
 import {Product} from "../product";
-import {MarketingStats} from "../company/departments/marketing/stats";
-import {Company} from "../company";
-import {U} from "../../common/u";
 import {FeatureValue} from "../feature";
 import {FeatureImplementation} from '../feature.implementation'
+import { AudienceHistory } from './audience.history';
 
 /**
  * Class Audience
@@ -38,6 +36,27 @@ export class Audience extends GameBased {
         product: SchemaTypes.ObjectId,
         features: SchemaTypes.Mixed
     }
+
+    /**
+     * save
+     *
+     * override create/update to store history for Audience
+     *
+     * @returns {Promise<Audience>}
+     */
+    save(): Promise<Audience|ActiveRecord> {
+        let savePromise: Promise<Audience|ActiveRecord> = this._id
+            ? this._update(this.common)
+            : this._create(this.common),
+            ar: Audience;
+        return savePromise
+            .then((_a: any) => {
+                ar = _a;
+                (new AudienceHistory(ar)).save()
+            })
+            .then(() => ar);
+    }
+
 
     /**
      * calcSatisfaction
@@ -75,4 +94,17 @@ export class Audience extends GameBased {
         return Math.max(Audience._basicGrowth, Audience._basicGrowth*promotionEfficiency*2)
         + ((<any>this).satisfaction || 0 - 0.5);
     }
+
+    /**
+     * calcConversion
+     * 
+     * calculate conversion
+     * @todo TBD calculate competitivity of the our product market
+     * 
+     * @returns number
+     */
+    public calcConversion(salesEfficiency:number): number {
+        let competition: number = 0.5; // TODO
+        return ((<any>this).satisfaction || 0) * salesEfficiency - competition;
+    }    
 }

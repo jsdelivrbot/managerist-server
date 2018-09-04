@@ -137,19 +137,29 @@ export class Employee extends GameBased {
                 if (!prjs.length)
                     return 0;
 
-                let effs = prjs.map((prj:Project) => {
-                    let prjTechsUsages:TechnologyUsage[] = prj.technologies,
-                        eff: number = 0;
-                    for (let tu of prjTechsUsages) {
-                        let tuId = (tu.technology._id || tu.technology).toString(),
-                            exp = this.expertise.find(ex => (ex.technology._id || ex.technology).toString()  == tuId);
-                        if (exp)
-                            eff += exp.volume * tu.volume;
-                    }
-                    return eff;
-                });
+                let effs = prjs.map((prj:Project) => this.calculateTechEfficiency(prj.technologies));
                 return U.sum(effs) / effs.length;
             });
+    }
+
+    /**
+     * calculateTechEfficiency
+     * 
+     * calculate employees efficiency in certain technologies
+     * 
+     * @param tus 
+     * 
+     * @returns number
+     */
+    public calculateTechEfficiency(tus: TechnologyUsage[]): number {
+        let eff: number = 0;
+        for (let tu of tus) {
+            let tuId = (tu.technology._id || tu.technology).toString(),
+                exp = this.expertise.find(ex => (ex.technology._id || ex.technology).toString()  == tuId);
+            if (exp)
+                eff += exp.volume * tu.volume;
+        }
+        return eff;
     }
 
     /**

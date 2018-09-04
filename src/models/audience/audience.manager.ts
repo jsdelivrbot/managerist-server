@@ -59,11 +59,14 @@ export class AudienceManager {
                 return this._audience
                     .populate({
                         size: Math.min(0, this._audience.size + this._audience.growth * daysPassed),
-                        conversion: Math.min(0, this._audience.satisfaction * this._audience.growth * salesEfficiency)
+                        satisfaction: this._audience.calcSatisfaction(this._product.features)
                     })
                     .populate({
-                        satisfaction: this._audience.calcSatisfaction(this._product.features),
+                        conversion: this._audience.calcConversion(salesEfficiency),
                         growth: this._audience.calcGrowth(efficiency)
+                    })
+                    .populate({
+                        converted: Math.min(0, this._audience.size + this._audience.conversion * daysPassed)
                     })
                     .save();
             })
