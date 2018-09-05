@@ -237,6 +237,16 @@ export abstract class ActiveRecord {
     }
 
     /**
+     * Transform Mongoose model to AR
+     * 
+     * @param cnstr AR constructor
+     * @param data 
+     */
+    protected _mongoToAr(cnstr: {new(...any):ActiveRecord}, data:any): ActiveRecord {
+        return new cnstr(data.toObject());
+    }
+
+    /**
      * findAll
      *
      * search with condition clause filtered&prepared by @see(ActiveRecord::_prepareCond)
@@ -252,7 +262,23 @@ export abstract class ActiveRecord {
                 .exec((err: Error, data: any) => {
                     if (err) return reject('Failed to search');
                     let cnstr: any = this.constructor;
-                    return resolve((data || []).map((d: any) => (new cnstr).populate(d).withRelations(this.withArr)));
+
+                    return resolve((data || []).map((d: any) => {
+                        let ar = (new cnstr).populate(d);
+                        /**
+                         *  Convert Mongoose-model doc to ARs (if mentioned in relations)
+                         **/
+                        for (let rel of this.mongoWith.split(' ')) {
+                            if (!d[rel] || !this.rules[rel] || this.rules[rel].external) continue;
+
+                            if (typeof (<any>d[rel]).map == "function") {
+                                ar[rel] = d[rel].map(_d => this._mongoToAr(this.rules[rel].related, _d));
+                            } else {
+                                ar[rel] = this._mongoToAr(this.rules[rel].related, d[rel]);
+                            }
+                        }
+                        return ar.withRelations(this.withArr);
+                    }));
                 })
         )
         .then((ar:ActiveRecord[]) =>

@@ -5,7 +5,7 @@ import {Company} from "./company";
 import {Product} from "./product";
 import {Project} from "./project";
 import {Department} from "./department";
-import {SchemaTypes, ActiveRecord} from "../core/db/active.record";
+import {SchemaTypes, ActiveRecord, ActiveRecordRulesTypes, ActiveRecordRule} from "../core/db/active.record";
 
 /**
  * Class Position
@@ -37,6 +37,12 @@ export class Position extends GameBased {
         role: SchemaTypes.ObjectId
     };
 
+    public get rules(): { [key: string]: ActiveRecordRule } {
+        return {
+            'employee': {type: ActiveRecordRulesTypes.BELONGS, related: Employee},
+        };
+    }
+    
     /**
      * assign
      *

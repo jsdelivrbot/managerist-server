@@ -1,5 +1,4 @@
 import {Company} from "./company";
-import {Position} from "./position";
 import {Product} from "./product";
 import {Project} from "./project";
 import {TechnologyExpertise, ExpertiseLevel} from "./technology";
@@ -10,8 +9,8 @@ export enum Gender {Male, Female};
 
 export class Employee {
     _id: any;
-    name: string = '';
-    pic: string = 'm_1';
+    name: string = "";
+    pic: string = "";
     gender:Gender = Gender.Male;
     character: Character;
     expertise:TechnologyExpertise[] = [];

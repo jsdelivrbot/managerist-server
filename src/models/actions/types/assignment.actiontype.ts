@@ -88,7 +88,7 @@ export class AssignmentActionType extends BaseActionType {
             .then(() => {
                 let dep = <Department>Department.getById(this._employee.role.department._id || this._employee.role.department);
                 return this._employee.assign(
-                    this._date.getTime(),
+                    _game.simulationDate.getTime(),
                     dep,
                     this._project,
                     this._product,

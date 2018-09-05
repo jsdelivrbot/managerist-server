@@ -17,6 +17,7 @@ import { AlertType } from '../alerts';
 import { Log, LogLevel } from '../../core/utils/log';
 import { Feature } from '../feature';
 import { FeatureManager } from '../feature/feature.manager';
+import { Game } from '../game';
 
 export class Bomb extends BombCommon {}
 
@@ -127,19 +128,43 @@ export class Project extends GameBased {
         if (!this.isActive)
             throw new Error('You can\'t possiply make a progress on a non-active project.');
 
-        this.startDate = this.startDate || this._ga.time;
-        this.lastActivityDate = this._ga.time;
-
+        this.lastActivityDate = this.startDate + seconds;
         /** @hack ~ somewhere there should be interfaces or straiten property filler */
         this.features = this.features.map(f => new FeatureImplementation(f));
 
-        return (new Position(this.ga))
-            .findAll({project: this._id})
+        let promisePrjDates: Promise<any> = this.startDate
+            ? Promise.resolve(true)
+            : (new Game).findById(this.ga.gameId)
+                .then((g:Game) => {
+                    this.startDate = g.simulationDate.getTime();
+                    this.lastActivityDate = this.startDate + seconds;
+                });
+        return promisePrjDates
+            .then(() => 
+                (new Position(this.ga)).withRelations(['employee'])
+                .findAll({
+                    $or: [{
+                            project: this._id,
+                            startDate: {$lt: this.lastActivityDate},
+                            endDate: {$eq: null}
+                        },{
+                            project: this._id,
+                            startDate: {$lt: this.lastActivityDate},
+                            endDate: {$gt: this.lastActivityDate}                        
+                        },
+                    ]
+
+                })
+            )
             .then((poss:Position[]) => {
+                poss.map(p => Log.log({nm:"Position", id: p._id, start: p.startDate, end: p.endDate}, LogLevel.Debug, {color: "purple"}));
                 let distribution = U.dstr(this.features.filter(_fi => _fi.estimated).length);
                 burned = U.sum(poss.map(pos => pos.efficiency * seconds));
                 completed = this.completed + burned;
-                
+                if (!employees.length) {
+                    employees = poss.map(p => p.employee);
+                }
+
                 /** @todo cameup with leftover, currently added to "next version" of feature **/
                 return Promise.all(
                     this.features.map((f) => {

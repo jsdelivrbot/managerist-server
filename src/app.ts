@@ -60,7 +60,7 @@ export class Managerist extends Mean {
     static newGameConnection(gameId:any):Promise<boolean> {
         let dbName = Managerist.getGameConnection(gameId);
         if (Managerist.db.connections[dbName])
-            return dbName;
+            return Promise.resolve(dbName);
         return Managerist.db.addConnection({
             host: Managerist.config.db.host,
             name: dbName,

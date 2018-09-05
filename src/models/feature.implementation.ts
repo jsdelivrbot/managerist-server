@@ -3,6 +3,7 @@ import {Feature} from "./feature"
 import {Employee} from "./employee"
 import {U} from "../common/u"
 import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "./technology";
+import { Log, LogLevel } from "../core/utils/log";
 
 export class Bug extends BugCommon {}
 
@@ -160,15 +161,21 @@ export class FeatureImplementation extends FeatureImplementationCommon {
         this.completed =  (this.completed || 0) + seconds;
         // TODO
         let currQ = this.calcQuality(employees);
-
-        this.quality = (this.completed - seconds) / this.completed * this.quality +  seconds / this.completed * currQ;
+        
+        this.quality = 0;
+        if (currQ)
+            this.quality = (this.completed - seconds) / this.completed * this.quality +  seconds / this.completed * currQ;
         return Promise.resolve(true)
             .then(() => this);
     }
 
     calcQuality(employees: Employee[]) {
-        let empsEfficiency = employees.reduce((a, e: Employee) => a + e.calculateTechEfficiency(this.technologies) / employees.length, 0),
+        let empsEfficiency = employees.reduce((a, e: Employee) => {
+                let ee = e.calculateTechEfficiency(this.technologies);
+                return a + ee / employees.length;
+            }, 0),
             bugsBurden = 1 - this.bugs.reduce((a, b) => a + b.critical * (b.fixed ? 0 : (b.detected ? 0.5 : 1)), 0) / Feature.defaultAllowedBugs;
+        Log.log("Emps(" + employees.length  + "): " + U.floor(empsEfficiency, 2) + " bugs: " + bugsBurden, LogLevel.Warning);
         return empsEfficiency * bugsBurden;
     }
 }

@@ -58,7 +58,7 @@ export class AudienceManager {
             .then(() => {
                 return this._audience
                     .populate({
-                        size: Math.min(0, this._audience.size + this._audience.growth * daysPassed),
+                        size: Math.max(0, this._audience.size + this._audience.growth * daysPassed),
                         satisfaction: this._audience.calcSatisfaction(this._product.features)
                     })
                     .populate({
@@ -66,7 +66,7 @@ export class AudienceManager {
                         growth: this._audience.calcGrowth(efficiency)
                     })
                     .populate({
-                        converted: Math.min(0, this._audience.size + this._audience.conversion * daysPassed)
+                        converted: Math.max(Audience.basicSize * Math.random(), this._audience.size + this._audience.conversion * daysPassed)
                     })
                     .save();
             })

@@ -25,7 +25,7 @@ export class Feature extends GameBased {
     inventor: Company;
 
     protected static _defaultVolume = 259200; // 60*60*24*3  ~ 3 days of work
-    protected static _defaultAllowedBugs = 10; // 10 per 1 default size
+    protected static _defaultAllowedBugs = 100; // 100 per 1 default size  ^_^
     protected _common = FeatureCommon;
     protected _schema: any = {
         branch: SchemaTypes.ObjectId,

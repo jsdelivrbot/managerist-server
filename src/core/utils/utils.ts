@@ -9,6 +9,7 @@ export class Utils {
     static en = (_enum:any, val:any):number => Number.isNaN(+val) ? _enum[val] : _enum[_enum[val]];
     static enl = (_enum:any):number[] => Object.getOwnPropertyNames(_enum).map((v:string) => _enum[v]).filter((v:any) => !Number.isNaN(+v));
 
+    static floor = (val, prc) => (Math.floor(val * (10 ** prc)) / (10 ** prc));    
     static sum = (_arr:number[]):number => _arr.length ? _arr.slice(0).reduce((a:number, b:number) => a+b, 0) : 0;
     static sumo = (_arr:any[], prop:string):number => Utils.sum(_arr.map((a) => a[prop]));
     static avg = (_arr:number[]):number => _arr.length ? Utils.sum(_arr)/_arr.length : 0;

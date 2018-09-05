@@ -14,6 +14,7 @@ import {Character, BasicProperty as EmployeeBasicProperty} from "../character";
 import {Role} from "../role";
 import {U} from "../../common/u";
 import {Department} from "../department";
+import { Log, LogLevel } from '../../core/utils/log';
 
 /**
  * Class Employee
@@ -52,9 +53,12 @@ export class Employee extends GameBased {
         let cmmn = this.filterProperties(
             Object.getOwnPropertyNames(new this._common).concat('_id')
         );
-        if (cmmn.role._id)
+        if (cmmn.role && cmmn.role._id)
             cmmn.role = cmmn.role.common;
-        cmmn.character = (<any>this).character.list || (<any>this).character;
+        if (this.character)
+            cmmn.character = (<any>this).character.list || (<any>this).character;
+        else
+            Log.log(this, LogLevel.Error);
         return cmmn;
     }
 
@@ -152,13 +156,31 @@ export class Employee extends GameBased {
      * @returns number
      */
     public calculateTechEfficiency(tus: TechnologyUsage[]): number {
-        let eff: number = 0;
+        Log.log(this.common, LogLevel.Debug, {color: "cyan"});
+        let eff: number =0,
+            eff0: number = 0, // base eff - by level
+            teff: number = 0;// tech eff
+        switch(U.en(ExpertiseLevel, this.level)) {
+            case ExpertiseLevel.Expert:
+                eff0+=0.3;
+            case ExpertiseLevel.Senior:
+                eff0+=0.2;
+            case ExpertiseLevel.Middle:
+                eff0+=0.1;
+            case ExpertiseLevel.Junior:
+                eff0+=0.05;
+            case ExpertiseLevel.Intern:
+            default:
+                eff0+=0;
+        }
         for (let tu of tus) {
             let tuId = (tu.technology._id || tu.technology).toString(),
-                exp = this.expertise.find(ex => (ex.technology._id || ex.technology).toString()  == tuId);
+                exp = (this.expertise || []).find(ex => (ex.technology._id || ex.technology).toString()  == tuId);
             if (exp)
-                eff += exp.volume * tu.volume;
+                teff += exp.volume * tu.volume;
         }
+        eff = eff0 + (1-eff0)*teff*eff0;        
+        Log.log("Emp " + U.e(ExpertiseLevel, this.level) + " eff:" + eff + "(0:" + eff0 + " t: " + teff + ")", LogLevel.Warning);
         return eff;
     }
 

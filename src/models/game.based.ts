@@ -31,6 +31,16 @@ export abstract class GameBased extends  ActiveRecord {
     }
 
     /**
+     * Transform Mongoose model to AR
+     * 
+     * @param cnstr AR constructor
+     * @param data 
+     */
+    protected _mongoToAr(cnstr: {new(...any):ActiveRecord}, data:any): ActiveRecord {
+        return (new cnstr(this.ga, data.toObject()));
+    }
+
+    /**
      *
      * @param cond
      * @param populate
