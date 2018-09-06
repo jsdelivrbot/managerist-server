@@ -21,5 +21,16 @@
           "internalConsoleOptions": "neverOpen",
           "protocol": "inspector"
       },
-      ]
+      {
+          "type": "node",
+          "request": "launch",
+          "name": "Start dbg",
+          "runtimeExecutable": "npm",
+          "runtimeArgs": [
+              "run-script",
+              "debug"
+          ],
+          "port": 9229
+      }     
+    ]
 }

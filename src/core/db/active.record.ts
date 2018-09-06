@@ -424,6 +424,10 @@ export abstract class ActiveRecord {
     protected _beforeSave():Promise<boolean> {
          return new Promise((resolve) => resolve(true));
     }
+
+    public static ID(param) {
+        return param = MongoTypes.ObjectId(param);
+    }
 }
 /**
  *

@@ -144,11 +144,11 @@ export class Project extends GameBased {
                 (new Position(this.ga)).withRelations(['employee'])
                 .findAll({
                     $or: [{
-                            project: this._id,
+                            project: ActiveRecord.ID(this._id),
                             startDate: {$lt: this.lastActivityDate},
                             endDate: {$eq: null}
                         },{
-                            project: this._id,
+                            project: ActiveRecord.ID(this._id),
                             startDate: {$lt: this.lastActivityDate},
                             endDate: {$gt: this.lastActivityDate}                        
                         },
