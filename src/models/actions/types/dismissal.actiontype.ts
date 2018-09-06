@@ -4,6 +4,7 @@ import {Event} from "../../event";
 import {Action} from "../action";
 import {Company} from "../../company";
 import {Position} from "../../position";
+import { Game } from "../../../models/game";
 
 export class DismissalActionType extends BaseActionType {
     protected _period:number = 0;
@@ -33,11 +34,17 @@ export class DismissalActionType extends BaseActionType {
         if (!data.company)
             return Promise.reject('Can\'t create "Dismisal" Event: Company is not set.');
         this._company = data.company;
-
-        return (this._company._id
+        let game: Game = null;
+        return (new Game).findById(this._ga.gameId)
+            .then((g:Game) => {
+                game = g;
+            })
+            .then(() => 
+                (this._company._id
                     ? Promise.resolve(this._company)
                     : (new Company(this._ga)).findById(this._company._id || this._company)
                     .then((c:Company) => this._company = c)
+                )
             )
             .then(() =>(this._employee._id && this._employee.role._id
                     ? Promise.resolve(this._employee)
@@ -51,7 +58,7 @@ export class DismissalActionType extends BaseActionType {
                 company:this._company._id
             }))
             .then((pos:Position[]) => Promise.all(
-                pos.map((p:Position) => p.populate({endDate: this._date}))
+                pos.map((p:Position) => p.populate({endDate: game.simulationDate.getTime()}))
             ))
             .then(() => super.do.call(this))
     }

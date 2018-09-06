@@ -128,34 +128,33 @@ export class Project extends GameBased {
         if (!this.isActive)
             throw new Error('You can\'t possiply make a progress on a non-active project.');
 
-        this.lastActivityDate = this.startDate + seconds;
         /** @hack ~ somewhere there should be interfaces or straiten property filler */
         this.features = this.features.map(f => new FeatureImplementation(f));
 
-        let promisePrjDates: Promise<any> = this.startDate
-            ? Promise.resolve(true)
-            : (new Game).findById(this.ga.gameId)
-                .then((g:Game) => {
-                    this.startDate = g.simulationDate.getTime();
-                    this.lastActivityDate = this.startDate + seconds;
-                });
-        return promisePrjDates
-            .then(() => 
-                (new Position(this.ga)).withRelations(['employee'])
-                .findAll({
-                    $or: [{
-                            project: ActiveRecord.ID(this._id),
-                            startDate: {$lt: this.lastActivityDate},
-                            endDate: {$eq: null}
-                        },{
-                            project: ActiveRecord.ID(this._id),
-                            startDate: {$lt: this.lastActivityDate},
-                            endDate: {$gt: this.lastActivityDate}                        
-                        },
-                    ]
-
-                })
-            )
+        return (new Game).findById(this.ga.gameId)
+            .then((g:Game) => {
+                this.startDate = this.startDate  ? this.startDate : g.simulationDate.getTime();
+                this.lastActivityDate = g.simulationDate.getTime();
+            })
+            .then(() => {
+                let pid = ActiveRecord.ID(this._id),
+                    date = (new Date(this.lastActivityDate)),
+                    cond = {
+                        $or: [{
+                                project: pid,
+                                startDate: {$lt: date},
+                                endDate: {$eq: null}
+                            },{
+                                project: pid,
+                                startDate: {$lt: date},
+                                endDate: {$gt: date}
+                            },
+                        ]
+                    };
+                Log.log(cond, LogLevel.Debug, {color: "red"});
+                return (new Position(this.ga)).withRelations(['employee'])
+                .findAll(cond);
+            })
             .then((poss:Position[]) => {
                 poss.map(p => Log.log({nm:"Position", id: p._id, start: p.startDate, end: p.endDate}, LogLevel.Debug, {color: "purple"}));
                 let distribution = U.dstr(this.features.filter(_fi => _fi.estimated).length);
