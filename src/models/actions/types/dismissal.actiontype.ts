@@ -58,7 +58,7 @@ export class DismissalActionType extends BaseActionType {
                 company:this._company._id
             }))
             .then((pos:Position[]) => Promise.all(
-                pos.map((p:Position) => p.populate({endDate: game.simulationDate.getTime()}))
+                pos.map((p:Position) => p.populate({endDate: game.simulationDate}).save())
             ))
             .then(() => super.do.call(this))
     }

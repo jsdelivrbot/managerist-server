@@ -179,7 +179,7 @@ export class Employee extends GameBased {
             if (exp)
                 teff += exp.volume * tu.volume;
         }
-        eff = eff0 + (1-eff0)*teff*eff0;        
+        eff = Math.max(eff0, teff + 0.1*eff0);
         Log.log("Emp " + U.e(ExpertiseLevel, this.level) + " eff:" + eff + "(0:" + eff0 + " t: " + teff + ")", LogLevel.Warning);
         return eff;
     }
