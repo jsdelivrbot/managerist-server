@@ -134,24 +134,31 @@ export class Technology extends DictionaryRecord {
      * @param role Role|null
      * @returns {Promise<number>}
      */
-    public static determineMedianSalary(exs: TechnologyExpertise[]|any[], role:Role|null = null):Promise<number> {
+    public static determineMedianSalary(exs: TechnologyExpertise[], role:Role|null = null):Promise<number> {
         let branchId = (role && role.branch && role.branch._id) || null,
-            salary = (branchId && role.branch.salary) || 0;
+            salary = (branchId && role.branch.salary) || 0,
+            lCoefs = {
+                [ExpertiseLevel.Intern]: 0.1,
+                [ExpertiseLevel.Junior]: 0.5,
+                [ExpertiseLevel.Middle]: 1,
+                [ExpertiseLevel.Senior]: 1.75,
+                [ExpertiseLevel.Expert]: 2.5
+            };
         return Promise.all(
-            (<Array<TechnologyExpertise>>exs).filter((ex:any) => branchId != (ex.branch._id || ex.branch))
-                .map((ex:any) => {
+            exs.filter((ex:any) => branchId != (ex.branch._id || ex.branch))
+                .map((ex:TechnologyExpertise) => {
                     ex = (new TechnologyExpertise(<TechnologyExpertiseCommon>ex));
                     return ex.populate()
                         .then((tex: TechnologyExpertise|any) => {
-                            return tex.salary
+                            return tex.salary * lCoefs[U.en(ExpertiseLevel,ex.level)]
                         })
                 })
         )
         .then((mids:number[]|any[]) => {
             let big3:number[] = U.big3(mids),
                 rest:number[] = mids.slice(0).filter(_a => !big3.includes(_a)),
-                sal:number = U.sum(big3) || Technology.defaultSalary,
-                bonus:number = U.sum(rest) * rest.length / 10;
+                sal:number = U.avg(big3) || Technology.defaultSalary,
+                bonus:number = U.avg(rest) / 10;
 
             return sal + bonus;
         });

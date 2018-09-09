@@ -178,7 +178,7 @@ export class UserIdentity {
     {
         let u:any = {
             type: UserType.Player,
-            name: U.randomName(),
+            name: U.personName(),
             providers: {
                 [this._providerName]: data
             }

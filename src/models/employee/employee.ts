@@ -194,7 +194,6 @@ export class Employee extends GameBased {
      */
     public calcStartSalary(hr: Employee | null = null): Promise<number> {
         let hrBonus = 1 - (hr ? hr.calcHrBonus() : 0);
-        // TODO add logic>> based on expertize, level
         if (!this.role)
             throw new ActiveRecordError('Role shoud be populated on Employee record');
 
@@ -208,7 +207,7 @@ export class Employee extends GameBased {
      * calcHrBonus
      *
      * calculate probabilistic bonus that HR may have for salary amount decreasing
-     * should depends on "GameComplexity" setting, @!MVC ~ ""
+     * should depends on "GameComplexity" setting, @!MVP ~ ""
      */
     public calcHrBonus() {
         let hCh: Character = (<any>this).character,

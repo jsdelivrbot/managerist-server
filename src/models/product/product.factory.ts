@@ -19,7 +19,7 @@ export class ProductFactory {
      * @returns {Promise<Product>}
      */
     public generate(data:any = {}):Promise<Product> {
-        data.name = data.name || U.randomName();
+        data.name = data.name || U.projectName();
         data.company = this._company;
         Log.log('Generate new Product for: ' + this._company.name, LogLevel.Debug);
         return (new Product(this._company.ga, data))

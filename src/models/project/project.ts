@@ -229,15 +229,15 @@ export class Project extends GameBased {
 
     /**
      * get(collect) bugs 
-     * @todo   currently  ~ 1bug/day if 0% QA efficiency
+     * @todo   currently  ~ 1bug/week if 0% QA efficiency
      * @param seconds 
      */
     collectBugs(seconds: number, timestamp: number) {
         let bugs = [],
-            day = 60*60*24;
+            day = 60*60*24*7;
         while(seconds > 0) {
             let quant = seconds < day ? seconds / day : day;
-            if ((this.quality || 1) * Math.random() < (quant * (1 - this.ciPower) )) {
+            if ((this.quality || 1) * Math.random() < (quant * (1 - this.qaPower) )) {
                 bugs.push(<Bug>{
                     created: timestamp,
                     repeatable: Math.random(),
@@ -253,12 +253,12 @@ export class Project extends GameBased {
 
     /**
      * get(collect) bombs (potential deployment issues) 
-     * @todo   currently  ~ once in a defaultFeature implementation time
+     * @todo   currently  ~ once in a 2 defaultFeature implementation time
      * @param seconds 
      */
     collectBombs(seconds: number, timestamp: number) {
         let bombs = [],
-            def: number = Feature.defaultVolume;
+            def: number = 2 * Feature.defaultVolume;
         while(seconds > 0) {
             let quant = seconds < def ? seconds / def : def;
             if (this.quality * Math.random() < (quant * (1 - this.ciPower) )) {

@@ -216,7 +216,7 @@ export class NewProjectEventType extends BaseEventType {
                             type: e.details.type,
                             hours: e.details.hours,
                             hoursCompleted: 0,
-                            name: U.randomName(),
+                            name: U.projectName(),
                             skills: e.details.skills,
                             reward: e.details.reward
                         })

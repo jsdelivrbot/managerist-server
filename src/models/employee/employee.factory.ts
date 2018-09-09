@@ -32,14 +32,15 @@ export class EmployeeFactory {
         return Technology.getForRole(role, lvl)
             .then((techs: any[]) => {
                 return (new Employee(this._ga, {
-                    name: U.personName(),
+                    name: U.personName(gender == Gender.Male),
                     pic: EmployeeFactory.randomFace(gender),
                     gender: gender,
                     character: role.character.list,
                     expertise: techs,
                     role: role._id,
                     level: lvl,
-                    visible: visible
+                    visible: visible,
+                    salary: Technology.determineMedianSalary(techs)
                 })).save()
             });
     }
