@@ -62,8 +62,8 @@ export class HrAgencyActionType extends BaseActionType {
 
         this._price = HrAgencyActionType.getPrice(this._pkg);
 
-        let role:Role,
-            lvl:ExpertiseLevel = TechnologyExpertise.randomLevel(this._minLevel4Pkg(), this._maxLevel4Pkg());
+        let minLvl:ExpertiseLevel = this._minLevel4Pkg(),
+            lvl:ExpertiseLevel = TechnologyExpertise.randomLevel(minLvl, this._maxLevel4Pkg());
 
         return (this._company._id
                     ? Promise.resolve(this._company)
@@ -71,9 +71,25 @@ export class HrAgencyActionType extends BaseActionType {
                     .then((c:Company) => this._company = c)
             )
             .then(() => this._company.hrDepartment.randomRole())
-            .then((r:Role) => {
+            .then(async (r:Role) => {
                 this._role = r;
-                return new EmployeeFactory(this.ga).generate(this._role, lvl, [this._company._id]);
+                let factory = new EmployeeFactory(this.ga),
+                    attempts = 3,
+                    attempt = async () => await factory.generate(this._role, lvl, [this._company._id]),
+                    emp: any;
+
+                while(attempts) {
+                    try {
+                        emp = await attempt;
+                        break;
+                    } catch(err) {
+                        attempts--;
+                        minLvl++;
+                        lvl =  TechnologyExpertise.randomLevel(minLvl, this._maxLevel4Pkg());
+                    }
+                }
+                if (!emp) throw new Error("Failed to find employee with desired params.");
+                return emp;
             })
             .then((emp:Employee) => {
                 this._employee = emp;
