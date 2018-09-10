@@ -100,6 +100,9 @@ export enum ExpertiseLevel{Intern, Junior, Middle, Senior, Expert}
  * To describe level of proficiency
  */
 export class TechnologyExpertise {
+    static cmpLvl(l1: ExpertiseLevel, l2: ExpertiseLevel) {
+        return U.en(ExpertiseLevel, l1) >= U.en(ExpertiseLevel, l2);
+    }
     static randomLevel(minLevel:ExpertiseLevel = ExpertiseLevel.Intern, maxLevel:ExpertiseLevel = ExpertiseLevel.Expert) {
         return ((r) => {
             if (r >= 0.9)

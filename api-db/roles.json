@@ -1,18 +1,17 @@
-{"_id":{"$oid":"5a951189d85933659c3e78cd"},"department":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"Accountant","trait":{"n":33,"character":{"Focusing":0.6}}}
-{"_id":{"$oid":"5a9512f9d85933659c3e78ce"},"department":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"Chief Accountant","trait":{"n":38,"character":{"Focusing":0.7}}}
-{"_id":{"$oid":"5a9513b4d85933659c3e78cf"},"department":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"CFO","trait":{"n":45,"character":{"Intelligence":1.2,"Leadership":0.6,"Focusing":0.7}}}
-{"_id":{"$oid":"5a95152fd85933659c3e78d0"},"department":{"$oid":"5a951020d85933659c3e78ca"},"name":"Sale","trait":{"n":30,"character":{"Intelligence":0.8,"Communication":1,"Trustworthy":0.3}}}
-{"_id":{"$oid":"5a95171ed85933659c3e78d1"},"department":{"$oid":"5a951020d85933659c3e78ca"},"name":"CMO","trait":{"n":45,"character":{"Leadership":0.7,"Communication":1,"Trustworthy":0.5}}}
-{"_id":{"$oid":"5a95177bd85933659c3e78d2"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Intern","trait":{"n":30}}
-{"_id":{"$oid":"5a95179cd85933659c3e78d3"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Support","trait":{"n":30}}
-{"_id":{"$oid":"5a95182fd85933659c3e78d4"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Developer","trait":{"n":35,"character":{"Appearance":0.3,"Communication":0.6,"Focusing":0.6}}}
-{"_id":{"$oid":"5a95183bd85933659c3e78d5"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"DevOps","trait":{"n":35,"character":{"Appearance":0.3,"Communication":0.6,"Focusing":0.6}}}
-{"_id":{"$oid":"5a951912d85933659c3e78d6"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"QA","trait":{"n":33,"character":{"Intelligence":0.8,"Focusing":0.6}}}
-{"_id":{"$oid":"5a9521afd85933659c3e78d7"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"BA","trait":{"n":35}}
-{"_id":{"$oid":"5a9522c3d85933659c3e78d8"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Manager","trait":{"n":38,"character":{"Focusing":0.4,"Leadership":0.5,"Intelligence":0.8}}}
-{"_id":{"$oid":"5a9526b7d85933659c3e78d9"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Product Owner","trait":{"n":40,"character":{"Focusing":0.4,"Leadership":0.5,"Intelligence":0.8}}}
-{"_id":{"$oid":"5a952a25d85933659c3e78da"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"CEO","trait":{"n":50,"character":{"Leadership":0.8}}}
-{"_id":{"$oid":"5a953386d85933659c3e78db"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"HR","trait":{"n":30,"character":{"Intelligence":0.7,"Appearance":0.7,"Trustworthy":0.4}}}
-{"_id":{"$oid":"5a9533a2d85933659c3e78dc"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"Recruiter","trait":{"n":35,"character":{"Intelligence":0.7,"Communucation":1.1,"Appearance":0.7,"Trustworthy":0.4}}}
-{"_id":{"$oid":"5a9533cbd85933659c3e78dd"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"COO","trait":{"n":45,"character":{"Leadership":0.7,"Communucation":1.2}}}
-{"_id":{"$oid":"5b3f68d5f8aeca3aaf921a52"},"name":"Handyman","trait":{"n":20,"character":{"Appearence" : 0.3,"Focusing" : 0.3,"Communication" : 0.3,"Trustworthy" : 0.2,"Leadership" : 0.2,"Intelligence" : 0.5}}}
+{"_id":{"$oid":"5a951189d85933659c3e78cd"},"department":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"Accountant","minLevel":"Junior","trait":{"n":33,"character":{"Focusing":0.6}}}
+{"_id":{"$oid":"5a9512f9d85933659c3e78ce"},"department":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"Chief Accountant","minLevel":"Senior", "trait":{"n":38,"character":{"Focusing":0.7}}}
+{"_id":{"$oid":"5a9513b4d85933659c3e78cf"},"department":{"$oid":"5a950fe0d85933659c3e78c9"},"name":"CFO","minLevel":"Expert","trait":{"n":45,"character":{"Intelligence":1.2,"Leadership":0.6,"Focusing":0.7}}}
+{"_id":{"$oid":"5a95152fd85933659c3e78d0"},"department":{"$oid":"5a951020d85933659c3e78ca"},"name":"Sale","minLevel":"Intern","trait":{"n":30,"character":{"Intelligence":0.8,"Communication":1,"Trustworthy":0.3}}}
+{"_id":{"$oid":"5a95171ed85933659c3e78d1"},"department":{"$oid":"5a951020d85933659c3e78ca"},"name":"CMO","minLevel":"Expert","trait":{"n":45,"character":{"Leadership":0.7,"Communication":1,"Trustworthy":0.5}}}
+{"_id":{"$oid":"5a95179cd85933659c3e78d3"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Support","minLevel":"Intern","trait":{"n":30}}
+{"_id":{"$oid":"5a95182fd85933659c3e78d4"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Developer","minLevel":"Intern","trait":{"n":35,"character":{"Appearance":0.3,"Communication":0.6,"Focusing":0.6}}}
+{"_id":{"$oid":"5a95183bd85933659c3e78d5"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"DevOps","minLevel":"Intern","trait":{"n":35,"character":{"Appearance":0.3,"Communication":0.6,"Focusing":0.6}}}
+{"_id":{"$oid":"5a951912d85933659c3e78d6"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"QA","minLevel":"Intern","trait":{"n":33,"character":{"Intelligence":0.8,"Focusing":0.6}}}
+{"_id":{"$oid":"5a9521afd85933659c3e78d7"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"BA","minLevel":"Junior","trait":{"n":35}}
+{"_id":{"$oid":"5a9522c3d85933659c3e78d8"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Manager","minLevel":"Junior","trait":{"n":38,"character":{"Focusing":0.4,"Leadership":0.5,"Intelligence":0.8}}}
+{"_id":{"$oid":"5a9526b7d85933659c3e78d9"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"Product Owner","minLevel":"Middle","trait":{"n":40,"character":{"Focusing":0.4,"Leadership":0.5,"Intelligence":0.8}}}
+{"_id":{"$oid":"5a952a25d85933659c3e78da"},"department":{"$oid":"5a95105fd85933659c3e78cb"},"name":"CEO","minLevel":"Expert","trait":{"n":50,"character":{"Leadership":0.8}}}
+{"_id":{"$oid":"5a953386d85933659c3e78db"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"HR","minLevel":"Intern","trait":{"n":30,"character":{"Intelligence":0.7,"Appearance":0.7,"Trustworthy":0.4}}}
+{"_id":{"$oid":"5a9533a2d85933659c3e78dc"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"Recruiter","minLevel":"Intern","trait":{"n":35,"character":{"Intelligence":0.7,"Communucation":1.1,"Appearance":0.7,"Trustworthy":0.4}}}
+{"_id":{"$oid":"5a9533cbd85933659c3e78dd"},"department":{"$oid":"5a951092d85933659c3e78cc"},"name":"COO","minLevel":"Expert","trait":{"n":45,"character":{"Leadership":0.7,"Communucation":1.2}}}
+{"_id":{"$oid":"5b3f68d5f8aeca3aaf921a52"},"name":"Handyman","minLevel":"Intern","trait":{"n":20,"character":{"Appearence" : 0.3,"Focusing" : 0.3,"Communication" : 0.3,"Trustworthy" : 0.2,"Leadership" : 0.2,"Intelligence" : 0.5}}}

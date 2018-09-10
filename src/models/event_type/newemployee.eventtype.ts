@@ -85,6 +85,8 @@ export class NewEmployeeEventType extends BaseEventType {
 
     /**
      *
+     *  @todo - by default there should be not Expert level and very rare or no senior (without recruiters), to force Agency usage
+     * 
      * @param data
      * @returns {any}
      */
@@ -93,11 +95,13 @@ export class NewEmployeeEventType extends BaseEventType {
             throw new Error('Can\'t be determined without Company.');
         this._company = data.company;
 
-        let role:Role,
-            lvl:ExpertiseLevel = TechnologyExpertise.randomLevel();
+        let role: Role,
+            lvl: ExpertiseLevel = TechnologyExpertise.randomLevel();
         return this.companyAr
             .then(() => this.hrStats)
-            .then(() => this._getRole())
+            .then(() => {
+                return new Promise(res => {this._getRole(lvl)})
+            })
             .then((r:Role) => role = r)
             .then(() => (new EmployeeFactory(this.ga)).generate(role, lvl, [this._company._id || this._company]))
             .then((emp:Employee) => this._employee = emp)
@@ -109,7 +113,7 @@ export class NewEmployeeEventType extends BaseEventType {
                 return (new Event(this.ga))
                         .populate(data)
                         .populate(ed)
-                        .save()
+                        .save();
             });
     }
 
@@ -118,13 +122,16 @@ export class NewEmployeeEventType extends BaseEventType {
      * @return {Promise<Role>}
      * @private
      */
-    protected _getRole():Promise<Role> {
+    protected _getRole(lvl: ExpertiseLevel):Promise<Role> {
         let priority = this._company.hrDepartment.priority;
         return (new Role).findAll(
             priority.length
                 ? {_id: priority}
                 : {}
         ).then((roles:Role[]) => {
+            roles = roles.filter(r => TechnologyExpertise.cmpLvl(r.minLevel, lvl));
+            if (!roles.length)
+                throw new Error("There is no roles for level ~ " + U.e(ExpertiseLevel, lvl));
             let role = roles[Math.floor(Math.random() * roles.length)];
             this._role = role;
             return role;

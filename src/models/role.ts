@@ -1,11 +1,11 @@
 import {Role as RoleCommon} from "../common/models/role"
 export {Role as RoleCommon} from "../common/models/role"
 
-import {ActiveRecord, SchemaTypes, ActiveRecordError} from "../core/db/active.record";
+import {ActiveRecord, SchemaTypes, ActiveRecordError, ActiveRecordRule, ActiveRecordRulesTypes} from "../core/db/active.record";
 import {DictionaryRecord} from "../core/db/dictionary.record";
 import {Character, BasicProperty} from "./character";
 import {Department} from "./department";
-import {KnowledgeBranch, Technology} from "./technology";
+import {KnowledgeBranch, Technology, ExpertiseLevel} from "./technology";
 
 /**
  * Class Role
@@ -16,15 +16,24 @@ export class Role extends DictionaryRecord {
     // common
     department: Department|any = new Department;
     name:string = '';
+    trait:any;
+    minLevel:ExpertiseLevel;
 
     protected static _loaded: Role[] = [];
     protected static _preloading:boolean = false;
 
     protected _common: any = RoleCommon;
     protected _schema: any = {
+        minLevel: String,        
         trait: SchemaTypes.Mixed
     };
 
+    public get rules(): { [key: string]: ActiveRecordRule } {
+        return {
+            'minLevel': {type: ActiveRecordRulesTypes.ENUM, related: ExpertiseLevel}
+        };
+    }
+    
     /**
      * Overriden to get a branches
      *

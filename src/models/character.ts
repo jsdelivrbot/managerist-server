@@ -30,10 +30,11 @@ export class Character extends CharacterCommon {
 
             // Skip fixed and max values
             while(
-            fixed.indexOf(params[p]) !== -1 || fixed.indexOf(p) !== -1
-            || (sign && (<any>this)[params[p]] >= 0.999 && ['Intelligence', 'Communication'].indexOf(params[p]) == -1)
-            || (!sign && (<any>this)[params[p]] <= 0.1)
-                )
+                fixed.indexOf(params[p]) !== -1 
+             || fixed.indexOf(p) !== -1
+             || (sign && (<any>this)[params[p]] >= 0.999 && ['Intelligence', 'Communication'].indexOf(params[p]) == -1)
+             || (!sign && (<any>this)[params[p]] <= 0.1)
+            )
                 p = (p+1) % params.length;
 
             (<any>this)[params[p]] = (<any>this)[params[p]] + (sign ? 0.1 : -0.1);
