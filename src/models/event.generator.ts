@@ -116,6 +116,9 @@ export class EventGenerator {
                                 return null;
                             })
                             .then((_ev:Event|null) => _ev ? ev.push(_ev) : null)
+                            .catch((e) => {
+                                Log.log(e.message, LogLevel.Error);
+                            })
                     );
                     etPeriod = et.period; // it might mutate for probabilistic
                     prevDateTimestamp+=(etPeriod*1000);

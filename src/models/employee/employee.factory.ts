@@ -51,7 +51,9 @@ export class EmployeeFactory {
             chr:Character = new Character(role.trait);
         chr.updateRandom(this._extra4Lvl(lvl) + role.trait.n);
         return Technology.getForRole(role, lvl)
-            .then((techs: any[]) => {
+            .then(async (techs: any[]) => {
+                let salary = await Technology.determineMedianSalary(techs);
+
                 return (new Employee(this._ga, {
                     name: U.personName(gender == Gender.Male),
                     pic: EmployeeFactory.randomFace(gender),
@@ -61,7 +63,7 @@ export class EmployeeFactory {
                     role: role._id,
                     level: lvl,
                     visible: visible,
-                    salary: Technology.determineMedianSalary(techs)
+                    salary: salary
                 })).save()
             });
     }

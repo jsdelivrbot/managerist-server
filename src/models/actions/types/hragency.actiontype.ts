@@ -80,7 +80,7 @@ export class HrAgencyActionType extends BaseActionType {
 
                 while(attempts) {
                     try {
-                        emp = await attempt;
+                        emp = await attempt();
                         break;
                     } catch(err) {
                         attempts--;

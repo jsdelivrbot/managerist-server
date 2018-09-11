@@ -19,6 +19,7 @@ export enum KnownBranch{Programming, Finance, Marketing, Organizing, Electronics
 import {Types as MongoTypes} from "mongoose";
 import {DictionaryRecord} from "../../core/db/dictionary.record";
 import {TechnologyExpertise} from "./technology.expertise";
+import { Log, LogLevel } from '../../core/utils/log';
 
 /**
  * Class Technology
@@ -155,6 +156,7 @@ export class Technology extends DictionaryRecord {
                 })
         )
         .then((mids:number[]|any[]) => {
+            Log.log(mids, LogLevel.Debug, {color: "purple"});
             let big3:number[] = U.big3(mids),
                 rest:number[] = mids.slice(0).filter(_a => !big3.includes(_a)),
                 sal:number = U.avg(big3) || Technology.defaultSalary,

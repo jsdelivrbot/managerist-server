@@ -99,9 +99,7 @@ export class NewEmployeeEventType extends BaseEventType {
             lvl: ExpertiseLevel = TechnologyExpertise.randomLevel();
         return this.companyAr
             .then(() => this.hrStats)
-            .then(() => {
-                return new Promise(res => {this._getRole(lvl)})
-            })
+            .then(() => this._getRole(lvl))
             .then((r:Role) => role = r)
             .then(() => (new EmployeeFactory(this.ga)).generate(role, lvl, [this._company._id || this._company]))
             .then((emp:Employee) => this._employee = emp)
@@ -129,7 +127,7 @@ export class NewEmployeeEventType extends BaseEventType {
                 ? {_id: priority}
                 : {}
         ).then((roles:Role[]) => {
-            roles = roles.filter(r => TechnologyExpertise.cmpLvl(r.minLevel, lvl));
+            roles = roles.filter(r => TechnologyExpertise.cmpLvl(lvl, r.minLevel));
             if (!roles.length)
                 throw new Error("There is no roles for level ~ " + U.e(ExpertiseLevel, lvl));
             let role = roles[Math.floor(Math.random() * roles.length)];
