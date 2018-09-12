@@ -1,4 +1,5 @@
 import {Character as CharacterCommon, BasicProperty} from "../common/models/character"
+import { U } from "../common";
 export {BasicProperty}  from "../common/models/character"
 
 /**
@@ -17,27 +18,28 @@ export class Character extends CharacterCommon {
      * @param fixed BasicProperty[]
      */
     updateRandom = (n:number, fixed: BasicProperty[] = []) => {
-        let params:any[] = [],
-            sign:boolean = n>0;
-        for (let bp in BasicProperty)
-            if (Number.isNaN(+bp))
-                params.push((<any>this)[bp]);
-        if (params.length <= fixed.length)
-            return this;
+        let bpList = U.el(BasicProperty),
+            sign:boolean = n>this.n;
+        
+        bpList = bpList.filter(bp => !fixed.includes(U.en(BasicProperty, bp)));
+        
+        if (!bpList.length) return this;
 
-        for(let i=0; i<Math.abs(n);i++) {
-            let p:number = Math.floor(params.length * Math.random());
+        n-=this.n;
+        while (n!=0 && bpList.length) {
+            let p:string = bpList[Math.floor(bpList.length * Math.random())];
 
-            // Skip fixed and max values
-            while(
-                fixed.indexOf(params[p]) !== -1 
-             || fixed.indexOf(p) !== -1
-             || (sign && (<any>this)[params[p]] >= 0.999 && ['Intelligence', 'Communication'].indexOf(params[p]) == -1)
-             || (!sign && (<any>this)[params[p]] <= 0.1)
-            )
-                p = (p+1) % params.length;
+            if (sign && this[p] >= Character.maxValues[p]) {
+                bpList = bpList.filter(bp => bp != p);
+                continue;
+            }
+            if (!sign && this[p] <= 0.1) {
+                bpList = bpList.filter(bp => bp != p);
+                continue;
+            }
 
-            (<any>this)[params[p]] = (<any>this)[params[p]] + (sign ? 0.1 : -0.1);
+            this[p] = this[p] + (sign ? 0.1 : -0.1);
+            n+= sign ? -1 : 1;
         }
         return this;
     };

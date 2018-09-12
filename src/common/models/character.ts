@@ -30,9 +30,13 @@ export class Character {
         return Character._n;
     }
     constructor(obj:any = null) {
-        for (let bp in BasicProperty)
-            if (Number.isNaN(+bp) && (<any>obj)[bp])
-                (<any>this)[bp] = (<any>obj)[bp];
+        for (let bp in BasicProperty) {
+            if (Number.isNaN(+bp)) {
+                if(obj[bp]) {
+                    (<any>this)[bp] = obj[bp];
+                }
+            }
+        }
     }
 
     get n():number {
