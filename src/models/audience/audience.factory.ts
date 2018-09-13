@@ -37,7 +37,7 @@ export class AudienceFactory {
             .then(() => stats.efficiency)
             .then((e:number) => efficiency = e)
             .then(() => {
-                let featureValues:FeatureValue[] = this.genFeatureValues(this._product.features, 1),
+                let featureValues:FeatureValue[] = this.genFeatureValues(this._product.features.map(f => f.feature._id || f.feature), 1),
                     a = (new Audience(this._product.ga));
                 return a
                     .populate({

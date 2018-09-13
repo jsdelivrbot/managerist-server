@@ -66,12 +66,19 @@ export class GameManager {
         await new Promise(cw);
 
         let ev:Event[] = [],
-            simulationDate:Date = new Date(this._game.simulationDate);
+            previousMonth:Date = (new Date(this._game.simulationDate)),
+            nextMonth:Date,
+            simulationDate:Date = new Date(this._game.simulationDate),
+            monthsPassed = 0;
         if (ga.gameId != this._game._id)
             return Promise.reject('Wrong game');
 
         periodSeconds = periodSeconds || this._game.options.speed * 3600;
         simulationDate = new Date(simulationDate.getTime() + periodSeconds*1000);
+        nextMonth = (new Date(this._game.simulationDate));
+        previousMonth.setDate(1);
+        nextMonth.setDate(1); 
+        monthsPassed = (new Date(<any>nextMonth - <any>previousMonth)).getMonth();
 
         Log.log("GAME START:\t" + this._game.startDate.toISOString() +'\t\tGAME SIMULATION:\t'+ this._game.simulationDate.toISOString() + ' -> ' + simulationDate.toISOString(), LogLevel.Debug);
         return (new EventGenerator(this._game)).generateAll(simulationDate)
@@ -79,7 +86,7 @@ export class GameManager {
             .then(() => (new Company(ga)).findAll())
             .then((companies:Company[]) => Promise.resolve(true)
                 .then(() => Promise.all(
-                    companies.map((c: Company) => this.updateProducts(c, this._game.simulationDate, simulationDate))
+                    companies.map((c: Company) => this.monthEnd(c, previousMonth, monthsPassed))
                 ))
                 .then((_eev: Event[][]) => ev = ev.concat(..._eev))            
                 .then( () => Promise.all(
@@ -151,10 +158,12 @@ export class GameManager {
             .then((products:any[]) => {
                 Log.log("PRODUCT UPDATES (" + products.length + ") OF C:" + company.name + 'from ' + fromDate.toISOString() + ' till' + toDate.toISOString(), LogLevel.Debug);
                 return Promise.all(
-                    products.filter((p:Product) => p.isRun).map((p:Product) =>
-                        (new ProductManager(p, prodStats, mktStats, hrStats))
-                            .checkUpdates(fromDate, toDate)
-                    )
+                    products
+//                        .filter((p:Product) => p.isRun)
+                        .map((p:Product) =>
+                            (new ProductManager(p, prodStats, mktStats, hrStats))
+                                .checkUpdates(fromDate, toDate)
+                        )
                 )
             })
             .then(() => events);
@@ -163,19 +172,29 @@ export class GameManager {
     /**
      *
      * @param company
-     * @param date
+     * @param monthStart
+     * @param monthesPassed
      */
-    monthEnd(company:Company, date:Date):Promise<Event[]> {
+    monthEnd(company:Company, monthStart:Date, monthesPassed = 1):Promise<Event[]> {
         let events:Event[] = [],
+            nextMonth: Date = new Date(monthStart.setDate(1)),
             fin:FinanceStats = this._finStats[company._id];
+        nextMonth.setMonth(monthStart.getMonth() + monthesPassed);
         if (!this.ready)
             throw new Error('Game Manager not initialized yet, strange...');
         if (!fin)
             throw new Error('Fin stats not initialized');
-        return fin.companyFinancials
+        return this.updateProducts(company, monthStart, nextMonth)
+            .then(ev => events.concat(ev))
+            .then(() => fin.getCompanyFinancials())
             .then((cfin:CompanyFinancials) => {
                 let t = cfin.monthly;
-                return [];
-            });
+                return company.populate({
+                    net: cfin.net,
+                    funds: company.funds + cfin.monthly - cfin.salaries
+                })
+                .save()
+            })
+            .then(() => events);
     }
 }

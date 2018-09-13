@@ -43,7 +43,7 @@ export class AudienceManager {
      */
     updateReaction(from:Date, to:Date):Promise<Audience> {
         let ev:Event[],
-            daysPassed:number = (to.getTime() - from.getTime())/1000,
+            monthsPassed:number = (to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24 * 30),
             fv:FeatureValue[] = this._audience.features,
             fi:FeatureImplementation[],
             efficiency = 0,
@@ -58,7 +58,7 @@ export class AudienceManager {
             .then(() => {
                 return this._audience
                     .populate({
-                        size: Math.max(0, this._audience.size + this._audience.growth * daysPassed),
+                        size: Math.max(0, this._audience.size + this._audience.growth * monthsPassed),
                         satisfaction: this._audience.calcSatisfaction(this._product.features)
                     })
                     .populate({
@@ -66,7 +66,7 @@ export class AudienceManager {
                         growth: this._audience.calcGrowth(efficiency)
                     })
                     .populate({
-                        converted: Math.max(Audience.basicSize * Math.random(), this._audience.size + this._audience.conversion * daysPassed)
+                        converted: Math.max(Audience.basicSize * Math.random(), this._audience.size + this._audience.conversion * monthsPassed)
                     })
                     .save();
             })

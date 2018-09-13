@@ -17,7 +17,7 @@ export class Audience extends GameBased {
     protected static _basicSize = 100;
     protected static _basicGrowth = 0.1;
     static get basicSize() { return Audience._basicSize;};
-    /** @property basicGrowth number ~ ppl/day */
+    /** @property basicGrowth number ~ ppl/month */
     static get basicGrowth():number { return Audience._basicGrowth;};
     
     // common
@@ -69,7 +69,7 @@ export class Audience extends GameBased {
     public calcSatisfaction(implementations:FeatureImplementation[]) {
         let matchFeatureValue = (f:any):FeatureValue => (<any>this).features.find(
                 (_fv:any) => {
-                    return (_fv.feature.feature._id || _fv.feature.feature).toString() == f
+                    return (_fv.feature._id || _fv.feature).toString() == f
                 }
             ),
             satisfaction = 0;
@@ -92,7 +92,7 @@ export class Audience extends GameBased {
      */
     public calcGrowth(promotionEfficiency:number): number {
         return Math.max(Audience._basicGrowth, Audience._basicGrowth*promotionEfficiency*2)
-        + ((<any>this).satisfaction || 0 - 0.5);
+            + ((<any>this).satisfaction || 0 - 0.5);
     }
 
     /**

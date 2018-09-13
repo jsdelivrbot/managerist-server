@@ -30,16 +30,16 @@ export class ProductManager {
     }
 
     checkUpdates(from:Date, to:Date):Promise<Event[]> {
-        let ev:Event[],
-            secondsPassed:number = (to.getTime() - from.getTime())/1000;
+        let ev:Event[];
 
         return (new Audience(this._product.ga)).findAll({product: this._product._id})
             .then((auds:Audience[]) => 
                 Promise.all(
-                    auds.map(aud => 
-                        new AudienceManager(aud, this._marketStats, this._prodStats, this._hrStats)
+                    auds.map(aud => {
+                        aud.product = this._product;
+                        return new AudienceManager(aud, this._marketStats, this._prodStats, this._hrStats)
                             .updateReaction(from, to)
-                    )
+                    })
                 )
             )
             .then((auds:Audience[]) => 

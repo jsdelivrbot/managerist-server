@@ -21,12 +21,19 @@ export class FinanceStats extends DepartmentStats {
 
     /**
      *
-     * @returns {Promise<any>}
+     * @returns {Promise<CompanyFinancials>}
      */
     public get companyFinancials():Promise<CompanyFinancials> {
         if (this._companyFinancials)
             return Promise.resolve(this._companyFinancials);
 
+        return this.getCompanyFinancials();
+    }
+
+    /**
+     * @returns {Promise<CompanyFinancials>}
+     */
+    public getCompanyFinancials():Promise<CompanyFinancials> {
         return this._company.getFinancials(this._company._id)
             .then((r: any) => this._companyFinancials = r);
     }
