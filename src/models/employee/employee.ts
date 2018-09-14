@@ -156,7 +156,6 @@ export class Employee extends GameBased {
      * @returns number
      */
     public calculateTechEfficiency(tus: TechnologyUsage[]): number {
-        Log.log(this.common, LogLevel.Debug, {color: "cyan"});
         let eff: number =0,
             eff0: number = 0, // base eff - by level
             teff: number = 0;// tech eff

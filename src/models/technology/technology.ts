@@ -136,23 +136,12 @@ export class Technology extends DictionaryRecord {
      * @returns {Promise<number>}
      */
     public static determineMedianSalary(exs: TechnologyExpertise[], role:Role|null = null):Promise<number> {
-        let branchId = (role && role.branch && role.branch._id) || null,
-            salary = (branchId && role.branch.salary) || 0,
-            lCoefs = {
-                [ExpertiseLevel.Intern]: 0.1,
-                [ExpertiseLevel.Junior]: 0.5,
-                [ExpertiseLevel.Middle]: 1,
-                [ExpertiseLevel.Senior]: 1.75,
-                [ExpertiseLevel.Expert]: 2.5
-            };
+        let branchId = (role && role.branch && role.branch._id) || null;
         return Promise.all(
             exs.filter((ex:any) => branchId != (ex.branch._id || ex.branch))
                 .map((ex:TechnologyExpertise) => {
                     ex = (new TechnologyExpertise(<TechnologyExpertiseCommon>ex));
-                    return ex.populate()
-                        .then((tex: TechnologyExpertise|any) => {
-                            return tex.salary * lCoefs[U.en(ExpertiseLevel,ex.level)]
-                        })
+                    return ex.salary;
                 })
         )
         .then((mids:number[]|any[]) => {

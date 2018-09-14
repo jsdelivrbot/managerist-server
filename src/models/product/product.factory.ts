@@ -2,7 +2,7 @@ import {Company} from "../company/company";
 import {Product} from "./product";
 import {Feature} from "../feature";
 import {U} from "../../common/u";
-import {FeatureImplementation} from "../feature.implementation";
+import {FeatureImplementation} from "../feature/feature.implementation";
 import {ProjectFactory} from "../project/project.factory";
 import {Game} from "../game";
 import { Log, LogLevel } from "../../core/utils/log";

@@ -64,18 +64,23 @@ export class TechnologyExpertise extends TechnologyExpertiseCommon {
      * @returns {number}
      */
     get salary() {
-        let mid = (<any>this.technology).salary || 0;
-        let mul = 1;
-        if (ExpertiseLevel.Expert == U.en(ExpertiseLevel, this.level))
-            mul = 5;
-        else if (ExpertiseLevel.Senior == U.en(ExpertiseLevel, this.level))
-            mul = 1.8;
-        else if (ExpertiseLevel.Middle == U.en(ExpertiseLevel, this.level))
-            mul = 1;
-        else if (ExpertiseLevel.Junior == U.en(ExpertiseLevel, this.level))
-            mul = 0.7;
-        else
-            mul = 0.5;
-        return mid * mul;
+        return this.getSalary();
+    }
+
+    /**
+     * 
+     * @param lvl 
+     */
+    getSalary(lvl:ExpertiseLevel = null) {
+        lvl = lvl || this.level;
+        let mid = (<any>this.technology).salary || 0,
+            lCoefs = {
+                [ExpertiseLevel.Intern]: 0.1,
+                [ExpertiseLevel.Junior]: 0.5,
+                [ExpertiseLevel.Middle]: 1,
+                [ExpertiseLevel.Senior]: 1.75,
+                [ExpertiseLevel.Expert]: 2.5
+            };
+        return mid * lCoefs[U.en(ExpertiseLevel, lvl)];
     }
 }

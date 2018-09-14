@@ -3,7 +3,7 @@ export {Project as ProjectCommon, ProjectType, ProjectStatus, ProjectResults} fr
 
 import {SchemaTypes, ActiveRecord, ActiveRecordRule, ActiveRecordRulesTypes} from "../../core/db/active.record";
 import {GameBased} from "../game.based";
-import {FeatureImplementation, Bug} from "../feature.implementation";
+import {FeatureImplementation, Bug} from "../feature/feature.implementation";
 import {Product, ProductStage} from "../product";
 import {Company} from "../company";
 import {Audience} from "../audience";
@@ -151,12 +151,10 @@ export class Project extends GameBased {
                             },
                         ]
                     };
-                Log.log(cond, LogLevel.Debug, {color: "red"});
                 return (new Position(this.ga)).withRelations(['employee'])
                 .findAll(cond);
             })
             .then((poss:Position[]) => {
-                poss.map(p => Log.log({nm:"Position", id: p._id, start: p.startDate, end: p.endDate}, LogLevel.Debug, {color: "purple"}));
                 let distribution = U.dstr(this.features.filter(_fi => _fi.estimated).length);
                 burned = U.sum(poss.map(pos => pos.efficiency * seconds));
                 completed = this.completed + burned;

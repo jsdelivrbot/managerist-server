@@ -2,7 +2,7 @@ import { Audience, AudienceFactory } from ".";
 import { MarketingStats } from "../company/departments/marketing/stats";
 import { ProductionStats } from "../company/departments/production/stats";
 import { HrStats } from "../company/departments/hr/stats";
-import { FeatureImplementation } from "../feature.implementation";
+import { FeatureImplementation } from "../feature/feature.implementation";
 import { FeatureValue } from "../feature";
 import { Product, Event } from "..";
 
@@ -66,7 +66,7 @@ export class AudienceManager {
                         growth: this._audience.calcGrowth(efficiency)
                     })
                     .populate({
-                        converted: Math.max(Audience.basicSize * Math.random(), this._audience.size + this._audience.conversion * monthsPassed)
+                        converted: Math.max(0, this._audience.size + this._audience.conversion * monthsPassed)
                     })
                     .save();
             })

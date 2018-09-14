@@ -1,9 +1,9 @@
-import {FeatureImplementation as FeatureImplementationCommon, Bug as BugCommon} from "../common/models/feature";
-import {Feature} from "./feature"
-import {Employee} from "./employee"
-import {U} from "../common/u"
-import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "./technology";
-import { Log, LogLevel } from "../core/utils/log";
+import {FeatureImplementation as FeatureImplementationCommon, Bug as BugCommon} from "../../common/models/feature";
+import {Feature} from "."
+import {Employee} from "../employee"
+import {U} from "../../common/u"
+import {Technology, KnownBranch, TechnologyExpertise, TechnologyUsage} from "../technology";
+import { Log, LogLevel } from "../../core/utils/log";
 
 export class Bug extends BugCommon {}
 
@@ -158,13 +158,15 @@ export class FeatureImplementation extends FeatureImplementationCommon {
      * @return Promise<FeatureImplementation>
      */
     burnout(seconds:number, employees:Employee[] = []): Promise<FeatureImplementation> {
-        this.completed =  (this.completed || 0) + seconds;
-        // TODO
         let currQ = this.calcQuality(employees);
+        if (this.completed && !currQ)
+            throw new Error("That's too many bugs, - zero quality. Project failed.");
+
+        this.completed =  (this.completed || 0) + seconds;
         
-        this.quality = 0;
+        this.quality = 1;
         if (currQ)
-            this.quality = (this.completed - seconds) / this.completed * this.quality +  seconds / this.completed * currQ;
+            this.quality = (this.quality * (this.todo - seconds) + seconds * currQ) / this.todo;
         return Promise.resolve(true)
             .then(() => this);
     }
@@ -174,7 +176,9 @@ export class FeatureImplementation extends FeatureImplementationCommon {
                 let ee = e.calculateTechEfficiency(this.technologies);
                 return a + ee / employees.length;
             }, 0),
-            bugsBurden = 1 - this.bugs.reduce((a, b) => a + b.critical * (b.fixed ? 0 : (b.detected ? 0.5 : 1)), 0) / Feature.defaultAllowedBugs;
+            bugsBurden = Math.max(0,
+                1 - this.bugs.reduce((a, b) => a + b.critical * (b.fixed ? 0 : (b.detected ? 0.5 : 1)), 0) / Feature.defaultAllowedBugs
+            );
         Log.log("Emps(" + employees.length  + "): " + U.floor(empsEfficiency, 2) + " bugs: " + bugsBurden, LogLevel.Warning);
         return empsEfficiency * bugsBurden;
     }

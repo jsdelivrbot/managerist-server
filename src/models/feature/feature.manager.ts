@@ -1,5 +1,5 @@
 import { Feature } from "./feature";
-import { FeatureImplementation } from "../feature.implementation";
+import { FeatureImplementation } from "./feature.implementation";
 
 export class FeatureManager {
     constructor(protected _feature:Feature) {

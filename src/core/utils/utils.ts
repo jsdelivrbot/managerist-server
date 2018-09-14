@@ -18,4 +18,5 @@ export class Utils {
     static big3 = (_arr:number[]):number[] => Utils.bigX(_arr, 3);
     static big3o = (_arr:any[], prop:string):any[] => _arr.slice(0).sort((a,b) => b[prop]- a[prop]).slice(0, 3);
     static dstr = (n:number):number[] => [...new Array(n)].reduce((a,_,i) => a[1].push(-a[0]+(a[0]+=(1 - a[0])*(n-i < 2 ? 1 : Math.random()))) && a, [0,[]])[1];
+    static monthsChanged = (d1:Date, d2:Date) =>  d2.getFullYear()*12 + d2.getMonth() - d1.getFullYear()*12 - d1.getMonth();
 }

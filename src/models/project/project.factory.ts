@@ -2,7 +2,7 @@ import {Company} from "../company/company";
 import {Product, ProductStage} from "../product/product";
 import {Project} from "./project";
 import {U} from "../../common/u";
-import {FeatureImplementation} from "../feature.implementation";
+import {FeatureImplementation} from "../feature/feature.implementation";
 import {Department} from "../department";
 import { LogLevel, Log } from "../../core/utils/log";
 export class ProjectFactory {

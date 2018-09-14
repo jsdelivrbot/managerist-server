@@ -2,7 +2,7 @@ import {ProjectResults as ProjectResultsCommon} from '../../common/models/projec
 import { U } from '../../common';
 import {Project, ProjectStatus} from './project'
 import { Product } from '..';
-import { FeatureImplementation } from '../feature.implementation';
+import { FeatureImplementation } from '../feature/feature.implementation';
 
 export class ProjectResults extends ProjectResultsCommon {
     constructor(protected _project:Project) {

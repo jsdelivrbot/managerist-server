@@ -1,7 +1,7 @@
 import {Product as ProductCommon, ProductStage, ProductArea} from '../../common/models/product';
 import {SchemaTypes, ActiveRecordRule, ActiveRecordRulesTypes} from "../../core/db/active.record";
 import {GameBased} from "../game.based";
-import {FeatureImplementation} from "../feature.implementation";
+import {FeatureImplementation} from "../feature/feature.implementation";
 import { Project } from '..';
 import { U } from '../../common';
 

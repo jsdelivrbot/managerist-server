@@ -50,11 +50,7 @@ export class EmployeeFactory {
     public generate(role: Role, lvl: ExpertiseLevel, visible:any[] = []): Promise<Employee | ActiveRecord> {
         let gender = Math.random() > 0.5 ? Gender.Male : Gender.Female,
             chr:Character = new Character(role.trait.character);
-        Log.log(chr.list, LogLevel.Debug, {color: "green"});
-        Log.log(role.trait, LogLevel.Debug, {color: "purple"});
         chr.updateRandom(this._extra4Lvl(lvl) + role.trait.n);
-        Log.log(chr.list, LogLevel.Debug, {color: "green"});
-        Log.log(this._extra4Lvl(lvl) + role.trait.n, LogLevel.Debug, {color: "purple"});
         return Technology.getForRole(role, lvl)
             .then(async (techs: any[]) => {
                 let salary = await Technology.determineMedianSalary(techs);

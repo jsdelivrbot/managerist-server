@@ -12,6 +12,7 @@ import { ProjectResults } from "./project/project.results";
 import { ProductManager } from "./product/product.manager";
 import { MarketingStats } from "./company/departments/marketing/stats";
 import { HrStats } from "./company/departments/hr/stats";
+import { U } from "../common";
 
 export class GameManager {
     private _finStats: {[key:string]:FinanceStats} = {};
@@ -66,20 +67,19 @@ export class GameManager {
         await new Promise(cw);
 
         let ev:Event[] = [],
-            previousMonth:Date = (new Date(this._game.simulationDate)),
             nextMonth:Date,
             simulationDate:Date = new Date(this._game.simulationDate),
+            previousMonth:Date = new Date(simulationDate),
             monthsPassed = 0;
         if (ga.gameId != this._game._id)
             return Promise.reject('Wrong game');
 
         periodSeconds = periodSeconds || this._game.options.speed * 3600;
         simulationDate = new Date(simulationDate.getTime() + periodSeconds*1000);
-        nextMonth = (new Date(this._game.simulationDate));
+        nextMonth = (new Date(simulationDate));
         previousMonth.setDate(1);
         nextMonth.setDate(1); 
-        monthsPassed = (new Date(<any>nextMonth - <any>previousMonth)).getMonth();
-
+        monthsPassed = U.monthsChanged(previousMonth, nextMonth);
         Log.log("GAME START:\t" + this._game.startDate.toISOString() +'\t\tGAME SIMULATION:\t'+ this._game.simulationDate.toISOString() + ' -> ' + simulationDate.toISOString(), LogLevel.Debug);
         return (new EventGenerator(this._game)).generateAll(simulationDate)
             .then((_eev:Event[]) => ev = ev.concat(_eev))
@@ -179,6 +179,8 @@ export class GameManager {
         let events:Event[] = [],
             nextMonth: Date = new Date(monthStart.setDate(1)),
             fin:FinanceStats = this._finStats[company._id];
+        if (!monthesPassed)
+            return Promise.resolve(events);
         nextMonth.setMonth(monthStart.getMonth() + monthesPassed);
         if (!this.ready)
             throw new Error('Game Manager not initialized yet, strange...');
@@ -191,7 +193,7 @@ export class GameManager {
                 let t = cfin.monthly;
                 return company.populate({
                     net: cfin.net,
-                    funds: company.funds + cfin.monthly - cfin.salaries
+                    funds: company.funds + monthesPassed * (cfin.monthly - cfin.salaries)
                 })
                 .save()
             })

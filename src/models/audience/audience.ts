@@ -4,7 +4,7 @@ import {GameBased} from "../game.based";
 import {SchemaTypes, ActiveRecord} from "../../core/db/active.record";
 import {Product} from "../product";
 import {FeatureValue} from "../feature";
-import {FeatureImplementation} from '../feature.implementation'
+import {FeatureImplementation} from '../feature/feature.implementation'
 import { AudienceHistory } from './audience.history';
 
 /**
