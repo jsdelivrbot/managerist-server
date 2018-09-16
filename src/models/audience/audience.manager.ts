@@ -66,7 +66,7 @@ export class AudienceManager {
                         growth: this._audience.calcGrowth(efficiency)
                     })
                     .populate({
-                        converted: Math.max(0, this._audience.size + this._audience.conversion * monthsPassed)
+                        converted: Math.max(0, this._audience.converted + this._audience.conversion * monthsPassed)
                     })
                     .save();
             })

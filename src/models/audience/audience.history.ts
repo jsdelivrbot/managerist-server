@@ -14,7 +14,7 @@ import { GameActivity } from '../game';
  */
 export class AudienceHistory extends GameBased {
     audience: Audience;
-    date: number;
+    date: Date;
     size: number;
     conversion: number;
     converted: number;
@@ -26,6 +26,7 @@ export class AudienceHistory extends GameBased {
     protected _common = AudienceHistoryCommon;
     protected _schema: any = {
         audience: SchemaTypes.ObjectId,
+        date: SchemaTypes.Date,
         features: SchemaTypes.Mixed
     }
 
@@ -39,5 +40,10 @@ export class AudienceHistory extends GameBased {
             this.populate(ddata, true);
         }
         return this;
+    }
+
+    get common() {
+        let cmn = super.common;
+        return cmn;
     }
 }

@@ -6,6 +6,7 @@ import {Product} from "../product";
 import {FeatureValue} from "../feature";
 import {FeatureImplementation} from '../feature/feature.implementation'
 import { AudienceHistory } from './audience.history';
+import { Game } from '../game';
 
 /**
  * Class Audience
@@ -50,9 +51,12 @@ export class Audience extends GameBased {
             : this._create(this.common),
             ar: Audience;
         return savePromise
-            .then((_a: any) => {
-                ar = _a;
-                (new AudienceHistory(ar)).save()
+            .then((_a: any) => ar = _a)
+            .then(() => (new Game()).findById(ar.ga.gameId))
+            .then((g: Game) => {
+                (new AudienceHistory(ar))
+                    .populate({date: g.simulationDate})
+                    .save()
             })
             .then(() => ar);
     }

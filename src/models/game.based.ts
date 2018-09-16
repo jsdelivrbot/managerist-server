@@ -9,6 +9,7 @@ export interface GameBasedInterface extends ActiveRecordInterface {
 }
 export abstract class GameBased extends  ActiveRecord {
     protected _ga:GameActivity;
+    
     /**
      *
      * @param activity

@@ -31,11 +31,14 @@ export class AudienceFactory {
 
         //noinspection TypeScriptValidateTypes
         let stats:MarketingStats = new MarketingStats(this._company),
-            efficiency = 0;
+            efficiency = 0,
+            salesEfficiency = 0;
 
         return stats.init()
             .then(() => stats.efficiency)
             .then((e:number) => efficiency = e)
+            .then(() => stats.salesEfficiency)
+            .then((es:number) => salesEfficiency = es)
             .then(() => {
                 let featureValues:FeatureValue[] = this.genFeatureValues(this._product.features.map(f => f.feature._id || f.feature), 1),
                     a = (new Audience(this._product.ga));
@@ -52,7 +55,8 @@ export class AudienceFactory {
                         satisfaction: a.calcSatisfaction(this._product.features)
                     })
                     .populate({
-                        growth: a.calcGrowth(efficiency)
+                        growth: a.calcGrowth(efficiency),
+                        conversion: a.calcConversion(salesEfficiency)
                     })
                     .save();
             })

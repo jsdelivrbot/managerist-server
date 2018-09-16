@@ -3,7 +3,7 @@ import { Audience } from "./audience";
 export class AudienceHistory {
     _id: any;
     date: number = 0 ;  // date (millisec like other game dates)
-    audience: any;
+    audience: Audience = new Audience;
     name: string = '';
     size: number = 0;
     priceMultiplier:number = 1;
