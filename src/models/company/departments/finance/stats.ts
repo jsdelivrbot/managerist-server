@@ -13,6 +13,7 @@ import {CompanyDepartmentInterface} from "../company.department";
  *
  */
 export class FinanceStats extends DepartmentStats {
+    protected static MAX_LOAN = 30000;
     protected static _departmentDetailsClass:CompanyDepartmentInterface = FinanceCompanyDepartment;
     protected static _alertsClass: DepartmentAlertsInterface = FinanceAlerts;
     protected _employeeWorkload:number = 10;
@@ -31,6 +32,7 @@ export class FinanceStats extends DepartmentStats {
     }
 
     /**
+     * always request DB
      * @returns {Promise<CompanyFinancials>}
      */
     public getCompanyFinancials():Promise<CompanyFinancials> {
@@ -74,5 +76,14 @@ export class FinanceStats extends DepartmentStats {
                     return 1.5;
                 return 1;
             });
+    }
+
+    /**
+     * 
+     */
+    public get isNewCreditAllowed(): boolean {
+        if (!this._companyFinancials)
+            throw new Error('CompanyFinancials still not calculated');
+        return this._companyFinancials.debt - this._companyFinancials.net < FinanceStats.MAX_LOAN;
     }
 }

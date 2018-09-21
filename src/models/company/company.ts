@@ -11,11 +11,13 @@ import {FinanceCompanyDepartment} from "./departments/finance/department";
 import {MarketingCompanyDepartment} from "./departments/marketing/department";
 import {ProductionCompanyDepartment} from "./departments/production/department";
 import { Log, LogLevel } from '../../core/utils/log';
+import { Credit } from '../credit';
 
 export interface CompanyFinancials {
     _id: any;
     net: number,
     funds: number,
+    debt: number,
     monthly: number;
     salaries: number;
 }
@@ -189,7 +191,7 @@ export class Company extends GameBased {
      *
      * @param id
      */
-    getFinancials = (id?:any) : Promise<CompanyFinancials|CompanyFinancials[]> => new Promise<any>((resolve, reject) => {
+    getFinancials = (id?:any) : Promise<CompanyFinancials|CompanyFinancials[]> => {
         id = id || this._id;
 
         let aggregation: any[] = [
@@ -216,14 +218,23 @@ export class Company extends GameBased {
         if (id)
             aggregation.unshift({$match: this._prepareCond({_id: id})});
 
-        return this.model.aggregate(aggregation)
+        let aggrPromise: Promise<any> = new Promise((resolve, reject) => this.model.aggregate(aggregation)
             .exec((err: Error, data: any) => {
                 if (!err)
                     resolve((id ? data[0] : data) || {});
                 else
                     reject('Faied to fetch Company (id:' + id + ') Financials.');
+            }));
+        return aggrPromise
+            .then((stats:any) => {
+                return (new Credit(this._ga))
+                    .findAll({company: id ? stats._id : stats.map(s => s._id)})
+                    .then((creds) => stats.map(s => {
+                        s.debt = U.sumo(creds.filter((c:any) => c.company == s._id), 'amount'); 
+                        return s;
+                    }))
             });
-    });
+    };
 
     /**
      * Return the list of companies that belongs to current User

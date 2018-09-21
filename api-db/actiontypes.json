@@ -6,3 +6,4 @@
 {"_id":{"$oid":"5affe3557d89c9f701577cf1"},"name":"HrAgency","description":"","department":{"$oid":"5a951092d85933659c3e78cc"}}
 {"_id":{"$oid":"5b032e18f48996decc5b3328"},"name" : "Estimate","description" : "","department" : {"$oid":"5a95105fd85933659c3e78cb"}}
 {"_id":{"$oid":"5b1d235fd4470fe7b9db0faf"},"name":"SetHead","description":"","department":{"$oid":"5a951092d85933659c3e78cc"}}
+{"_id":{"$oid":"5affe3557d89c9f701577cf2"},"name":"TakeCredit","description":"","department":{"$oid":"5a31aee1c7e51cb19327d542"}}
